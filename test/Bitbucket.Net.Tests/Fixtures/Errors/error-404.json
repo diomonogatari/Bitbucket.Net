@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "The requested resource does not exist.",
+      "exceptionName": "com.atlassian.bitbucket.NoSuchResourceException"
+    }
+  ]
+}

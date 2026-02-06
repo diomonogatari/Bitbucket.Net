@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "Authentication credentials are required to access this resource.",
+      "exceptionName": "com.atlassian.bitbucket.AuthorisationException"
+    }
+  ]
+}
