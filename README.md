@@ -1,6 +1,8 @@
 ![Icon](https://i.imgur.com/OsDAzyV.png)
 # Bitbucket.Net
 
+[![NuGet](https://img.shields.io/nuget/v/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
 [![CI](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml/badge.svg)](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml)
 [![license](https://img.shields.io/github/license/diomonogatari/Bitbucket.Net.svg?maxAge=2592000)](https://github.com/diomonogatari/Bitbucket.Net/blob/main/LICENSE)
 ![](https://img.shields.io/badge/.net-10.0-yellowgreen.svg)
@@ -29,6 +31,12 @@ Modernized C# client for **Bitbucket Server** (Stash) REST API.
 - Flurl.Http 4.x
 
 If you're looking for Bitbucket Cloud API, try [this repository](https://github.com/lvermeulen/Bitbucket.Cloud.Net).
+
+## Installation
+
+```bash
+dotnet add package BitbucketServer.Net --prerelease
+```
 
 ## Usage
 
