@@ -1,45 +1,82 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
+using Bitbucket.Net.Common.Converters;
+using Bitbucket.Net.Common.Exceptions;
 using Bitbucket.Net.Common.Models;
+using Bitbucket.Net.Serialization;
 using Flurl;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Bitbucket.Net
 {
     public partial class BitbucketClient
     {
-        private static readonly ISerializer s_serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+        private static readonly JsonSerializerOptions s_jsonOptions = new()
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
-        });
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            // Source-generated context with reflection fallback for edge cases
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(
+                BitbucketJsonContext.Default,       // Source-generated (fast path)
+                new DefaultJsonTypeInfoResolver()   // Reflection fallback for unregistered types
+            ),
+            Converters =
+            {
+                new UnixDateTimeOffsetConverter(),
+                new NullableUnixDateTimeOffsetConverter(),
+                new PermissionsConverter(),
+                new RolesConverter(),
+                new FileTypesConverter(),
+                new LineTypesConverter(),
+                new ParticipantStatusConverter(),
+                new PullRequestStatesConverter(),
+                new HookTypesConverter(),
+                new ScopeTypesConverter(),
+                new WebHookOutcomesConverter(),
+                new RefRestrictionTypesConverter(),
+                new SynchronizeActionsConverter(),
+                new BlockerCommentStateConverter(),
+                new CommentSeverityConverter()
+            }
+        };
+
+        private static readonly ISerializer s_serializer = new DefaultJsonSerializer(s_jsonOptions);
 
         static BitbucketClient()
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
-            };
+            // Configure Flurl to use System.Text.Json globally
+            FlurlHttp.Clients.WithDefaults(builder =>
+                builder.WithSettings(settings =>
+                    settings.JsonSerializer = s_serializer));
         }
 
         private readonly Url _url;
-        private readonly Func<string> _getToken;
-        private readonly string _userName;
-        private readonly string _password;
+        private readonly Func<string>? _getToken;
+        private readonly string? _userName;
+        private readonly string? _password;
+        private readonly IFlurlClient? _injectedClient;
 
         private BitbucketClient(string url)
         {
             _url = url;
         }
 
+        /// <summary>
+        /// Creates a BitbucketClient with basic authentication.
+        /// </summary>
+        /// <param name="url">The base URL of the Bitbucket Server instance.</param>
+        /// <param name="userName">The username for basic authentication.</param>
+        /// <param name="password">The password for basic authentication.</param>
         public BitbucketClient(string url, string userName, string password)
             : this(url)
         {
@@ -47,54 +84,166 @@ namespace Bitbucket.Net
             _password = password;
         }
 
+        /// <summary>
+        /// Creates a BitbucketClient with token-based authentication.
+        /// </summary>
+        /// <param name="url">The base URL of the Bitbucket Server instance.</param>
+        /// <param name="getToken">A function that returns the bearer token.</param>
         public BitbucketClient(string url, Func<string> getToken)
             : this(url)
         {
             _getToken = getToken;
         }
 
-        private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0") => new Url(_url)
-            .AppendPathSegment($"/rest{root}/{version}")
-            .ConfigureRequest(settings => settings.JsonSerializer = s_serializer)
-            .WithAuthentication(_getToken, _userName, _password);
-
-        private async Task<TResult> ReadResponseContentAsync<TResult>(HttpResponseMessage responseMessage, Func<string, TResult> contentHandler = null)
+        /// <summary>
+        /// Creates a BitbucketClient using an externally managed HttpClient.
+        /// This constructor is designed for dependency injection scenarios where consumers
+        /// want to configure the HttpClient with IHttpClientFactory, Polly resilience policies,
+        /// custom timeouts, or other middleware.
+        /// </summary>
+        /// <param name="httpClient">The externally managed HttpClient instance. The client should be configured with any desired resilience policies, timeouts, etc.</param>
+        /// <param name="baseUrl">The base URL of the Bitbucket Server instance.</param>
+        /// <param name="getToken">Optional: A function that returns the bearer token for authentication.</param>
+        /// <remarks>
+        /// <para>
+        /// When using this constructor, authentication should typically be handled by configuring
+        /// the HttpClient with appropriate headers via IHttpClientFactory or DelegatingHandlers.
+        /// If getToken is provided, it will add the Authorization header to each request.
+        /// </para>
+        /// <para>
+        /// Example DI registration:
+        /// <code>
+        /// services.AddHttpClient&lt;BitbucketClient&gt;()
+        ///     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(1)))
+        ///     .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromMinutes(2));
+        ///     
+        /// services.AddSingleton&lt;BitbucketClient&gt;(sp => {
+        ///     var httpClient = sp.GetRequiredService&lt;IHttpClientFactory&gt;().CreateClient(nameof(BitbucketClient));
+        ///     return new BitbucketClient(httpClient, "https://bitbucket.example.com", () => GetToken());
+        /// });
+        /// </code>
+        /// </para>
+        /// </remarks>
+        public BitbucketClient(HttpClient httpClient, string baseUrl, Func<string>? getToken = null)
         {
-            string content = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return contentHandler != null 
-                ? contentHandler(content) 
-                : JsonConvert.DeserializeObject<TResult>(content);
+            if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
+            if (string.IsNullOrWhiteSpace(baseUrl)) throw new ArgumentNullException(nameof(baseUrl));
+
+            _url = baseUrl;
+            _getToken = getToken;
+            _injectedClient = new FlurlClient(httpClient, baseUrl)
+                .WithSettings(settings => settings.JsonSerializer = s_serializer);
         }
 
-        private async Task<bool> ReadResponseContentAsync(HttpResponseMessage responseMessage)
+        /// <summary>
+        /// Creates a BitbucketClient using an externally managed IFlurlClient.
+        /// This constructor provides maximum control over the Flurl client configuration.
+        /// </summary>
+        /// <param name="flurlClient">The pre-configured IFlurlClient instance.</param>
+        /// <param name="getToken">Optional: A function that returns the bearer token for authentication.</param>
+        /// <remarks>
+        /// Use this constructor when you need fine-grained control over Flurl's configuration,
+        /// such as custom event handlers, advanced settings, or when using IFlurlClientCache.
+        /// </remarks>
+        public BitbucketClient(IFlurlClient flurlClient, Func<string>? getToken = null)
         {
-            string content = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+            _injectedClient = flurlClient ?? throw new ArgumentNullException(nameof(flurlClient));
+            _url = flurlClient.BaseUrl ?? throw new ArgumentException("FlurlClient must have a BaseUrl configured.", nameof(flurlClient));
+            _getToken = getToken;
+        }
+
+        private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
+        {
+            // If using injected client, use it directly
+            if (_injectedClient != null)
+            {
+                var request = _injectedClient
+                    .Request()
+                    .AppendPathSegment($"/rest{root}/{version}")
+                    .WithSettings(settings => settings.JsonSerializer = s_serializer);
+
+                // Apply token authentication if provided
+                if (_getToken != null)
+                {
+                    request = request.WithOAuthBearerToken(_getToken());
+                }
+
+                return request;
+            }
+
+            // Original behavior for non-DI scenarios
+            return new Url(_url)
+                .AppendPathSegment($"/rest{root}/{version}")
+                .WithSettings(settings => settings.JsonSerializer = s_serializer)
+                .WithAuthentication(_getToken, _userName, _password);
+        }
+
+        private async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
+        {
+            string content = await response.GetStringAsync().ConfigureAwait(false);
+            return contentHandler != null
+                ? contentHandler(content)
+                : JsonSerializer.Deserialize<TResult>(content, s_jsonOptions)!;
+        }
+
+        private async Task<bool> ReadResponseContentAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
+        {
+            string content = await response.GetStringAsync().ConfigureAwait(false);
             return content == "";
         }
 
-        private async Task HandleErrorsAsync(HttpResponseMessage response)
+        private async Task HandleErrorsAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
         {
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode >= 400)
             {
-                var errorResponse = await ReadResponseContentAsync<ErrorResponse>(response).ConfigureAwait(false);
-                string errorMessage = string.Join(Environment.NewLine, errorResponse.Errors.Select(x => x.Message));
-                throw new InvalidOperationException($"Http request failed ({(int)response.StatusCode} - {response.StatusCode}):\n{errorMessage}");
+                var errors = Array.Empty<Error>();
+                string? requestUrl = response.ResponseMessage?.RequestMessage?.RequestUri?.ToString();
+                string? rawResponseBody = null;
+
+                try
+                {
+                    // Read the response body first so we can include it in the error if parsing fails
+                    rawResponseBody = await response.GetStringAsync().ConfigureAwait(false);
+
+                    if (!string.IsNullOrWhiteSpace(rawResponseBody))
+                    {
+                        var errorResponse = JsonSerializer.Deserialize<ErrorResponse>(rawResponseBody, s_jsonOptions);
+                        if (errorResponse?.Errors != null && errorResponse.Errors.Any())
+                        {
+                            errors = errorResponse.Errors.ToArray();
+                        }
+                    }
+                }
+                catch
+                {
+                    // If we can't parse the error response as JSON, create a synthetic error with the raw body
+                    if (!string.IsNullOrWhiteSpace(rawResponseBody))
+                    {
+                        // Truncate very long responses
+                        var truncatedBody = rawResponseBody.Length > 500
+                            ? rawResponseBody.Substring(0, 500) + "..."
+                            : rawResponseBody;
+                        errors = new[] { new Error { Message = truncatedBody } };
+                    }
+                }
+
+                throw BitbucketApiException.Create(response.StatusCode, errors, requestUrl);
             }
         }
 
-        private async Task<TResult> HandleResponseAsync<TResult>(HttpResponseMessage responseMessage, Func<string, TResult> contentHandler = null)
+        private async Task<TResult> HandleResponseAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
         {
-            await HandleErrorsAsync(responseMessage).ConfigureAwait(false);
-            return await ReadResponseContentAsync(responseMessage, contentHandler).ConfigureAwait(false);
+            await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+            return await ReadResponseContentAsync(response, contentHandler, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<bool> HandleResponseAsync(HttpResponseMessage responseMessage)
+        private async Task<bool> HandleResponseAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
         {
-            await HandleErrorsAsync(responseMessage).ConfigureAwait(false);
-            return await ReadResponseContentAsync(responseMessage).ConfigureAwait(false);
+            await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+            return await ReadResponseContentAsync(response, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<IEnumerable<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object> queryParamValues, Func<IDictionary<string, object>, Task<PagedResults<T>>> selector)
+        private async Task<IEnumerable<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
         {
             var results = new List<T>();
             bool isLastPage = false;
@@ -102,19 +251,59 @@ namespace Bitbucket.Net
 
             while (!isLastPage && (maxPages == null || numPages < maxPages))
             {
-                var selectorResults = await selector(queryParamValues).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                var selectorResults = await selector(queryParamValues, cancellationToken).ConfigureAwait(false);
                 results.AddRange(selectorResults.Values);
 
                 isLastPage = selectorResults.IsLastPage;
-                if (!isLastPage)
+                if (!isLastPage && selectorResults.NextPageStart.HasValue)
                 {
-                    queryParamValues["start"] = selectorResults.NextPageStart;
+                    queryParamValues["start"] = selectorResults.NextPageStart.Value;
                 }
 
                 numPages++;
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// Streams paged results as an IAsyncEnumerable, yielding items as they are retrieved.
+        /// This is more memory-efficient for large result sets and provides faster time-to-first-result.
+        /// </summary>
+        /// <typeparam name="T">The type of items in the paged results.</typeparam>
+        /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+        /// <param name="queryParamValues">Query parameters for the API request.</param>
+        /// <param name="selector">Function to retrieve a page of results.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>An async enumerable that yields items as they are retrieved.</returns>
+        private async IAsyncEnumerable<T> GetPagedResultsStreamAsync<T>(
+            int? maxPages,
+            IDictionary<string, object?> queryParamValues,
+            Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            bool isLastPage = false;
+            int numPages = 0;
+
+            while (!isLastPage && (maxPages == null || numPages < maxPages))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var selectorResults = await selector(queryParamValues, cancellationToken).ConfigureAwait(false);
+
+                foreach (var item in selectorResults.Values)
+                {
+                    yield return item;
+                }
+
+                isLastPage = selectorResults.IsLastPage;
+                if (!isLastPage && selectorResults.NextPageStart.HasValue)
+                {
+                    queryParamValues["start"] = selectorResults.NextPageStart.Value;
+                }
+
+                numPages++;
+            }
         }
     }
 }

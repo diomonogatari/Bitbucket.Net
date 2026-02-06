@@ -1,27 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.4</TargetFrameworks>
-    <PackageId>Bitbucket.Net</PackageId>
-    <Authors>Luk Vermeulen</Authors>
-    <Company>Luk Vermeulen</Company>
-    <Product>Bitbucket.Net</Product>
-    <Copyright>Copyright 2018 by Luk Vermeulen. All rights reserved.</Copyright>
-    <PackageLicenseUrl>https://github.com/lvermeulen/Bitbucket.Net/blob/main/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/lvermeulen/Bitbucket.Net</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/lvermeulen/Bitbucket.Net</RepositoryUrl>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Version>2.0.0</Version>
+    <Authors>Diogo Carvalho</Authors>
+    <Company>GlobalBlue</Company>
+    <Description>C# Client for Bitbucket Server API</Description>
+    <PackageTags>bitbucket;api;client;rest</PackageTags>
+    <RepositoryUrl>https://dev.global-blue.com/stash/scm/~dcarvalho/bitbucket.net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>bitbucket</PackageTags>
-    <PackageIconUrl>https://i.imgur.com/OsDAzyV.png</PackageIconUrl>
-    <LangVersion>7</LangVersion>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\Bitbucket.Net.snk</AssemblyOriginatorKeyFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Enforce ConfigureAwait(false) as this is a library -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl.Http.Signed" Version="2.4.2" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Flurl.Http" Version="4.0.2" />
+    <!-- Analyzer to enforce ConfigureAwait(false) and other library best practices -->
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.182">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
