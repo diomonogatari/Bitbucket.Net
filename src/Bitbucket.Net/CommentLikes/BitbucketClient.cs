@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Users;
@@ -18,76 +19,78 @@ namespace Bitbucket.Net
             int? maxPages = null,
             int? limit = null,
             int? start = null,
-            int? avatarSize = null)
+            int? avatarSize = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
                 ["avatarSize"] = avatarSize
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                     await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
                         .SetQueryParams(qpv)
-                        .GetJsonAsync<PagedResults<User>>()
-                        .ConfigureAwait(false))
+                        .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
+                        .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> LikeCommitCommentAsync(string projectKey, string repositorySlug, string commitId, string commentId)
+        public async Task<bool> LikeCommitCommentAsync(string projectKey, string repositorySlug, string commitId, string commentId, CancellationToken cancellationToken = default)
         {
             var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
-                .PostJsonAsync(new StringContent(""))
+                .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<bool> UnlikeCommitCommentAsync(string projectKey, string repositorySlug, string commitId, string commentId)
+        public async Task<bool> UnlikeCommitCommentAsync(string projectKey, string repositorySlug, string commitId, string commentId, CancellationToken cancellationToken = default)
         {
             var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
-                .DeleteAsync()
+                .DeleteAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<User>> GetPullRequestCommentLikesAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId,
             int? maxPages = null,
             int? limit = null,
-            int? start = null)
+            int? start = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                     await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
                         .SetQueryParams(qpv)
-                        .GetJsonAsync<PagedResults<User>>()
-                        .ConfigureAwait(false))
+                        .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
+                        .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> LikePullRequestCommentAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId)
+        public async Task<bool> LikePullRequestCommentAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId, CancellationToken cancellationToken = default)
         {
             var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
-                .PostJsonAsync(new StringContent(""))
+                .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<bool> UnlikePullRequestCommentAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId)
+        public async Task<bool> UnlikePullRequestCommentAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId, CancellationToken cancellationToken = default)
         {
             var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
-                .DeleteAsync()
+                .DeleteAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
     }
 }
