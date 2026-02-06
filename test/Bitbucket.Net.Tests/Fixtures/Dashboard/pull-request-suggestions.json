@@ -1,0 +1,45 @@
+{
+  "size": 1,
+  "limit": 3,
+  "isLastPage": true,
+  "values": [
+    {
+      "changeTime": 1704153600000,
+      "toRef": {
+        "id": "refs/heads/main",
+        "displayId": "main",
+        "type": "BRANCH",
+        "repository": {
+          "slug": "repo",
+          "id": 1,
+          "name": "Repository",
+          "project": {
+            "key": "PROJ"
+          }
+        }
+      },
+      "fromRef": {
+        "id": "refs/heads/feature/branch",
+        "displayId": "feature/branch",
+        "type": "BRANCH",
+        "repository": {
+          "slug": "repo",
+          "id": 1,
+          "name": "Repository",
+          "project": {
+            "key": "PROJ"
+          }
+        }
+      },
+      "repository": {
+        "slug": "repo",
+        "id": 1,
+        "name": "Repository",
+        "project": {
+          "key": "PROJ"
+        }
+      }
+    }
+  ],
+  "start": 0
+}

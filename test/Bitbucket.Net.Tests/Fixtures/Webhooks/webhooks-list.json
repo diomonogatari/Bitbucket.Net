@@ -1,0 +1,31 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "name": "CI/CD Webhook",
+            "createdDate": 1704067200000,
+            "updatedDate": 1704067200000,
+            "configuration": {
+                "secret": "***"
+            },
+            "url": "https://ci.example.com/webhook",
+            "active": true,
+            "events": ["repo:refs_changed", "pr:opened", "pr:merged"]
+        },
+        {
+            "id": 2,
+            "name": "Slack Notification",
+            "createdDate": 1704067300000,
+            "updatedDate": 1704067300000,
+            "configuration": {},
+            "url": "https://hooks.slack.com/services/xxx",
+            "active": true,
+            "events": ["pr:comment:added"]
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

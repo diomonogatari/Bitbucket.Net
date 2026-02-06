@@ -1,0 +1,9 @@
+{
+    "name": "jsmith",
+    "emailAddress": "john.smith@example.com",
+    "id": 1,
+    "displayName": "John Smith",
+    "active": true,
+    "slug": "jsmith",
+    "type": "NORMAL"
+}

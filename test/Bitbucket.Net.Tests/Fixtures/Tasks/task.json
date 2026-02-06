@@ -1,0 +1,30 @@
+{
+    "properties": {},
+    "id": 1,
+    "text": "Fix the null pointer exception",
+    "author": {
+        "name": "jsmith",
+        "emailAddress": "jsmith@example.com",
+        "displayName": "John Smith",
+        "active": true,
+        "slug": "jsmith"
+    },
+    "createdDate": 1700000000000,
+    "permittedOperations": {
+        "editable": true,
+        "deletable": true
+    },
+    "anchor": {
+        "id": 101,
+        "version": 1,
+        "text": "This needs attention",
+        "author": {
+            "name": "admin",
+            "emailAddress": "admin@example.com",
+            "displayName": "Admin User",
+            "active": true,
+            "slug": "admin"
+        }
+    },
+    "state": "OPEN"
+}

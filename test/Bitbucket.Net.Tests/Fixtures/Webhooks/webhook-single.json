@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "name": "CI/CD Webhook",
+    "createdDate": 1704067200000,
+    "updatedDate": 1704067200000,
+    "configuration": {
+        "secret": "***"
+    },
+    "url": "https://ci.example.com/webhook",
+    "active": true,
+    "events": ["repo:refs_changed", "pr:opened", "pr:merged"]
+}

@@ -1,0 +1,59 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "type": "read-only",
+            "matcher": {
+                "id": "refs/heads/main",
+                "displayId": "main",
+                "active": true,
+                "type": {
+                    "id": "BRANCH",
+                    "name": "Branch"
+                }
+            },
+            "users": [],
+            "groups": ["developers"],
+            "accessKeys": [],
+            "scope": {
+                "type": "PROJECT",
+                "resourceId": 1
+            }
+        },
+        {
+            "id": 2,
+            "type": "fast-forward-only",
+            "matcher": {
+                "id": "refs/heads/release/*",
+                "displayId": "release/*",
+                "active": true,
+                "type": {
+                    "id": "PATTERN",
+                    "name": "Pattern"
+                }
+            },
+            "users": [
+                {
+                    "name": "admin",
+                    "emailAddress": "admin@example.com",
+                    "id": 1,
+                    "displayName": "Administrator",
+                    "active": true,
+                    "slug": "admin",
+                    "type": "NORMAL"
+                }
+            ],
+            "groups": [],
+            "accessKeys": [],
+            "scope": {
+                "type": "PROJECT",
+                "resourceId": 1
+            }
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

@@ -1,0 +1,26 @@
+{
+  "size": 2,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "name": "jsmith",
+      "emailAddress": "jsmith@example.com",
+      "id": 1,
+      "displayName": "John Smith",
+      "active": true,
+      "slug": "jsmith",
+      "type": "NORMAL"
+    },
+    {
+      "name": "jdoe",
+      "emailAddress": "jdoe@example.com",
+      "id": 2,
+      "displayName": "Jane Doe",
+      "active": true,
+      "slug": "jdoe",
+      "type": "NORMAL"
+    }
+  ],
+  "start": 0
+}

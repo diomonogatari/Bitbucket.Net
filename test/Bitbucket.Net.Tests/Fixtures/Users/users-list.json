@@ -1,0 +1,27 @@
+{
+    "values": [
+        {
+            "name": "admin",
+            "emailAddress": "admin@example.com",
+            "id": 1,
+            "displayName": "Administrator",
+            "active": true,
+            "slug": "admin",
+            "type": "NORMAL"
+        },
+        {
+            "name": "developer",
+            "emailAddress": "developer@example.com",
+            "id": 2,
+            "displayName": "Developer User",
+            "active": true,
+            "slug": "developer",
+            "type": "NORMAL"
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}
