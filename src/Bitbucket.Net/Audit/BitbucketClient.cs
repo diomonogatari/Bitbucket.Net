@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Audit;
@@ -18,20 +19,21 @@ namespace Bitbucket.Net
             int? maxPages = null,
             int? limit = null,
             int? start = null,
-            int? avatarSize = null)
+            int? avatarSize = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
                 ["avatarSize"] = avatarSize
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                     await GetAuditUrl($"/projects/{projectKey}/events")
                         .SetQueryParams(qpv)
-                        .GetJsonAsync<PagedResults<AuditEvent>>()
-                        .ConfigureAwait(false))
+                        .GetJsonAsync<PagedResults<AuditEvent>>(cancellationToken: ct)
+                        .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -40,20 +42,21 @@ namespace Bitbucket.Net
             int? maxPages = null,
             int? limit = null,
             int? start = null,
-            int? avatarSize = null)
+            int? avatarSize = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
                 ["avatarSize"] = avatarSize
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                     await GetAuditUrl($"/projects/{projectKey}/repos/{repositorySlug}/events")
                         .SetQueryParams(qpv)
-                        .GetJsonAsync<PagedResults<AuditEvent>>()
-                        .ConfigureAwait(false))
+                        .GetJsonAsync<PagedResults<AuditEvent>>(cancellationToken: ct)
+                        .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
     }

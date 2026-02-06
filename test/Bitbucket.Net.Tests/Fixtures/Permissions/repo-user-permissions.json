@@ -1,0 +1,20 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "user": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com",
+        "id": 1,
+        "displayName": "Test User",
+        "active": true,
+        "slug": "testuser",
+        "type": "NORMAL"
+      },
+      "permission": "REPO_ADMIN"
+    }
+  ],
+  "start": 0
+}

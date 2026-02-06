@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Bitbucket.Net.Common.Converters;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects
 {
@@ -14,7 +14,7 @@ namespace Bitbucket.Net.Models.Core.Projects
         [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
         public DateTimeOffset UpdatedDate { get; set; }
         public List<string> Events { get; set; }
-        public Dictionary<string, object> Configuration { get; set; }
+        public Dictionary<string, object?> Configuration { get; set; }
         public string Url { get; set; }
         public bool Active { get; set; }
     }

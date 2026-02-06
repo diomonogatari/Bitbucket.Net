@@ -1,0 +1,39 @@
+{
+    "values": [
+        {
+            "key": {
+                "id": 1,
+                "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1...",
+                "label": "deploy-key-1"
+            },
+            "permission": "REPO_READ",
+            "project": {
+                "key": "PROJ",
+                "id": 1,
+                "name": "Test Project",
+                "public": false,
+                "type": "NORMAL"
+            }
+        },
+        {
+            "key": {
+                "id": 2,
+                "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2...",
+                "label": "deploy-key-2"
+            },
+            "permission": "REPO_WRITE",
+            "project": {
+                "key": "PROJ",
+                "id": 1,
+                "name": "Test Project",
+                "public": false,
+                "type": "NORMAL"
+            }
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

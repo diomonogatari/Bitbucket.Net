@@ -1,0 +1,15 @@
+{
+  "user": {
+    "name": "testuser",
+    "emailAddress": "testuser@example.com",
+    "id": 1,
+    "displayName": "Test User",
+    "active": true,
+    "slug": "testuser",
+    "type": "NORMAL"
+  },
+  "role": "REVIEWER",
+  "approved": false,
+  "status": "UNAPPROVED",
+  "lastReviewedCommit": null
+}

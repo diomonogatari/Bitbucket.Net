@@ -1,0 +1,22 @@
+[
+    {
+        "id": 3,
+        "type": "no-deletes",
+        "matcher": {
+            "id": "refs/heads/main",
+            "displayId": "main",
+            "active": true,
+            "type": {
+                "id": "BRANCH",
+                "name": "Branch"
+            }
+        },
+        "users": [],
+        "groups": ["developers"],
+        "accessKeys": [],
+        "scope": {
+            "type": "REPOSITORY",
+            "resourceId": 10
+        }
+    }
+]

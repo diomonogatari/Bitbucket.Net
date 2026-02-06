@@ -1,0 +1,42 @@
+{
+  "path": {
+    "components": [],
+    "name": "",
+    "toString": ""
+  },
+  "revision": "refs/heads/master",
+  "children": {
+    "size": 3,
+    "limit": 500,
+    "isLastPage": true,
+    "start": 0,
+    "values": [
+      {
+        "path": {
+          "components": ["README.md"],
+          "name": "README.md",
+          "toString": "README.md"
+        },
+        "contentId": "abc123",
+        "type": "FILE",
+        "size": 1024
+      },
+      {
+        "path": {
+          "components": ["src"],
+          "name": "src",
+          "toString": "src"
+        },
+        "type": "DIRECTORY"
+      },
+      {
+        "path": {
+          "components": ["test"],
+          "name": "test",
+          "toString": "test"
+        },
+        "type": "DIRECTORY"
+      }
+    ]
+  }
+}

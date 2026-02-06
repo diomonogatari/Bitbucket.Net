@@ -1,0 +1,25 @@
+{
+    "values": [
+        {
+            "id": "refs/tags/v1.0.0",
+            "displayId": "v1.0.0",
+            "type": "TAG",
+            "latestCommit": "abc123def456789012345678901234567890abcd",
+            "latestChangeset": "abc123def456789012345678901234567890abcd",
+            "hash": "abc123def456789012345678901234567890abcd"
+        },
+        {
+            "id": "refs/tags/v1.1.0",
+            "displayId": "v1.1.0",
+            "type": "TAG",
+            "latestCommit": "def456abc789012345678901234567890abcdef12",
+            "latestChangeset": "def456abc789012345678901234567890abcdef12",
+            "hash": "def456abc789012345678901234567890abcdef12"
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

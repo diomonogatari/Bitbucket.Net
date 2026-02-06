@@ -1,0 +1,35 @@
+{
+  "id": 1,
+  "scope": {
+    "type": "PROJECT",
+    "resourceId": 1
+  },
+  "sourceRefMatcher": {
+    "id": "refs/heads/feature/**",
+    "displayId": "feature/**",
+    "type": {
+      "id": "PATTERN",
+      "name": "Pattern"
+    }
+  },
+  "targetRefMatcher": {
+    "id": "refs/heads/main",
+    "displayId": "main",
+    "type": {
+      "id": "BRANCH",
+      "name": "Branch"
+    }
+  },
+  "reviewers": [
+    {
+      "name": "reviewer1",
+      "emailAddress": "reviewer1@example.com",
+      "id": 101,
+      "displayName": "Reviewer One",
+      "active": true,
+      "slug": "reviewer1",
+      "type": "NORMAL"
+    }
+  ],
+  "requiredApprovals": 1
+}

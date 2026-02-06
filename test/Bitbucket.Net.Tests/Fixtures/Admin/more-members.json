@@ -1,0 +1,16 @@
+{
+    "size": 2,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        {
+            "name": "developers",
+            "deletable": true
+        },
+        {
+            "name": "admins",
+            "deletable": false
+        }
+    ],
+    "start": 0
+}

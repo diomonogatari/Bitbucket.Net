@@ -1,0 +1,34 @@
+{
+  "files": {
+    "README.md": {
+      "id": "abc123def456789012345678901234567890abcd",
+      "displayId": "abc123def",
+      "author": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com"
+      },
+      "authorTimestamp": 1706918400000,
+      "message": "Update README"
+    },
+    "src/main.cs": {
+      "id": "def456789012345678901234567890abcdef1234",
+      "displayId": "def456789",
+      "author": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com"
+      },
+      "authorTimestamp": 1706922000000,
+      "message": "Add main entry point"
+    }
+  },
+  "latestCommit": {
+    "id": "def456789012345678901234567890abcdef1234",
+    "displayId": "def456789",
+    "author": {
+      "name": "testuser",
+      "emailAddress": "testuser@example.com"
+    },
+    "authorTimestamp": 1706922000000,
+    "message": "Add main entry point"
+  }
+}

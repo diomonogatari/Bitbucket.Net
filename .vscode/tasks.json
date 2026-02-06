@@ -1,0 +1,154 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Bitbucket.Net.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build-release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Bitbucket.Net.sln",
+                "-c",
+                "Release",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}/test/Bitbucket.Net.Tests/Bitbucket.Net.Tests.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "benchmark: Run All",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "-c",
+                "Release",
+                "--project",
+                "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/Bitbucket.Net.Benchmarks.csproj"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "group": "none"
+        },
+        {
+            "label": "benchmark: JSON Serialization",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "-c",
+                "Release",
+                "--project",
+                "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/Bitbucket.Net.Benchmarks.csproj",
+                "--",
+                "--filter",
+                "*JsonSerialization*"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "benchmark: Streaming",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "-c",
+                "Release",
+                "--project",
+                "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/Bitbucket.Net.Benchmarks.csproj",
+                "--",
+                "--filter",
+                "*Streaming*"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "benchmark: Response Handling",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "-c",
+                "Release",
+                "--project",
+                "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/Bitbucket.Net.Benchmarks.csproj",
+                "--",
+                "--filter",
+                "*ResponseHandling*"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "clean",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "clean",
+                "${workspaceFolder}/Bitbucket.Net.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "pack",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack",
+                "${workspaceFolder}/src/Bitbucket.Net/Bitbucket.Net.csproj",
+                "-c",
+                "Release",
+                "-o",
+                "${workspaceFolder}/artifacts"
+            ],
+            "problemMatcher": "$msCompile",
+            "dependsOn": "build-release"
+        }
+    ]
+}

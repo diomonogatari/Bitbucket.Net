@@ -1,0 +1,34 @@
+{
+  "defaultStrategy": {
+    "id": "no-ff",
+    "name": "Merge commit",
+    "enabled": true
+  },
+  "strategies": [
+    {
+      "id": "no-ff",
+      "name": "Merge commit",
+      "enabled": true
+    },
+    {
+      "id": "ff",
+      "name": "Fast-forward",
+      "enabled": true
+    },
+    {
+      "id": "ff-only",
+      "name": "Fast-forward only",
+      "enabled": false
+    },
+    {
+      "id": "squash",
+      "name": "Squash",
+      "enabled": true
+    },
+    {
+      "id": "squash-ff-only",
+      "name": "Squash, fast-forward only",
+      "enabled": false
+    }
+  ]
+}

@@ -1,73 +1,58 @@
 ﻿using System;
-using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Common.Converters
 {
-    public class UnixDateTimeOffsetConverter : JsonConverter
+    /// <summary>
+    /// Converts Unix timestamps (seconds since epoch) to/from DateTimeOffset.
+    /// </summary>
+    public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
     {
-        private static readonly Type[] s_types = { typeof(DateTimeOffset), typeof(long), typeof(int) };
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string text;
-
-            if (value is DateTimeOffset dateTimeOffset)
+            return reader.TokenType switch
             {
-                text = dateTimeOffset.ToUnixTimeSeconds().ToString();
+                JsonTokenType.Null => default,
+                JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeSeconds(),
+                JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeSeconds(),
+                _ => throw new JsonException($"Cannot convert {reader.TokenType} to {nameof(DateTimeOffset)}.")
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
+        {
+            writer.WriteNumberValue(value.ToUnixTimeSeconds());
+        }
+    }
+
+    /// <summary>
+    /// Converts Unix timestamps (seconds since epoch) to/from nullable DateTimeOffset.
+    /// </summary>
+    public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset?>
+    {
+        public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return reader.TokenType switch
+            {
+                JsonTokenType.Null => null,
+                JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeSeconds(),
+                JsonTokenType.String when string.IsNullOrEmpty(reader.GetString()) => null,
+                JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeSeconds(),
+                _ => throw new JsonException($"Cannot convert {reader.TokenType} to nullable {nameof(DateTimeOffset)}.")
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+        {
+            if (value.HasValue)
+            {
+                writer.WriteNumberValue(value.Value.ToUnixTimeSeconds());
             }
             else
             {
-                throw new JsonSerializationException($"Unexpected value when converting date. Expected DateTimeOffset, got {value.GetType().Name}.");
+                writer.WriteNullValue();
             }
-
-            writer.WriteValue(text);
         }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            bool isNullable = TypeExtensions.IsNullableType(objectType);
-            if (reader.TokenType == JsonToken.Null)
-            {
-                if (!isNullable)
-                {
-                    throw new JsonSerializationException($"Cannot convert null value to {nameof(DateTimeOffset)}.");
-                }
-
-                return null;
-            }
-
-            var actualType = isNullable
-                ? Nullable.GetUnderlyingType(objectType)
-                : objectType;
-
-            if (reader.TokenType == JsonToken.Date)
-            {
-                if (actualType == typeof(DateTimeOffset))
-                {
-                    return reader.Value is DateTimeOffset 
-                        ? reader.Value 
-                        : new DateTimeOffset((DateTime)reader.Value);
-                }
-
-                if (reader.Value is DateTimeOffset offset)
-                {
-                    return offset.DateTime;
-                }
-
-                return reader.Value;
-            }
-
-            string dateText = reader.Value.ToString();
-
-            if (string.IsNullOrEmpty(dateText) && isNullable)
-            {
-                return null;
-            }
-
-            return Convert.ToInt64(dateText).FromUnixTimeSeconds();
-        }
-
-        public override bool CanConvert(Type objectType) => s_types.Any(x => x == objectType);
     }
 }

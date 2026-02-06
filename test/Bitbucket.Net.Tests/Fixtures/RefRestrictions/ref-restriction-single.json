@@ -1,0 +1,20 @@
+{
+    "id": 1,
+    "type": "read-only",
+    "matcher": {
+        "id": "refs/heads/main",
+        "displayId": "main",
+        "active": true,
+        "type": {
+            "id": "BRANCH",
+            "name": "Branch"
+        }
+    },
+    "users": [],
+    "groups": ["developers"],
+    "accessKeys": [],
+    "scope": {
+        "type": "PROJECT",
+        "resourceId": 1
+    }
+}

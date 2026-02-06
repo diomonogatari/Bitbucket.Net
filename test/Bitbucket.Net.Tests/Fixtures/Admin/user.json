@@ -1,0 +1,9 @@
+{
+    "name": "newuser",
+    "emailAddress": "newuser@example.com",
+    "id": 3,
+    "displayName": "New User",
+    "active": true,
+    "slug": "newuser",
+    "type": "NORMAL"
+}

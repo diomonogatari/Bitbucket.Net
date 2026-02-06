@@ -289,3 +289,14 @@ __pycache__/
 *.xsd.cs
 
 appsettings.json
+
+# Coverage files
+coverage.*.xml
+coverage.json
+coverage-results/
+**/coverage.cobertura.xml
+**/coverage.json
+**/coverage.opencover.xml
+
+# Test temp/GUID folders
+test/**/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-*/

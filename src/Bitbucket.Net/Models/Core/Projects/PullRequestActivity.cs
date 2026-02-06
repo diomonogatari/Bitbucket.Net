@@ -1,6 +1,6 @@
-﻿using Bitbucket.Net.Common.Converters;
+using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Users;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using System;
 
 namespace Bitbucket.Net.Models.Core.Projects

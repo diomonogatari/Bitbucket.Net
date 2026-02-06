@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.DefaultReviewers;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.RefRestrictions
 {

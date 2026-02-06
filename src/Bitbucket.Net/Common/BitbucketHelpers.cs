@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bitbucket.Net.Models.Core.Admin;
@@ -18,7 +18,7 @@ namespace Bitbucket.Net.Common
             ? "true"
             : "false";
 
-        public static string BoolToString(bool? value) => value.HasValue
+        public static string? BoolToString(bool? value) => value.HasValue
             ? BoolToString(value.Value)
             : null;
 
@@ -36,7 +36,7 @@ namespace Bitbucket.Net.Common
 
         public static string BranchOrderByToString(BranchOrderBy orderBy)
         {
-            if (!s_stringByBranchOrderBy.TryGetValue(orderBy, out string result))
+            if (!s_stringByBranchOrderBy.TryGetValue(orderBy, out string? result))
             {
                 throw new ArgumentException($"Unknown branch order by: {orderBy}");
             }
@@ -56,7 +56,7 @@ namespace Bitbucket.Net.Common
 
         public static string PullRequestDirectionToString(PullRequestDirections direction)
         {
-            if (!s_stringByPullRequestDirection.TryGetValue(direction, out string result))
+            if (!s_stringByPullRequestDirection.TryGetValue(direction, out string? result))
             {
                 throw new ArgumentException($"Unknown pull request direction: {direction}");
             }
@@ -78,7 +78,7 @@ namespace Bitbucket.Net.Common
 
         public static string PullRequestStateToString(PullRequestStates state)
         {
-            if (!s_stringByPullRequestState.TryGetValue(state, out string result))
+            if (!s_stringByPullRequestState.TryGetValue(state, out string? result))
             {
                 throw new ArgumentException($"Unknown pull request state: {state}");
             }
@@ -86,7 +86,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string PullRequestStateToString(PullRequestStates? state) => state.HasValue
+        public static string? PullRequestStateToString(PullRequestStates? state) => state.HasValue
             ? PullRequestStateToString(state.Value)
             : null;
 
@@ -114,7 +114,7 @@ namespace Bitbucket.Net.Common
 
         public static string PullRequestOrderToString(PullRequestOrders order)
         {
-            if (!s_stringByPullRequestOrder.TryGetValue(order, out string result))
+            if (!s_stringByPullRequestOrder.TryGetValue(order, out string? result))
             {
                 throw new ArgumentException($"Unknown pull request order: {order}");
             }
@@ -122,7 +122,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string PullRequestOrderToString(PullRequestOrders? order) => order.HasValue
+        public static string? PullRequestOrderToString(PullRequestOrders? order) => order.HasValue
             ? PullRequestOrderToString(order.Value)
             : null;
 
@@ -138,7 +138,7 @@ namespace Bitbucket.Net.Common
 
         private static string PullRequestFromTypeToString(PullRequestFromTypes fromType)
         {
-            if (!s_stringByPullRequestFromType.TryGetValue(fromType, out string result))
+            if (!s_stringByPullRequestFromType.TryGetValue(fromType, out string? result))
             {
                 throw new ArgumentException($"Unknown pull request from type: {fromType}");
             }
@@ -146,7 +146,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string PullRequestFromTypeToString(PullRequestFromTypes? fromType) => fromType.HasValue
+        public static string? PullRequestFromTypeToString(PullRequestFromTypes? fromType) => fromType.HasValue
             ? PullRequestFromTypeToString(fromType.Value)
             : null;
 
@@ -171,7 +171,7 @@ namespace Bitbucket.Net.Common
 
         public static string PermissionToString(Permissions permission)
         {
-            if (!s_stringByPermissions.TryGetValue(permission, out string result))
+            if (!s_stringByPermissions.TryGetValue(permission, out string? result))
             {
                 throw new ArgumentException($"Unknown permission: {permission}");
             }
@@ -179,7 +179,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string PermissionToString(Permissions? permission) => permission.HasValue
+        public static string? PermissionToString(Permissions? permission) => permission.HasValue
             ? PermissionToString(permission.Value)
             : null;
 
@@ -208,7 +208,7 @@ namespace Bitbucket.Net.Common
 
         public static string MergeCommitsToString(MergeCommits mergeCommits)
         {
-            if (!s_stringByMergeCommits.TryGetValue(mergeCommits, out string result))
+            if (!s_stringByMergeCommits.TryGetValue(mergeCommits, out string? result))
             {
                 throw new ArgumentException($"Unknown merge commit: {mergeCommits}");
             }
@@ -229,7 +229,7 @@ namespace Bitbucket.Net.Common
 
         public static string RoleToString(Roles role)
         {
-            if (!s_stringByRoles.TryGetValue(role, out string result))
+            if (!s_stringByRoles.TryGetValue(role, out string? result))
             {
                 throw new ArgumentException($"Unknown role: {role}");
             }
@@ -237,7 +237,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string RoleToString(Roles? role) => role.HasValue
+        public static string? RoleToString(Roles? role) => role.HasValue
             ? RoleToString(role.Value)
             : null;
 
@@ -266,7 +266,7 @@ namespace Bitbucket.Net.Common
 
         public static string LineTypeToString(LineTypes lineType)
         {
-            if (!s_stringByLineTypes.TryGetValue(lineType, out string result))
+            if (!s_stringByLineTypes.TryGetValue(lineType, out string? result))
             {
                 throw new ArgumentException($"Unknown line type: {lineType}");
             }
@@ -274,7 +274,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string LineTypeToString(LineTypes? lineType)
+        public static string? LineTypeToString(LineTypes? lineType)
         {
             return lineType.HasValue
                 ? LineTypeToString(lineType.Value)
@@ -305,7 +305,7 @@ namespace Bitbucket.Net.Common
 
         public static string FileTypeToString(FileTypes fileType)
         {
-            if (!s_stringByFileTypes.TryGetValue(fileType, out string result))
+            if (!s_stringByFileTypes.TryGetValue(fileType, out string? result))
             {
                 throw new ArgumentException($"Unknown file type: {fileType}");
             }
@@ -313,7 +313,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string FileTypeToString(FileTypes? fileType)
+        public static string? FileTypeToString(FileTypes? fileType)
         {
             return fileType.HasValue
                 ? FileTypeToString(fileType.Value)
@@ -345,7 +345,7 @@ namespace Bitbucket.Net.Common
 
         public static string ChangeScopeToString(ChangeScopes changeScope)
         {
-            if (!s_stringByChangeScopes.TryGetValue(changeScope, out string result))
+            if (!s_stringByChangeScopes.TryGetValue(changeScope, out string? result))
             {
                 throw new ArgumentException($"Unknown change scope: {changeScope}");
             }
@@ -368,7 +368,7 @@ namespace Bitbucket.Net.Common
 
         public static string LogLevelToString(LogLevels logLevel)
         {
-            if (!s_stringByLogLevels.TryGetValue(logLevel, out string result))
+            if (!s_stringByLogLevels.TryGetValue(logLevel, out string? result))
             {
                 throw new ArgumentException($"Unknown log level: {logLevel}");
             }
@@ -401,7 +401,7 @@ namespace Bitbucket.Net.Common
 
         public static string ParticipantStatusToString(ParticipantStatus participantStatus)
         {
-            if (!s_stringByParticipantStatus.TryGetValue(participantStatus, out string result))
+            if (!s_stringByParticipantStatus.TryGetValue(participantStatus, out string? result))
             {
                 throw new ArgumentException($"Unknown participant status: {participantStatus}");
             }
@@ -434,7 +434,7 @@ namespace Bitbucket.Net.Common
 
         public static string HookTypeToString(HookTypes hookType)
         {
-            if (!s_stringByHookTypes.TryGetValue(hookType, out string result))
+            if (!s_stringByHookTypes.TryGetValue(hookType, out string? result))
             {
                 throw new ArgumentException($"Unknown hook type: {hookType}");
             }
@@ -466,7 +466,7 @@ namespace Bitbucket.Net.Common
 
         public static string ScopeTypeToString(ScopeTypes scopeType)
         {
-            if (!s_stringByScopeTypes.TryGetValue(scopeType, out string result))
+            if (!s_stringByScopeTypes.TryGetValue(scopeType, out string? result))
             {
                 throw new ArgumentException($"Unknown scope type: {scopeType}");
             }
@@ -500,7 +500,7 @@ namespace Bitbucket.Net.Common
 
         public static string ArchiveFormatToString(ArchiveFormats archiveFormat)
         {
-            if (!s_stringByArchiveFormats.TryGetValue(archiveFormat, out string result))
+            if (!s_stringByArchiveFormats.TryGetValue(archiveFormat, out string? result))
             {
                 throw new ArgumentException($"Unknown archive format: {archiveFormat}");
             }
@@ -521,7 +521,7 @@ namespace Bitbucket.Net.Common
 
         public static string WebHookOutcomeToString(WebHookOutcomes webHookOutcome)
         {
-            if (!s_stringByWebHookOutcomes.TryGetValue(webHookOutcome, out string result))
+            if (!s_stringByWebHookOutcomes.TryGetValue(webHookOutcome, out string? result))
             {
                 throw new ArgumentException($"Unknown web hook outcome: {webHookOutcome}");
             }
@@ -529,7 +529,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string WebHookOutcomeToString(WebHookOutcomes? webHookOutcome) => webHookOutcome.HasValue
+        public static string? WebHookOutcomeToString(WebHookOutcomes? webHookOutcome) => webHookOutcome.HasValue
             ? WebHookOutcomeToString(webHookOutcome.Value)
             : null;
 
@@ -558,7 +558,7 @@ namespace Bitbucket.Net.Common
 
         public static string AnchorStateToString(AnchorStates anchorState)
         {
-            if (!s_stringByAnchorStates.TryGetValue(anchorState, out string result))
+            if (!s_stringByAnchorStates.TryGetValue(anchorState, out string? result))
             {
                 throw new ArgumentException($"Unknown anchor state: {anchorState}");
             }
@@ -579,7 +579,7 @@ namespace Bitbucket.Net.Common
 
         public static string DiffTypeToString(DiffTypes diffType)
         {
-            if (!s_stringByDiffTypes.TryGetValue(diffType, out string result))
+            if (!s_stringByDiffTypes.TryGetValue(diffType, out string? result))
             {
                 throw new ArgumentException($"Unknown diff type: {diffType}");
             }
@@ -587,7 +587,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string DiffTypeToString(DiffTypes? diffType)
+        public static string? DiffTypeToString(DiffTypes? diffType)
         {
             return diffType.HasValue
                 ? DiffTypeToString(diffType.Value)
@@ -606,7 +606,7 @@ namespace Bitbucket.Net.Common
 
         public static string TagTypeToString(TagTypes tagType)
         {
-            if (!s_stringByTagTypes.TryGetValue(tagType, out string result))
+            if (!s_stringByTagTypes.TryGetValue(tagType, out string? result))
             {
                 throw new ArgumentException($"Unknown tag type: {tagType}");
             }
@@ -628,7 +628,7 @@ namespace Bitbucket.Net.Common
 
         public static string RefRestrictionTypeToString(RefRestrictionTypes refRestrictionType)
         {
-            if (!s_stringByRefRestrictionTypes.TryGetValue(refRestrictionType, out string result))
+            if (!s_stringByRefRestrictionTypes.TryGetValue(refRestrictionType, out string? result))
             {
                 throw new ArgumentException($"Unknown ref restriction type: {refRestrictionType}");
             }
@@ -636,7 +636,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string RefRestrictionTypeToString(RefRestrictionTypes? refRestrictionType)
+        public static string? RefRestrictionTypeToString(RefRestrictionTypes? refRestrictionType)
         {
             return refRestrictionType.HasValue
                 ? RefRestrictionTypeToString(refRestrictionType.Value)
@@ -669,7 +669,7 @@ namespace Bitbucket.Net.Common
 
         private static string RefMatcherTypeToString(RefMatcherTypes refMatcherType)
         {
-            if (!s_stringByRefMatcherTypes.TryGetValue(refMatcherType, out string result))
+            if (!s_stringByRefMatcherTypes.TryGetValue(refMatcherType, out string? result))
             {
                 throw new ArgumentException($"Unknown ref matcher type: {refMatcherType}");
             }
@@ -677,7 +677,7 @@ namespace Bitbucket.Net.Common
             return result;
         }
 
-        public static string RefMatcherTypeToString(RefMatcherTypes? refMatcherType)
+        public static string? RefMatcherTypeToString(RefMatcherTypes? refMatcherType)
         {
             return refMatcherType.HasValue
                 ? RefMatcherTypeToString(refMatcherType.Value)
@@ -696,7 +696,7 @@ namespace Bitbucket.Net.Common
 
         public static string SynchronizeActionToString(SynchronizeActions synchronizeAction)
         {
-            if (!s_stringBySynchronizeActions.TryGetValue(synchronizeAction, out string result))
+            if (!s_stringBySynchronizeActions.TryGetValue(synchronizeAction, out string? result))
             {
                 throw new ArgumentException($"Unknown synchronize action: {synchronizeAction}");
             }
@@ -711,6 +711,78 @@ namespace Bitbucket.Net.Common
             if (EqualityComparer<KeyValuePair<SynchronizeActions, string>>.Default.Equals(pair))
             {
                 throw new ArgumentException($"Unknown synchronize action: {s}");
+            }
+
+            return pair.Key;
+        }
+
+        #endregion
+
+        #region BlockerCommentState
+
+        private static readonly Dictionary<BlockerCommentState, string> s_stringByBlockerCommentState = new Dictionary<BlockerCommentState, string>
+        {
+            [BlockerCommentState.Open] = "OPEN",
+            [BlockerCommentState.Resolved] = "RESOLVED"
+        };
+
+        public static string BlockerCommentStateToString(BlockerCommentState state)
+        {
+            if (!s_stringByBlockerCommentState.TryGetValue(state, out string? result))
+            {
+                throw new ArgumentException($"Unknown blocker comment state: {state}");
+            }
+
+            return result;
+        }
+
+        public static string? BlockerCommentStateToString(BlockerCommentState? state) => state.HasValue
+            ? BlockerCommentStateToString(state.Value)
+            : null;
+
+        public static BlockerCommentState StringToBlockerCommentState(string s)
+        {
+            var pair = s_stringByBlockerCommentState.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            if (EqualityComparer<KeyValuePair<BlockerCommentState, string>>.Default.Equals(pair))
+            {
+                throw new ArgumentException($"Unknown blocker comment state: {s}");
+            }
+
+            return pair.Key;
+        }
+
+        #endregion
+
+        #region CommentSeverity
+
+        private static readonly Dictionary<CommentSeverity, string> s_stringByCommentSeverity = new Dictionary<CommentSeverity, string>
+        {
+            [CommentSeverity.Normal] = "NORMAL",
+            [CommentSeverity.Blocker] = "BLOCKER"
+        };
+
+        public static string CommentSeverityToString(CommentSeverity severity)
+        {
+            if (!s_stringByCommentSeverity.TryGetValue(severity, out string? result))
+            {
+                throw new ArgumentException($"Unknown comment severity: {severity}");
+            }
+
+            return result;
+        }
+
+        public static string? CommentSeverityToString(CommentSeverity? severity) => severity.HasValue
+            ? CommentSeverityToString(severity.Value)
+            : null;
+
+        public static CommentSeverity StringToCommentSeverity(string s)
+        {
+            var pair = s_stringByCommentSeverity.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            if (EqualityComparer<KeyValuePair<CommentSeverity, string>>.Default.Equals(pair))
+            {
+                throw new ArgumentException($"Unknown comment severity: {s}");
             }
 
             return pair.Key;

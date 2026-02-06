@@ -1,0 +1,28 @@
+{
+    "size": 2,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        {
+            "user": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "displayName": "Admin User",
+                "active": true,
+                "slug": "admin"
+            },
+            "permission": "SYS_ADMIN"
+        },
+        {
+            "user": {
+                "name": "jsmith",
+                "emailAddress": "jsmith@example.com",
+                "displayName": "John Smith",
+                "active": true,
+                "slug": "jsmith"
+            },
+            "permission": "PROJECT_CREATE"
+        }
+    ],
+    "start": 0
+}

@@ -1,0 +1,20 @@
+[
+    {
+        "slug": "jdoe",
+        "id": 1,
+        "name": "jdoe",
+        "emailAddress": "jdoe@example.com",
+        "displayName": "John Doe",
+        "active": true,
+        "type": "NORMAL"
+    },
+    {
+        "slug": "jsmith",
+        "id": 2,
+        "name": "jsmith",
+        "emailAddress": "jsmith@example.com",
+        "displayName": "Jane Smith",
+        "active": true,
+        "type": "NORMAL"
+    }
+]

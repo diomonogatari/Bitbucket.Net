@@ -1,0 +1,75 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Benchmarks (Interactive)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-release",
+            "program": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/bin/Release/net10.0/Bitbucket.Net.Benchmarks.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Run Benchmarks - All",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-release",
+            "program": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/bin/Release/net10.0/Bitbucket.Net.Benchmarks.dll",
+            "args": ["--filter", "*"],
+            "cwd": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Run Benchmarks - JSON Serialization",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-release",
+            "program": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/bin/Release/net10.0/Bitbucket.Net.Benchmarks.dll",
+            "args": ["--filter", "*JsonSerialization*"],
+            "cwd": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Run Benchmarks - Streaming",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-release",
+            "program": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/bin/Release/net10.0/Bitbucket.Net.Benchmarks.dll",
+            "args": ["--filter", "*Streaming*"],
+            "cwd": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Run Benchmarks - Response Handling",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-release",
+            "program": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks/bin/Release/net10.0/Bitbucket.Net.Benchmarks.dll",
+            "args": ["--filter", "*ResponseHandling*"],
+            "cwd": "${workspaceFolder}/benchmarks/Bitbucket.Net.Benchmarks",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Debug Tests",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "dotnet",
+            "args": [
+                "test",
+                "${workspaceFolder}/test/Bitbucket.Net.Tests/Bitbucket.Net.Tests.csproj",
+                "--no-build"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}

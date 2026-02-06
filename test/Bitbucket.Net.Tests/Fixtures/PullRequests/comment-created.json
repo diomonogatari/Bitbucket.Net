@@ -1,0 +1,15 @@
+{
+  "id": 101,
+  "version": 0,
+  "text": "This is a new comment",
+  "author": {
+    "name": "testuser",
+    "displayName": "Test User",
+    "emailAddress": "test@example.com",
+    "active": true,
+    "slug": "testuser"
+  },
+  "createdDate": 1609459200000,
+  "updatedDate": 1609459200000,
+  "severity": "NORMAL"
+}

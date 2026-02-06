@@ -1,0 +1,15 @@
+{
+  "key": "TEST",
+  "id": 1,
+  "name": "Test Project",
+  "description": "A test project for unit testing",
+  "public": false,
+  "type": "NORMAL",
+  "links": {
+    "self": [
+      {
+        "href": "http://localhost/projects/TEST"
+      }
+    ]
+  }
+}

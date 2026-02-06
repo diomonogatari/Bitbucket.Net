@@ -1,0 +1,20 @@
+{
+    "size": 2,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        {
+            "group": {
+                "name": "administrators"
+            },
+            "permission": "SYS_ADMIN"
+        },
+        {
+            "group": {
+                "name": "developers"
+            },
+            "permission": "PROJECT_CREATE"
+        }
+    ],
+    "start": 0
+}

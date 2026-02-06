@@ -1,0 +1,25 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": 1,
+      "text": "Please fix this issue before merging",
+      "state": "OPEN",
+      "severity": "BLOCKER",
+      "author": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com",
+        "id": 1,
+        "displayName": "Test User",
+        "active": true,
+        "slug": "testuser",
+        "type": "NORMAL"
+      },
+      "createdDate": 1609459200000,
+      "updatedDate": 1609459200000
+    }
+  ],
+  "start": 0
+}

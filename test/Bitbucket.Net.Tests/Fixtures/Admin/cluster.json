@@ -1,0 +1,32 @@
+{
+    "localNode": {
+        "id": "node-1",
+        "name": "bitbucket-node-1",
+        "address": {
+            "hostname": "bitbucket1.example.com",
+            "port": 7990
+        },
+        "local": true
+    },
+    "nodes": [
+        {
+            "id": "node-1",
+            "name": "bitbucket-node-1",
+            "address": {
+                "hostname": "bitbucket1.example.com",
+                "port": 7990
+            },
+            "local": true
+        },
+        {
+            "id": "node-2",
+            "name": "bitbucket-node-2",
+            "address": {
+                "hostname": "bitbucket2.example.com",
+                "port": 7990
+            },
+            "local": false
+        }
+    ],
+    "running": true
+}

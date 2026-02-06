@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Threading;
+using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Tasks;
 using Flurl.Http;
 
@@ -12,24 +13,24 @@ namespace Bitbucket.Net
         private IFlurlRequest GetTasksUrl(string path) => GetTasksUrl()
             .AppendPathSegment(path);
 
-        public async Task<BitbucketTask> CreateTaskAsync(TaskInfo taskInfo)
+        public async Task<BitbucketTask> CreateTaskAsync(TaskInfo taskInfo, CancellationToken cancellationToken = default)
         {
             var response = await GetTasksUrl()
-                .PostJsonAsync(taskInfo)
+                .PostJsonAsync(taskInfo, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync<BitbucketTask>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<BitbucketTask> GetTaskAsync(long taskId, int? avatarSize = null)
+        public async Task<BitbucketTask> GetTaskAsync(long taskId, int? avatarSize = null, CancellationToken cancellationToken = default)
         {
             return await GetTasksUrl($"/{taskId}")
 	            .SetQueryParam("avatarSize", avatarSize)
-                .GetJsonAsync<BitbucketTask>()
+                .GetJsonAsync<BitbucketTask>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<BitbucketTask> UpdateTaskAsync(long taskId, string text)
+        public async Task<BitbucketTask> UpdateTaskAsync(long taskId, string text, CancellationToken cancellationToken = default)
         {
             var obj = new
             {
@@ -38,19 +39,19 @@ namespace Bitbucket.Net
             };
 
             var response = await GetTasksUrl($"/{taskId}")
-                .PutJsonAsync(obj)
+                .PutJsonAsync(obj, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync<BitbucketTask>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteTaskAsync(long taskId)
+        public async Task<bool> DeleteTaskAsync(long taskId, CancellationToken cancellationToken = default)
         {
             var response = await GetTasksUrl($"/{taskId}")
-                .DeleteAsync()
+                .DeleteAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
     }
 }

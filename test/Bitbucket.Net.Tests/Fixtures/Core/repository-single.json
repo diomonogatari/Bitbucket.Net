@@ -1,0 +1,30 @@
+{
+  "slug": "test-repo",
+  "id": 1,
+  "name": "Test Repository",
+  "scmId": "git",
+  "state": "AVAILABLE",
+  "statusMessage": "Available",
+  "forkable": true,
+  "public": false,
+  "project": {
+    "key": "TEST"
+  },
+  "links": {
+    "clone": [
+      {
+        "href": "ssh://git@localhost/test/test-repo.git",
+        "name": "ssh"
+      },
+      {
+        "href": "http://localhost/scm/test/test-repo.git",
+        "name": "http"
+      }
+    ],
+    "self": [
+      {
+        "href": "http://localhost/projects/TEST/repos/test-repo/browse"
+      }
+    ]
+  }
+}

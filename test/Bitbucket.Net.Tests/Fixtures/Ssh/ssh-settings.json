@@ -1,0 +1,13 @@
+{
+    "enabled": true,
+    "baseUrl": "ssh://git@bitbucket.example.com:7999",
+    "port": 7999,
+    "fingerprintAlgorithm": "SHA256",
+    "fingerprint": {
+        "algorithm": "SHA256",
+        "value": "ABC123..."
+    },
+    "accessKeys": {
+        "enabled": true
+    }
+}

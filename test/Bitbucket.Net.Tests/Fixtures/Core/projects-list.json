@@ -1,0 +1,23 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "start": 0,
+  "values": [
+    {
+      "key": "TEST",
+      "id": 1,
+      "name": "Test Project",
+      "description": "A test project for unit testing",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://localhost/projects/TEST"
+          }
+        ]
+      }
+    }
+  ]
+}

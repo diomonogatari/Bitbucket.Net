@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "An unexpected error occurred on the server.",
+      "exceptionName": "java.lang.RuntimeException"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
@@ -19,20 +20,21 @@ namespace Bitbucket.Net
         public async Task<IEnumerable<Repository>> GetRecentReposAsync(Permissions? permission = null,
             int? maxPages = null,
             int? limit = null,
-            int? start = null)
+            int? start = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
                 ["permission"] = BitbucketHelpers.PermissionToString(permission)
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                 await GetProfileUrl("/recent/repos")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Repository>>()
-                    .ConfigureAwait(false))
+                    .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
+                    .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
     }

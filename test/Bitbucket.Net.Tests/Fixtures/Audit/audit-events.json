@@ -1,0 +1,37 @@
+{
+    "values": [
+        {
+            "action": "PROJECT_CREATED",
+            "timestamp": 1704067200000,
+            "details": "Project PROJ created",
+            "user": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "id": 1,
+                "displayName": "Administrator",
+                "active": true,
+                "slug": "admin",
+                "type": "NORMAL"
+            }
+        },
+        {
+            "action": "REPOSITORY_CREATED",
+            "timestamp": 1704067300000,
+            "details": "Repository repo created",
+            "user": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "id": 1,
+                "displayName": "Administrator",
+                "active": true,
+                "slug": "admin",
+                "type": "NORMAL"
+            }
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

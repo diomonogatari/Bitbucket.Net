@@ -1,0 +1,49 @@
+{
+    "values": [
+        {
+            "id": 101,
+            "slug": "forked-repo",
+            "name": "forked-repo",
+            "hierarchyId": "abc123fork",
+            "state": "AVAILABLE",
+            "public": false,
+            "scmId": "git",
+            "forkable": true,
+            "origin": {
+                "id": 1,
+                "slug": "test-repo",
+                "name": "test-repo",
+                "state": "AVAILABLE",
+                "public": false,
+                "scmId": "git",
+                "forkable": true,
+                "project": {
+                    "key": "PROJ",
+                    "id": 1,
+                    "name": "Test Project",
+                    "public": false,
+                    "type": "NORMAL"
+                }
+            },
+            "project": {
+                "key": "FORK",
+                "id": 2,
+                "name": "Fork Project",
+                "public": false,
+                "type": "NORMAL"
+            },
+            "links": {
+                "self": [{ "href": "https://bitbucket.example.com/projects/FORK/repos/forked-repo/browse" }],
+                "clone": [
+                    { "href": "ssh://git@bitbucket.example.com/fork/forked-repo.git", "name": "ssh" },
+                    { "href": "https://bitbucket.example.com/scm/fork/forked-repo.git", "name": "http" }
+                ]
+            }
+        }
+    ],
+    "size": 1,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

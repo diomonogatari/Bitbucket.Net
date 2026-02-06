@@ -1,0 +1,19 @@
+{
+    "license": "AAAA...encoded-license...AAAA",
+    "creationDate": 1600000000000,
+    "purchaseDate": 1600000000000,
+    "expiryDate": 1700000000000,
+    "numberOfDaysBeforeExpiry": 365,
+    "maintenanceExpiryDate": 1700000000000,
+    "numberOfDaysBeforeMaintenanceExpiry": 365,
+    "gracePeriodEndDate": 1705000000000,
+    "numberOfDaysBeforeGracePeriodExpiry": 30,
+    "maximumNumberOfUsers": 500,
+    "unlimitedNumberOfUsers": false,
+    "serverId": "SERV-1234-5678",
+    "supportEntitlementNumber": "SEN-12345",
+    "status": {
+        "serverId": "SERV-1234-5678",
+        "currentNumberOfUsers": 50
+    }
+}

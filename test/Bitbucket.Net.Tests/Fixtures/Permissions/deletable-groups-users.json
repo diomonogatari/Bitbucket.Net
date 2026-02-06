@@ -1,0 +1,17 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "name": "external_user",
+      "emailAddress": "external@example.com",
+      "id": 3,
+      "displayName": "External User",
+      "active": true,
+      "slug": "external_user",
+      "deletable": true
+    }
+  ],
+  "start": 0
+}

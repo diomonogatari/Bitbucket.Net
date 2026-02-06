@@ -1,0 +1,45 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": 1,
+      "version": 1,
+      "title": "PR Title",
+      "description": "PR Description",
+      "state": "OPEN",
+      "open": true,
+      "closed": false,
+      "createdDate": 1704067200000,
+      "updatedDate": 1704153600000,
+      "fromRef": {
+        "id": "refs/heads/feature/branch",
+        "displayId": "feature/branch",
+        "type": "BRANCH"
+      },
+      "toRef": {
+        "id": "refs/heads/main",
+        "displayId": "main",
+        "type": "BRANCH"
+      },
+      "locked": false,
+      "author": {
+        "user": {
+          "name": "jsmith",
+          "emailAddress": "jsmith@example.com",
+          "id": 1,
+          "displayName": "John Smith",
+          "active": true,
+          "slug": "jsmith",
+          "type": "NORMAL"
+        },
+        "role": "AUTHOR",
+        "approved": false
+      },
+      "reviewers": [],
+      "participants": []
+    }
+  ],
+  "start": 0
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "key": "PROJ-123",
+    "url": "https://jira.example.com/browse/PROJ-123"
+  },
+  {
+    "key": "PROJ-456",
+    "url": "https://jira.example.com/browse/PROJ-456"
+  }
+]

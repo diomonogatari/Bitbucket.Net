@@ -13,9 +13,9 @@ namespace Bitbucket.Net.Common
             _multipartFormDataContent.Add(value, key);
         }
 
-        public void Add<T>(T t, HttpContent value, string key)
+        public void Add<T>(T t, HttpContent? value, string key)
         {
-            if (!EqualityComparer<T>.Default.Equals(t, default(T)))
+            if (!EqualityComparer<T>.Default.Equals(t, default(T)) && value is not null)
             {
                 _multipartFormDataContent.Add(value, key);
             }

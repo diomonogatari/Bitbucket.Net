@@ -1,0 +1,19 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1...",
+            "label": "personal-key-1"
+        },
+        {
+            "id": 2,
+            "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2...",
+            "label": "personal-key-2"
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

@@ -1,0 +1,32 @@
+{
+  "available": true,
+  "enabled": true,
+  "lastSync": 1704067200000,
+  "aheadRefs": [
+    {
+      "id": "refs/heads/feature/ahead",
+      "displayId": "feature/ahead",
+      "type": "BRANCH",
+      "state": "AHEAD",
+      "tag": false
+    }
+  ],
+  "divergedRefs": [
+    {
+      "id": "refs/heads/feature/diverged",
+      "displayId": "feature/diverged",
+      "type": "BRANCH",
+      "state": "DIVERGED",
+      "tag": false
+    }
+  ],
+  "orphanedRefs": [
+    {
+      "id": "refs/heads/feature/orphaned",
+      "displayId": "feature/orphaned",
+      "type": "BRANCH",
+      "state": "ORPHANED",
+      "tag": false
+    }
+  ]
+}

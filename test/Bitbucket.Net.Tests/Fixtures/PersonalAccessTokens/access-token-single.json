@@ -1,0 +1,17 @@
+{
+    "id": "token1",
+    "createdDate": 1609459200000,
+    "lastAuthenticated": 1704067200000,
+    "expiryDate": 1735689600000,
+    "name": "API Token",
+    "permissions": ["PROJECT_READ", "REPO_READ"],
+    "user": {
+        "name": "admin",
+        "emailAddress": "admin@example.com",
+        "id": 1,
+        "displayName": "Administrator",
+        "active": true,
+        "slug": "admin",
+        "type": "NORMAL"
+    }
+}

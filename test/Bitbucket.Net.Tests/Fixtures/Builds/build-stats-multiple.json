@@ -1,0 +1,12 @@
+{
+  "abc123def456": {
+    "successful": 2,
+    "inProgress": 0,
+    "failed": 0
+  },
+  "def456ghi789": {
+    "successful": 1,
+    "inProgress": 1,
+    "failed": 1
+  }
+}

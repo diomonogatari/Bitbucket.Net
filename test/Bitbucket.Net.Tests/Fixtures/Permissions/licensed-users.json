@@ -1,0 +1,19 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "user": {
+        "name": "unlicensed_user",
+        "emailAddress": "unlicensed@example.com",
+        "id": 2,
+        "displayName": "Unlicensed User",
+        "active": true,
+        "slug": "unlicensed_user",
+        "type": "NORMAL"
+      }
+    }
+  ],
+  "start": 0
+}

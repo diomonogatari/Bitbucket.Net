@@ -1,0 +1,40 @@
+{
+  "size": 2,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "contentId": "abc123def456",
+      "fromContentId": "xyz789abc",
+      "path": {
+        "components": ["src", "main.cs"],
+        "parent": "src",
+        "name": "main.cs",
+        "extension": "cs",
+        "toString": "src/main.cs"
+      },
+      "executable": false,
+      "percentUnchanged": 80,
+      "type": "MODIFY",
+      "nodeType": "FILE",
+      "srcExecutable": false,
+      "link": {
+        "url": "/projects/TEST/repos/test-repo/browse/src/main.cs",
+        "rel": "self"
+      }
+    },
+    {
+      "contentId": "def456ghi789",
+      "path": {
+        "components": ["src", "helper.cs"],
+        "parent": "src",
+        "name": "helper.cs",
+        "extension": "cs",
+        "toString": "src/helper.cs"
+      },
+      "executable": false,
+      "type": "ADD",
+      "nodeType": "FILE"
+    }
+  ]
+}

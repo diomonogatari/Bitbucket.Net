@@ -1,0 +1,9 @@
+{
+  "hostName": "mail.example.com",
+  "port": 587,
+  "protocol": "SMTP",
+  "useStartTls": true,
+  "requireStartTls": true,
+  "userName": "mailuser",
+  "senderAddress": "bitbucket@example.com"
+}

@@ -1,0 +1,24 @@
+{
+    "key": {
+        "id": 1,
+        "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1...",
+        "label": "repo-deploy-key-1"
+    },
+    "permission": "REPO_READ",
+    "repository": {
+        "id": 1,
+        "slug": "test-repo",
+        "name": "test-repo",
+        "state": "AVAILABLE",
+        "public": false,
+        "scmId": "git",
+        "forkable": true,
+        "project": {
+            "key": "PROJ",
+            "id": 1,
+            "name": "Test Project",
+            "public": false,
+            "type": "NORMAL"
+        }
+    }
+}
