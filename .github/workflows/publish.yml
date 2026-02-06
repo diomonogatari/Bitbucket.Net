@@ -1,0 +1,50 @@
+name: Publish to NuGet
+
+on:
+  release:
+    types: [ published ]
+
+# Only one publish at a time
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Pack & Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Extra safety: only run on tagged releases
+    if: startsWith(github.event.release.tag_name, 'v')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build -c Release --verbosity normal
+
+      # Extract version from tag (v0.1.0-beta.1 -> 0.1.0-beta.1)
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Pack
+        run: dotnet pack src/Bitbucket.Net/Bitbucket.Net.csproj -c Release --no-build -o ./artifacts -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+
+      - name: Push to NuGet
+        run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
