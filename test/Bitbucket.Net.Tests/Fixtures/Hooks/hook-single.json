@@ -1,0 +1,17 @@
+{
+  "details": {
+    "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-check",
+    "name": "Verify committer",
+    "type": "PRE_RECEIVE",
+    "description": "Ensures the committer is either the author or a user that can bypass.",
+    "version": "8.0.0",
+    "configFormKey": null,
+    "scopeTypes": ["PROJECT", "REPOSITORY"]
+  },
+  "enabled": true,
+  "configured": true,
+  "scope": {
+    "resourceId": 1,
+    "type": "REPOSITORY"
+  }
+}

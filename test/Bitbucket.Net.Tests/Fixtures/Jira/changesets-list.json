@@ -1,0 +1,46 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "fromCommit": {
+        "id": "abc123def456"
+      },
+      "toCommit": {
+        "id": "def456abc789",
+        "displayId": "def456a",
+        "author": {
+          "name": "jsmith",
+          "emailAddress": "jsmith@example.com"
+        },
+        "authorTimestamp": 1704067200000,
+        "committer": {
+          "name": "jsmith",
+          "emailAddress": "jsmith@example.com"
+        },
+        "committerTimestamp": 1704067200000,
+        "message": "Fix related to PROJ-123"
+      },
+      "changes": {
+        "values": []
+      },
+      "links": {
+        "self": [
+          {
+            "href": "https://bitbucket.example.com/projects/PROJ/repos/repo/commits/def456abc789"
+          }
+        ]
+      },
+      "repository": {
+        "slug": "repo",
+        "id": 1,
+        "name": "Repository",
+        "project": {
+          "key": "PROJ"
+        }
+      }
+    }
+  ],
+  "start": 0
+}

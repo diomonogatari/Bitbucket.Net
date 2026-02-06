@@ -1,0 +1,43 @@
+{
+  "values": [
+    {
+      "details": {
+        "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-check",
+        "name": "Verify committer",
+        "type": "PRE_RECEIVE",
+        "description": "Ensures the committer is either the author or a user that can bypass.",
+        "version": "8.0.0",
+        "configFormKey": null,
+        "scopeTypes": ["PROJECT", "REPOSITORY"]
+      },
+      "enabled": true,
+      "configured": false,
+      "scope": {
+        "resourceId": 1,
+        "type": "REPOSITORY"
+      }
+    },
+    {
+      "details": {
+        "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:personal-token-check",
+        "name": "Personal token check",
+        "type": "PRE_RECEIVE",
+        "description": "Validates personal access tokens.",
+        "version": "8.0.0",
+        "configFormKey": null,
+        "scopeTypes": ["GLOBAL", "PROJECT", "REPOSITORY"]
+      },
+      "enabled": false,
+      "configured": true,
+      "scope": {
+        "resourceId": 1,
+        "type": "PROJECT"
+      }
+    }
+  ],
+  "start": 0,
+  "limit": 25,
+  "isLastPage": true,
+  "nextPageStart": null,
+  "size": 2
+}
