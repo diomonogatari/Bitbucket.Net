@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http;
 
@@ -10,13 +11,13 @@ namespace Bitbucket.Net
         private IFlurlRequest GetApplicationPropertiesUrl() => GetBaseUrl()
             .AppendPathSegment("/application-properties");
 
-        public async Task<IDictionary<string, object>> GetApplicationPropertiesAsync()
+        public async Task<IDictionary<string, object?>> GetApplicationPropertiesAsync(CancellationToken cancellationToken = default)
         {
             var response = await GetApplicationPropertiesUrl()
-                .GetJsonAsync<Dictionary<string, dynamic>>()
+                .GetJsonAsync<Dictionary<string, object?>>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return response.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            return response;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common.Models;
 using Flurl.Http;
@@ -10,23 +11,24 @@ namespace Bitbucket.Net
         private IFlurlRequest GetGroupsUrl() => GetBaseUrl()
             .AppendPathSegment("/groups");
 
-        public async Task<IEnumerable<string>> GetGroupNamesAsync(string filter = null,
+        public async Task<IEnumerable<string>> GetGroupNamesAsync(string? filter = null,
             int? maxPages = null,
             int? limit = null,
-            int? start = null)
+            int? start = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["filter"] = filter,
                 ["limit"] = limit,
                 ["start"] = start
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                     await GetGroupsUrl()
                         .SetQueryParams(qpv)
-                        .GetJsonAsync<PagedResults<string>>()
-                        .ConfigureAwait(false))
+                        .GetJsonAsync<PagedResults<string>>(cancellationToken: ct)
+                        .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
     }

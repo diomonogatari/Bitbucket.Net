@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Threading;
+using System.Threading.Tasks;
 using Flurl.Http;
 
 namespace Bitbucket.Net
@@ -8,12 +9,12 @@ namespace Bitbucket.Net
         private IFlurlRequest GetHooksUrl() => GetBaseUrl()
             .AppendPathSegment("/hooks");
 
-        public async Task<byte[]> GetProjectHooksAvatarAsync(string hookKey, string version = null)
+        public async Task<byte[]> GetProjectHooksAvatarAsync(string hookKey, string? version = null, CancellationToken cancellationToken = default)
         {
             return await GetHooksUrl()
                 .AppendPathSegment($"/{hookKey}/avatar")
                 .SetQueryParam("version", version)
-                .GetBytesAsync()
+                .GetBytesAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
     }
