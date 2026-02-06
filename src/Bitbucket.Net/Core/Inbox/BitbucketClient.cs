@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
-using Newtonsoft.Json;
 
 namespace Bitbucket.Net
 {
@@ -20,31 +21,35 @@ namespace Bitbucket.Net
             int? maxPages = null,
             int? limit = 25,
             int? start = 0,
-            Roles role = Roles.Reviewer)
+            Roles role = Roles.Reviewer,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
                 ["role"] = BitbucketHelpers.RoleToString(role)
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                 await GetInboxUrl("/pull-requests")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<PullRequest>>()
-                    .ConfigureAwait(false))
+                    .GetJsonAsync<PagedResults<PullRequest>>(cancellationToken: ct)
+                    .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<int> GetInboxPullRequestsCountAsync()
+        public async Task<int> GetInboxPullRequestsCountAsync(CancellationToken cancellationToken = default)
         {
             var response = await GetInboxUrl("/pull-requests/count")
-                .GetAsync()
+                .GetAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response, s => 
-                    int.TryParse(JsonConvert.DeserializeObject<dynamic>(s).count.ToString(), out int result) ? result : -1)
+            return await HandleResponseAsync(response, s =>
+            {
+                using var doc = JsonDocument.Parse(s);
+                return doc.RootElement.GetProperty("count").GetInt32();
+            }, cancellationToken)
                 .ConfigureAwait(false);
         }
     }
