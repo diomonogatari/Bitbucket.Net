@@ -1,0 +1,8 @@
+{
+  "id": "refs/heads/master",
+  "displayId": "master",
+  "type": "BRANCH",
+  "latestCommit": "abc123def456789012345678901234567890abcd",
+  "latestChangeset": "abc123def456789012345678901234567890abcd",
+  "isDefault": true
+}

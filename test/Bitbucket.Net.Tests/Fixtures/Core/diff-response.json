@@ -1,0 +1,42 @@
+{
+    "diffs": [
+        {
+            "source": {
+                "parent": "src",
+                "name": "main.cs",
+                "toString": "src/main.cs"
+            },
+            "destination": {
+                "parent": "src",
+                "name": "main.cs",
+                "toString": "src/main.cs"
+            },
+            "hunks": [
+                {
+                    "sourceLine": 1,
+                    "sourceSpan": 3,
+                    "destinationLine": 1,
+                    "destinationSpan": 4,
+                    "segments": [
+                        {
+                            "type": "ADDED",
+                            "lines": [
+                                {
+                                    "source": 0,
+                                    "destination": 1,
+                                    "line": "// New comment"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "truncated": false
+        }
+    ],
+    "truncated": false,
+    "contextLines": "10",
+    "fromHash": "abc123",
+    "toHash": "def456",
+    "whitespace": "IGNORE_ALL"
+}

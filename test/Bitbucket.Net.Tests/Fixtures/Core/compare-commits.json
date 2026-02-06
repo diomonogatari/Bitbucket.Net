@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "abc123def456789012345678901234567890abcd",
+      "displayId": "abc123def",
+      "author": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com"
+      },
+      "authorTimestamp": 1706918400000,
+      "committer": {
+        "name": "testuser",
+        "emailAddress": "testuser@example.com"
+      },
+      "committerTimestamp": 1706918400000,
+      "message": "Initial commit",
+      "parents": []
+    }
+  ],
+  "size": 1,
+  "isLastPage": true,
+  "start": 0,
+  "limit": 25
+}

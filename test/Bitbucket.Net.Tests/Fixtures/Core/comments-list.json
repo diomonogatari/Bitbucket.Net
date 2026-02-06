@@ -1,0 +1,26 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "version": 0,
+            "text": "This is a test comment",
+            "author": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "id": 1,
+                "displayName": "Administrator",
+                "active": true,
+                "slug": "admin",
+                "type": "NORMAL"
+            },
+            "createdDate": 1704067200000,
+            "updatedDate": 1704067200000,
+            "severity": "NORMAL"
+        }
+    ],
+    "size": 1,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

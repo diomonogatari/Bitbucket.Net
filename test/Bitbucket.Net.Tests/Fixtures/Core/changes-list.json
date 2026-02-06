@@ -1,0 +1,27 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "start": 0,
+  "values": [
+    {
+      "contentId": "abc123",
+      "fromContentId": "def456",
+      "path": {
+        "components": ["src", "test.cs"],
+        "name": "test.cs",
+        "toString": "src/test.cs"
+      },
+      "executable": false,
+      "percentUnchanged": 80,
+      "type": "MODIFY",
+      "nodeType": "FILE",
+      "srcPath": {
+        "components": ["src", "test.cs"],
+        "name": "test.cs",
+        "toString": "src/test.cs"
+      },
+      "links": {}
+    }
+  ]
+}
