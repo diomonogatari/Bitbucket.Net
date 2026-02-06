@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Flurl.Http;
-using Newtonsoft.Json;
 
 namespace Bitbucket.Net
 {
@@ -16,11 +17,12 @@ namespace Bitbucket.Net
             .AppendPathSegment(path);
 
         public async Task<string> PreviewMarkupAsync(string text,
-            string urlMode = null, 
+            string? urlMode = null, 
             bool? hardWrap = null, 
-            bool? htmlEscape = null)
+            bool? htmlEscape = null,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["urlMode"] = urlMode,
                 ["hardWrap"] = BitbucketHelpers.BoolToString(hardWrap),
@@ -30,11 +32,14 @@ namespace Bitbucket.Net
             var response = await GetMarkupUrl("/preview")
                 .WithHeader("X-Atlassian-Token", "no-check")
                 .SetQueryParams(queryParamValues)
-                .PostJsonAsync(new StringContent(text))
+                .PostJsonAsync(new StringContent(text), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             return await HandleResponseAsync<string>(response, s =>
-                    JsonConvert.DeserializeObject<dynamic>(s).html.ToString())
+            {
+                using var doc = JsonDocument.Parse(s);
+                return doc.RootElement.GetProperty("html").GetString()!;
+            }, cancellationToken)
                 .ConfigureAwait(false);
         }
     }

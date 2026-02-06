@@ -1,9 +1,10 @@
-﻿using System.Net.Http;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Logs;
 using Flurl.Http;
-using Newtonsoft.Json;
 
 namespace Bitbucket.Net
 {
@@ -15,44 +16,50 @@ namespace Bitbucket.Net
         private IFlurlRequest GetLogsUrl(string path) => GetLogsUrl()
             .AppendPathSegment(path);
 
-        public async Task<LogLevels> GetLogLevelAsync(string loggerName)
+        public async Task<LogLevels> GetLogLevelAsync(string loggerName, CancellationToken cancellationToken = default)
         {
             var response = await GetLogsUrl($"/logger/{loggerName}")
-                .GetAsync()
+                .GetAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             return await HandleResponseAsync<LogLevels>(response, s =>
-                    BitbucketHelpers.StringToLogLevel(JsonConvert.DeserializeObject<dynamic>(s).logLevel.ToString()))
+            {
+                using var doc = JsonDocument.Parse(s);
+                return BitbucketHelpers.StringToLogLevel(doc.RootElement.GetProperty("logLevel").GetString()!);
+            }, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> SetLogLevelAsync(string loggerName, LogLevels logLevel)
+        public async Task<bool> SetLogLevelAsync(string loggerName, LogLevels logLevel, CancellationToken cancellationToken = default)
         {
             var response = await GetLogsUrl($"/logger/{loggerName}/{BitbucketHelpers.LogLevelToString(logLevel)}")
-                .PutAsync(new StringContent(""))
+                .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<LogLevels> GetRootLogLevelAsync()
+        public async Task<LogLevels> GetRootLogLevelAsync(CancellationToken cancellationToken = default)
         {
             var response = await GetLogsUrl("/logger/rootLogger")
-                .GetAsync()
+                .GetAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             return await HandleResponseAsync<LogLevels>(response, s =>
-                    BitbucketHelpers.StringToLogLevel(JsonConvert.DeserializeObject<dynamic>(s).logLevel.ToString()))
+            {
+                using var doc = JsonDocument.Parse(s);
+                return BitbucketHelpers.StringToLogLevel(doc.RootElement.GetProperty("logLevel").GetString()!);
+            }, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> SetRootLogLevelAsync(LogLevels logLevel)
+        public async Task<bool> SetRootLogLevelAsync(LogLevels logLevel, CancellationToken cancellationToken = default)
         {
             var response = await GetLogsUrl($"/logger/rootLogger/{BitbucketHelpers.LogLevelToString(logLevel)}")
-                .PutAsync(new StringContent(""))
+                .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync(response).ConfigureAwait(false);
+            return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
     }
 }
