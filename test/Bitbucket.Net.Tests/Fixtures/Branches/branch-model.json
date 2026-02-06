@@ -1,0 +1,38 @@
+{
+  "development": {
+    "id": "refs/heads/develop",
+    "displayId": "develop",
+    "type": "BRANCH",
+    "latestCommit": "abc123def456789012345678901234567890abcd",
+    "isDefault": false
+  },
+  "production": {
+    "id": "refs/heads/master",
+    "displayId": "master",
+    "type": "BRANCH",
+    "latestCommit": "def456789012345678901234567890abcdef1234",
+    "isDefault": true
+  },
+  "types": [
+    {
+      "id": "feature",
+      "displayName": "Feature",
+      "prefix": "feature/"
+    },
+    {
+      "id": "bugfix",
+      "displayName": "Bugfix",
+      "prefix": "bugfix/"
+    },
+    {
+      "id": "release",
+      "displayName": "Release",
+      "prefix": "release/"
+    },
+    {
+      "id": "hotfix",
+      "displayName": "Hotfix",
+      "prefix": "hotfix/"
+    }
+  ]
+}

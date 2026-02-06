@@ -1,0 +1,25 @@
+{
+    "values": [
+        {
+            "key": "build-123",
+            "state": "SUCCESSFUL",
+            "name": "CI Build",
+            "description": "Build completed successfully",
+            "url": "https://build-server/builds/123",
+            "dateAdded": 1704067200000
+        },
+        {
+            "key": "build-124",
+            "state": "INPROGRESS",
+            "name": "Deploy",
+            "description": "Deploying to staging",
+            "url": "https://build-server/builds/124",
+            "dateAdded": 1704067300000
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}
