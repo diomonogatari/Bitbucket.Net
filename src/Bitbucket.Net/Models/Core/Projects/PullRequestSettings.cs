@@ -1,5 +1,5 @@
-﻿using Bitbucket.Net.Models.Core.Admin;
-using Newtonsoft.Json;
+using Bitbucket.Net.Models.Core.Admin;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects
 {
@@ -8,10 +8,10 @@ namespace Bitbucket.Net.Models.Core.Projects
         public MergeStrategies MergeConfig { get; set; }
         public bool RequiredAllApprovers { get; set; }
         public bool RequiredAllTasksComplete { get; set; }
-        [JsonProperty("com.atlassian.bitbucket.server.bitbucket-bundled-hooks:requiredApprovers")]
+        [JsonPropertyName("com.atlassian.bitbucket.server.bitbucket-bundled-hooks:requiredApprovers")]
         public MergeHookRequiredApprovers ComatlassianbitbucketserverbundledhooksrequiredApprovers { get; set; }
         public int RequiredApprovers { get; set; }
-        [JsonProperty("com.atlassian.bitbucket.server.bitbucket-build:requiredBuilds")]
+        [JsonPropertyName("com.atlassian.bitbucket.server.bitbucket-build:requiredBuilds")]
         public MergeCheckRequiredBuilds ComatlassianbitbucketserverbitbucketbuildrequiredBuilds { get; set; }
         public int RequiredSuccessfulBuilds { get; set; }
     }

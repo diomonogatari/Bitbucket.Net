@@ -1,16 +1,22 @@
-﻿using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects
 {
     public class Branch : BranchBase
     {
-        private BranchMetaData _branchMetadata;
+        private BranchMetaData? _branchMetadata;
+        private static readonly JsonSerializerOptions s_jsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
         public string LatestCommit { get; set; }
         public string LatestChangeset { get; set; }
         public bool IsDefault { get; set; }
 
-        public BranchMetaData BranchMetadata
+        public BranchMetaData? BranchMetadata
         {
             get
             {
@@ -19,26 +25,39 @@ namespace Bitbucket.Net.Models.Core.Projects
                     return _branchMetadata;
                 }
 
-                if (Metadata == null)
+                if (Metadata == null || Metadata.Value.ValueKind != JsonValueKind.Array)
                 {
                     return null;
                 }
 
                 _branchMetadata = new BranchMetaData();
 
-                foreach (dynamic metadata in Metadata)
+                foreach (var metadata in Metadata.Value.EnumerateArray())
                 {
-                    if (metadata.Name.ToString() == "com.atlassian.bitbucket.server.bitbucket-branch:ahead-behind-metadata-provider")
+                    if (!metadata.TryGetProperty("Name", out var nameElement) && !metadata.TryGetProperty("name", out nameElement))
                     {
-                        _branchMetadata.AheadBehind = JsonConvert.DeserializeObject<AheadBehindMetaData>(metadata.Value.ToString());
+                        continue;
                     }
-                    else if (metadata.Name.ToString() == "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata")
+
+                    var name = nameElement.GetString();
+                    if (!metadata.TryGetProperty("Value", out var valueElement) && !metadata.TryGetProperty("value", out valueElement))
                     {
-                        _branchMetadata.BuildStatus = JsonConvert.DeserializeObject<BuildStatusMetadata>(metadata.Value.ToString());
+                        continue;
                     }
-                    else if (metadata.Name.ToString() == "com.atlassian.bitbucket.server.bitbucket-ref-metadata:outgoing-pull-request-metadata")
+
+                    var valueJson = valueElement.GetRawText();
+
+                    if (name == "com.atlassian.bitbucket.server.bitbucket-branch:ahead-behind-metadata-provider")
                     {
-                        _branchMetadata.OutgoingPullRequest = JsonConvert.DeserializeObject<PullRequestMetadata>(metadata.Value.ToString());
+                        _branchMetadata.AheadBehind = JsonSerializer.Deserialize<AheadBehindMetaData>(valueJson, s_jsonOptions);
+                    }
+                    else if (name == "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata")
+                    {
+                        _branchMetadata.BuildStatus = JsonSerializer.Deserialize<BuildStatusMetadata>(valueJson, s_jsonOptions);
+                    }
+                    else if (name == "com.atlassian.bitbucket.server.bitbucket-ref-metadata:outgoing-pull-request-metadata")
+                    {
+                        _branchMetadata.OutgoingPullRequest = JsonSerializer.Deserialize<PullRequestMetadata>(valueJson, s_jsonOptions);
                     }
                 }
 
@@ -46,7 +65,8 @@ namespace Bitbucket.Net.Models.Core.Projects
             }
         }
 
-        public dynamic Metadata { get; set; }
+        [JsonPropertyName("metadata")]
+        public JsonElement? Metadata { get; set; }
 
         public override string ToString() => DisplayId;
     }
