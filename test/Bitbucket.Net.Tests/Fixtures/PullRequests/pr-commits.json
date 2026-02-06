@@ -1,0 +1,53 @@
+{
+  "size": 2,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": "abc123def456789",
+      "displayId": "abc123d",
+      "author": {
+        "name": "testuser",
+        "displayName": "Test User",
+        "emailAddress": "test@example.com"
+      },
+      "authorTimestamp": 1609459200000,
+      "committer": {
+        "name": "testuser",
+        "displayName": "Test User",
+        "emailAddress": "test@example.com"
+      },
+      "committerTimestamp": 1609459200000,
+      "message": "Feature commit 1",
+      "parents": [
+        {
+          "id": "parent123",
+          "displayId": "parent1"
+        }
+      ]
+    },
+    {
+      "id": "def456ghi789abc",
+      "displayId": "def456g",
+      "author": {
+        "name": "testuser",
+        "displayName": "Test User",
+        "emailAddress": "test@example.com"
+      },
+      "authorTimestamp": 1609545600000,
+      "committer": {
+        "name": "testuser",
+        "displayName": "Test User",
+        "emailAddress": "test@example.com"
+      },
+      "committerTimestamp": 1609545600000,
+      "message": "Feature commit 2",
+      "parents": [
+        {
+          "id": "abc123def456789",
+          "displayId": "abc123d"
+        }
+      ]
+    }
+  ]
+}

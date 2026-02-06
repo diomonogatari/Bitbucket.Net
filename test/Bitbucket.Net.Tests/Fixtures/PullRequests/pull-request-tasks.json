@@ -1,0 +1,33 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "state": "OPEN",
+            "text": "Please fix this issue",
+            "anchor": {
+                "id": 10,
+                "type": "COMMENT"
+            },
+            "author": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "id": 1,
+                "displayName": "Administrator",
+                "active": true,
+                "slug": "admin",
+                "type": "NORMAL"
+            },
+            "createdDate": 1704067200000,
+            "permittedOperations": {
+                "deletable": true,
+                "editable": true,
+                "transitionable": true
+            }
+        }
+    ],
+    "size": 1,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

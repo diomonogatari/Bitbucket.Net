@@ -1,0 +1,14 @@
+{
+  "user": {
+    "name": "reviewer",
+    "emailAddress": "reviewer@example.com",
+    "id": 2,
+    "displayName": "Code Reviewer",
+    "active": true,
+    "slug": "reviewer",
+    "type": "NORMAL"
+  },
+  "role": "REVIEWER",
+  "approved": false,
+  "status": "UNAPPROVED"
+}

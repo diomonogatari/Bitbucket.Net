@@ -1,0 +1,42 @@
+{
+    "values": [
+        {
+            "id": 1,
+            "createdDate": 1704067200000,
+            "user": {
+                "name": "admin",
+                "emailAddress": "admin@example.com",
+                "id": 1,
+                "displayName": "Administrator",
+                "active": true,
+                "slug": "admin",
+                "type": "NORMAL"
+            },
+            "action": "OPENED"
+        },
+        {
+            "id": 2,
+            "createdDate": 1704067300000,
+            "user": {
+                "name": "developer",
+                "emailAddress": "developer@example.com",
+                "id": 2,
+                "displayName": "Developer User",
+                "active": true,
+                "slug": "developer",
+                "type": "NORMAL"
+            },
+            "action": "COMMENTED",
+            "commentAction": "ADDED",
+            "comment": {
+                "id": 10,
+                "text": "LGTM"
+            }
+        }
+    ],
+    "size": 2,
+    "isLastPage": true,
+    "start": 0,
+    "limit": 25,
+    "nextPageStart": null
+}

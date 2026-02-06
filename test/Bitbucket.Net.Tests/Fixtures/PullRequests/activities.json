@@ -1,0 +1,32 @@
+{
+  "size": 2,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "id": 1,
+      "createdDate": 1609459200000,
+      "user": {
+        "name": "testuser",
+        "displayName": "Test User",
+        "emailAddress": "test@example.com",
+        "active": true,
+        "slug": "testuser"
+      },
+      "action": "OPENED"
+    },
+    {
+      "id": 2,
+      "createdDate": 1609545600000,
+      "user": {
+        "name": "reviewer",
+        "displayName": "Reviewer",
+        "emailAddress": "reviewer@example.com",
+        "active": true,
+        "slug": "reviewer"
+      },
+      "action": "APPROVED",
+      "comment": null
+    }
+  ]
+}
