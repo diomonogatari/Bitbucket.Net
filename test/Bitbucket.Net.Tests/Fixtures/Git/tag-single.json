@@ -1,0 +1,8 @@
+{
+    "id": "refs/tags/v1.0.0",
+    "displayId": "v1.0.0",
+    "type": "TAG",
+    "latestCommit": "abc123def456",
+    "latestChangeset": "abc123def456",
+    "hash": "abc123def456"
+}

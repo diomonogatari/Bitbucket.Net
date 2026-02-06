@@ -1,0 +1,23 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "slug": "recent-repo",
+      "id": 1,
+      "name": "Recent Repository",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "PROJ",
+        "id": 1,
+        "name": "Test Project"
+      },
+      "public": false
+    }
+  ],
+  "start": 0
+}

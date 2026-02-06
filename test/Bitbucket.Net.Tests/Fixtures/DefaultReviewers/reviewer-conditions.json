@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "scope": {
+            "type": "REPOSITORY",
+            "resourceId": 1
+        },
+        "sourceRefMatcher": {
+            "id": "ANY_REF",
+            "displayId": "Any branch",
+            "type": {
+                "id": "ANY_REF",
+                "name": "Any branch"
+            }
+        },
+        "targetRefMatcher": {
+            "id": "refs/heads/main",
+            "displayId": "main",
+            "type": {
+                "id": "BRANCH",
+                "name": "Branch"
+            }
+        },
+        "reviewers": [
+            {
+                "slug": "jdoe",
+                "id": 1,
+                "name": "jdoe",
+                "emailAddress": "jdoe@example.com",
+                "displayName": "John Doe",
+                "active": true,
+                "type": "NORMAL"
+            }
+        ],
+        "requiredApprovals": 1
+    }
+]
