@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Bitbucket.Net.Common.Converters;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.RefSync
 {

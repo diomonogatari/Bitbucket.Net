@@ -1,7 +1,7 @@
-﻿using Bitbucket.Net.Common.Converters;
+using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.RefRestrictions;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Ssh
 {
