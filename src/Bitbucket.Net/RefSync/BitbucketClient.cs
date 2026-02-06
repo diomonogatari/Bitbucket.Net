@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+using System.Threading;
+using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.RefSync;
 using Flurl.Http;
@@ -13,15 +14,17 @@ namespace Bitbucket.Net
             .AppendPathSegment(path);
 
         public async Task<RepositorySynchronizationStatus> GetRepositorySynchronizationStatusAsync(string projectKey, string repositorySlug,
-            string at = null)
+            string? at = null, CancellationToken cancellationToken = default)
         {
-            return await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
+            var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
                 .SetQueryParam("at", at)
-                .GetJsonAsync<RepositorySynchronizationStatus>()
+                .GetAsync(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
+
+            return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<RepositorySynchronizationStatus> EnableRepositorySynchronizationAsync(string projectKey, string repositorySlug, bool enabled)
+        public async Task<RepositorySynchronizationStatus> EnableRepositorySynchronizationAsync(string projectKey, string repositorySlug, bool enabled, CancellationToken cancellationToken = default)
         {
             var data = new
             {
@@ -29,19 +32,19 @@ namespace Bitbucket.Net
             };
 
             var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-                .PostJsonAsync(data)
+                .PostJsonAsync(data, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync<RepositorySynchronizationStatus>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize)
+        public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize, CancellationToken cancellationToken = default)
         {
             var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-                .PostJsonAsync(synchronize)
+                .PostJsonAsync(synchronize, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return await HandleResponseAsync<FullRef>(response).ConfigureAwait(false);
+            return await HandleResponseAsync<FullRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
