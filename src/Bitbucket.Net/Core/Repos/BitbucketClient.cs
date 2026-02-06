@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
@@ -17,12 +18,13 @@ namespace Bitbucket.Net
             int? maxPages = null,
             int? limit = null,
             int? start = null,
-            string name = null,
-            string projectName = null,
+            string? name = null,
+            string? projectName = null,
             Permissions? permission = null,
-            bool isPublic = false)
+            bool isPublic = false,
+            CancellationToken cancellationToken = default)
         {
-            var queryParamValues = new Dictionary<string, object>
+            var queryParamValues = new Dictionary<string, object?>
             {
                 ["limit"] = limit,
                 ["start"] = start,
@@ -32,12 +34,42 @@ namespace Bitbucket.Net
                 ["visibility"] = isPublic ? "public" : "private"
             };
 
-            return await GetPagedResultsAsync(maxPages, queryParamValues, async qpv =>
+            return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
                 await GetReposUrl()
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Repository>>()
-                    .ConfigureAwait(false))
+                    .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
+                    .ConfigureAwait(false), cancellationToken)
                 .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Streams all repositories as an IAsyncEnumerable, yielding items as they are retrieved.
+        /// </summary>
+        public IAsyncEnumerable<Repository> GetRepositoriesStreamAsync(
+            int? maxPages = null,
+            int? limit = null,
+            int? start = null,
+            string? name = null,
+            string? projectName = null,
+            Permissions? permission = null,
+            bool isPublic = false,
+            CancellationToken cancellationToken = default)
+        {
+            var queryParamValues = new Dictionary<string, object?>
+            {
+                ["limit"] = limit,
+                ["start"] = start,
+                ["name"] = name,
+                ["projectname"] = projectName,
+                ["permission"] = BitbucketHelpers.PermissionToString(permission),
+                ["visibility"] = isPublic ? "public" : "private"
+            };
+
+            return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+                await GetReposUrl()
+                    .SetQueryParams(qpv)
+                    .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
+                    .ConfigureAwait(false), cancellationToken);
         }
     }
 }
