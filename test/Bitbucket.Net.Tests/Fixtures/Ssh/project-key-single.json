@@ -1,0 +1,15 @@
+{
+    "key": {
+        "id": 1,
+        "text": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1...",
+        "label": "deploy-key-1"
+    },
+    "permission": "REPO_READ",
+    "project": {
+        "key": "PROJ",
+        "id": 1,
+        "name": "Test Project",
+        "public": false,
+        "type": "NORMAL"
+    }
+}
