@@ -4,12 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <Version>2.0.0</Version>
+    <Version>0.1.0-beta.1</Version>
     <Authors>Diogo Carvalho</Authors>
-    <Company>GlobalBlue</Company>
-    <Description>C# Client for Bitbucket Server API</Description>
-    <PackageTags>bitbucket;api;client;rest</PackageTags>
-    <RepositoryUrl>https://dev.global-blue.com/stash/scm/~dcarvalho/bitbucket.net.git</RepositoryUrl>
+    <Description>Modernized fork of Bitbucket.Net — C# client for Bitbucket Server (Stash) REST API. Adds streaming, CancellationToken support, System.Text.Json, typed exceptions, and Bitbucket Server 9.0+ compatibility.</Description>
+    <PackageTags>bitbucket;bitbucket-server;stash;api;client;rest</PackageTags>
+    <PackageProjectUrl>https://github.com/diomonogatari/Bitbucket.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/diomonogatari/Bitbucket.Net.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
