@@ -1,8 +1,10 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Builds;
 using Bitbucket.Net.Models.Jira;
 using Flurl.Http;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -52,10 +54,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetJiraUrl($"/issues/{issueKey}/commits")
+            {
+                var response = await GetJiraUrl($"/issues/{issueKey}/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<ChangeSet>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<ChangeSet>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -79,7 +85,7 @@ public partial class BitbucketClient
 
         var response = await GetJiraUrl($"/comments/{pullRequestCommentId}/issues")
             .SetQueryParam("applicationId", applicationId)
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<JiraIssue>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

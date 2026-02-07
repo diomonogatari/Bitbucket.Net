@@ -2,6 +2,7 @@ using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Flurl.Http;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,7 +57,7 @@ public partial class BitbucketClient
     {
         var data = new { version };
         var response = await GetGitUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/rebase")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -82,7 +83,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetGitUrl($"/projects/{projectKey}/repos/{repositorySlug}/tags")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Tag>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
