@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Bitbucket.Net.sln",
+                "${workspaceFolder}/Bitbucket.Net.slnx",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -23,7 +23,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Bitbucket.Net.sln",
+                "${workspaceFolder}/Bitbucket.Net.slnx",
                 "-c",
                 "Release",
                 "/property:GenerateFullPaths=true",
@@ -131,7 +131,7 @@
             "type": "process",
             "args": [
                 "clean",
-                "${workspaceFolder}/Bitbucket.Net.sln"
+                "${workspaceFolder}/Bitbucket.Net.slnx"
             ],
             "problemMatcher": "$msCompile"
         },

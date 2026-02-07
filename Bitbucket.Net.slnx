@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/Benchmarks/">
+    <Project Path="benchmarks/Bitbucket.Net.Benchmarks/Bitbucket.Net.Benchmarks.csproj">
+      <BuildType Project="Release" />
+    </Project>
+  </Folder>
+  <Folder Name="/Build/">
+    <File Path="build/build.ps1" />
+    <File Path="build/test.ps1" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="appveyor.yml" />
+    <File Path="Bitbucket.Net.snk" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="test/Bitbucket.Net.Tests/Bitbucket.Net.Tests.csproj" />
+  </Folder>
+  <Project Path="src/Bitbucket.Net/Bitbucket.Net.csproj" />
+</Solution>
