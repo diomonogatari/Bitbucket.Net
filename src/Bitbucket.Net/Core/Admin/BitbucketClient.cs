@@ -16,9 +16,18 @@ namespace Bitbucket.Net;
 /// </summary>
 public partial class BitbucketClient
 {
+    /// <summary>
+    /// Gets the base admin URL for Bitbucket Server operations.
+    /// </summary>
+    /// <returns>An <see cref="IFlurlRequest"/> targeting the admin endpoint.</returns>
     private IFlurlRequest GetAdminUrl() => GetBaseUrl()
         .AppendPathSegment("/admin");
 
+    /// <summary>
+    /// Gets the admin URL for a specific path.
+    /// </summary>
+    /// <param name="path">The path to append.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> targeting the admin path.</returns>
     private IFlurlRequest GetAdminUrl(string path) => GetAdminUrl()
         .AppendPathSegment(path);
 
@@ -553,6 +562,15 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves admin group permissions with optional filtering.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of group permissions.</returns>
     public async Task<IEnumerable<GroupPermission>> GetAdminGroupPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -575,6 +593,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates a group's permissions.
+    /// </summary>
+    /// <param name="permission">The permission to grant.</param>
+    /// <param name="name">The group name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateAdminGroupPermissionsAsync(Permissions permission, string name, CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
@@ -592,6 +617,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Removes a group's permissions.
+    /// </summary>
+    /// <param name="name">The group name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if the permissions were removed; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteAdminGroupPermissionsAsync(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/permissions/groups")
@@ -602,6 +633,15 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves groups that currently have no admin permissions.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of groups without permissions.</returns>
     public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminGroupPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -624,6 +664,16 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves admin user permissions with optional filtering.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of user permissions.</returns>
     public async Task<IEnumerable<UserPermission>> GetAdminUserPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -648,6 +698,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates a user's permissions.
+    /// </summary>
+    /// <param name="permission">The permission to grant.</param>
+    /// <param name="name">The username.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateAdminUserPermissionsAsync(Permissions permission, string name, CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
@@ -665,6 +722,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Removes a user's permissions.
+    /// </summary>
+    /// <param name="name">The username.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if the permissions were removed; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteAdminUserPermissionsAsync(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/permissions/users")
@@ -675,6 +738,16 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves users that currently have no admin permissions.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of users without permissions.</returns>
     public async Task<IEnumerable<User>> GetAdminUserPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -699,6 +772,12 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves merge strategies for pull requests for a specific SCM.
+    /// </summary>
+    /// <param name="scmId">The SCM identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The merge strategies configuration.</returns>
     public async Task<MergeStrategies> GetAdminPullRequestsMergeStrategiesAsync(string scmId, CancellationToken cancellationToken = default)
     {
         return await GetAdminUrl($"/pull-requests/{scmId}")
@@ -706,6 +785,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates merge strategies for pull requests for a specific SCM.
+    /// </summary>
+    /// <param name="scmId">The SCM identifier.</param>
+    /// <param name="mergeStrategies">The merge strategies payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated merge strategies.</returns>
     public async Task<MergeStrategies> UpdateAdminPullRequestsMergeStrategiesAsync(string scmId, MergeStrategies mergeStrategies, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl($"/pull-requests/{scmId}")

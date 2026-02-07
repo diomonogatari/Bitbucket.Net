@@ -102,11 +102,7 @@ public partial class BitbucketClient
     }
 
     /// <summary>
-    /// Streams all projects as an IAsyncEnumerable, yielding items as they are retrieved.
-    /// This is more memory-efficient for large result sets.
-    /// </summary>
-    /// <summary>
-    /// Streams projects accessible to the current user.
+    /// Streams projects accessible to the current user as they are retrieved, improving memory efficiency for large result sets.
     /// </summary>
     /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
     /// <param name="limit">Optional page size.</param>
