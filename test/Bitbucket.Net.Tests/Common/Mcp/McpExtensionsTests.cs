@@ -88,8 +88,6 @@ public class McpExtensionsTests
         Assert.Equal(10, nextOffset);
     }
 
-    private static readonly int[] expected = new[] { 0, 1, 2, 3, 4 };
-
     [Fact]
     public async Task TakeWithPaginationAsync_RespectsItemOrder()
     {
@@ -100,7 +98,7 @@ public class McpExtensionsTests
         var result = await source.TakeWithPaginationAsync(5);
 
         // Assert
-        Assert.Equal(expected, result.Items);
+        Assert.Equal(new[] { 0, 1, 2, 3, 4 }, result.Items);
     }
 
     #endregion
@@ -151,8 +149,6 @@ public class McpExtensionsTests
         Assert.True(itemsGenerated <= 11, $"Expected at most 11 items generated, but got {itemsGenerated}");
     }
 
-    private static readonly int[] expected = new[] { 5, 6, 7, 8, 9 };
-
     #endregion
 
     #region SkipAsync Tests
@@ -168,7 +164,7 @@ public class McpExtensionsTests
 
         // Assert
         Assert.Equal(5, result.Count);
-        Assert.Equal(expected, result);
+        Assert.Equal(new[] { 5, 6, 7, 8, 9 }, result);
     }
 
     [Fact]
@@ -255,13 +251,13 @@ public class McpExtensionsTests
     {
         // Arrange - create source that checks cancellation
         using var cts = new CancellationTokenSource();
-        var source = CreateCancellableAsyncEnumerable(100, cts);
+        var source = CreateCancellableAsyncEnumerable(100, cts.Token);
 
         // Cancel after a short delay
         _ = Task.Run(async () =>
         {
             await Task.Delay(10);
-            cts.Cancel();
+            await cts.CancelAsync();
         });
 
         // Act & Assert
@@ -274,13 +270,13 @@ public class McpExtensionsTests
     {
         // Arrange - create source that checks cancellation
         using var cts = new CancellationTokenSource();
-        var source = CreateCancellableAsyncEnumerable(100, cts);
+        var source = CreateCancellableAsyncEnumerable(100, cts.Token);
 
         // Cancel after a short delay
         _ = Task.Run(async () =>
         {
             await Task.Delay(10);
-            cts.Cancel();
+            await cts.CancelAsync();
         });
 
         // Act & Assert
@@ -313,7 +309,6 @@ public class McpExtensionsTests
 
     private static async IAsyncEnumerable<int> CreateCancellableAsyncEnumerable(
         int count,
-        CancellationTokenSource cts,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         for (int i = 0; i < count; i++)
