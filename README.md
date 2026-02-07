@@ -1,9 +1,9 @@
-![Icon](https://i.imgur.com/OsDAzyV.png)
 # Bitbucket.Net
 
 [![NuGet](https://img.shields.io/nuget/v/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
 [![CI](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml/badge.svg)](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/diomonogatari/Bitbucket.Net/branch/main/graph/badge.svg)](https://codecov.io/gh/diomonogatari/Bitbucket.Net)
 [![license](https://img.shields.io/github/license/diomonogatari/Bitbucket.Net.svg?maxAge=2592000)](https://github.com/diomonogatari/Bitbucket.Net/blob/main/LICENSE)
 ![](https://img.shields.io/badge/.net-10.0-yellowgreen.svg)
 ![](https://img.shields.io/badge/status-beta-orange.svg)
