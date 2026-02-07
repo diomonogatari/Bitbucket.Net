@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
@@ -56,10 +57,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
+            {
+                var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -75,7 +80,7 @@ public partial class BitbucketClient
     public async Task<bool> LikeCommitCommentAsync(string projectKey, string repositorySlug, string commitId, string commentId, CancellationToken cancellationToken = default)
     {
         var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/commits/{commitId}/comments/{commentId}/likes")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -125,10 +130,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
+            {
+                var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -144,7 +153,7 @@ public partial class BitbucketClient
     public async Task<bool> LikePullRequestCommentAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId, CancellationToken cancellationToken = default)
     {
         var response = await GetCommentLikesUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/comments/{commentId}/likes")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

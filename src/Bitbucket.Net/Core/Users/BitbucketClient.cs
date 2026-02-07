@@ -1,8 +1,10 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,10 +70,14 @@ public partial class BitbucketClient
         }
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetUsersUrl()
+            {
+                var response = await GetUsersUrl()
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -91,7 +97,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetUsersUrl()
-            .PutJsonAsync(obj, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(obj), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<User>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -106,7 +112,7 @@ public partial class BitbucketClient
     public async Task<bool> UpdateUserCredentialsAsync(PasswordChange passwordChange, CancellationToken cancellationToken = default)
     {
         var response = await GetUsersUrl("/credentials")
-            .PutJsonAsync(passwordChange, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(passwordChange), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -121,10 +127,12 @@ public partial class BitbucketClient
     /// <returns>The requested user.</returns>
     public async Task<User> GetUserAsync(string userSlug, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
-        return await GetUsersUrl($"/{userSlug}")
+        var response = await GetUsersUrl($"/{userSlug}")
             .SetQueryParam("avatarSize", avatarSize)
-            .GetJsonAsync<User>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<User>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -151,10 +159,10 @@ public partial class BitbucketClient
     public async Task<IDictionary<string, object?>> GetUserSettingsAsync(string userSlug, CancellationToken cancellationToken = default)
     {
         var response = await GetUsersUrl($"/{userSlug}/settings")
-            .GetJsonAsync<Dictionary<string, object?>>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return response;
+        return await HandleResponseAsync<Dictionary<string, object?>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -167,7 +175,7 @@ public partial class BitbucketClient
     public async Task<bool> UpdateUserSettingsAsync(string userSlug, IDictionary<string, object?> userSettings, CancellationToken cancellationToken = default)
     {
         var response = await GetUsersUrl($"/{userSlug}/settings")
-            .PostJsonAsync(userSettings, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(userSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

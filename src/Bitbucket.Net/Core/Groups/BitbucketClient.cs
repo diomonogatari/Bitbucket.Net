@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Flurl.Http;
 using System.Collections.Generic;
@@ -42,10 +43,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetGroupsUrl()
+            {
+                var response = await GetGroupsUrl()
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<string>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<string>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 }

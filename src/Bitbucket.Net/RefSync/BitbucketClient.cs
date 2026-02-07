@@ -1,6 +1,7 @@
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.RefSync;
 using Flurl.Http;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,7 +61,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -77,7 +78,7 @@ public partial class BitbucketClient
     public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize, CancellationToken cancellationToken = default)
     {
         var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-            .PostJsonAsync(synchronize, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(synchronize), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<FullRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

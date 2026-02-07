@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Audit;
 using Flurl.Http;
@@ -49,10 +50,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAuditUrl($"/projects/{projectKey}/events")
+            {
+                var response = await GetAuditUrl($"/projects/{projectKey}/events")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<AuditEvent>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<AuditEvent>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -82,10 +87,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAuditUrl($"/projects/{projectKey}/repos/{repositorySlug}/events")
+            {
+                var response = await GetAuditUrl($"/projects/{projectKey}/repos/{repositorySlug}/events")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<AuditEvent>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<AuditEvent>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 }

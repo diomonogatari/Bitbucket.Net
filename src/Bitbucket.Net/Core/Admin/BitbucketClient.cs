@@ -55,10 +55,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/groups")
+            {
+                var response = await GetAdminUrl("/groups")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<DeletableGroupOrUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -72,7 +76,7 @@ public partial class BitbucketClient
     {
         var response = await GetAdminUrl("/groups")
             .SetQueryParam("name", name)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DeletableGroupOrUser>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -103,7 +107,7 @@ public partial class BitbucketClient
     public async Task<bool> AddAdminGroupUsersAsync(GroupUsers groupUsers, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/groups/add-users")
-            .PostJsonAsync(groupUsers, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(groupUsers), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -138,10 +142,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/groups/more-members")
+            {
+                var response = await GetAdminUrl("/groups/more-members")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<UserInfo>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -174,10 +182,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/groups/more-non-members")
+            {
+                var response = await GetAdminUrl("/groups/more-non-members")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<UserInfo>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -208,10 +220,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/users")
+            {
+                var response = await GetAdminUrl("/users")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<UserInfo>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -242,7 +258,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/users")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -266,7 +282,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetAdminUrl("/users")
-            .PutJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<UserInfo>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -297,7 +313,7 @@ public partial class BitbucketClient
     public async Task<bool> AddAdminUserGroupsAsync(UserGroups userGroups, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users/add-groups")
-            .PostJsonAsync(userGroups, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(userGroups), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -328,7 +344,7 @@ public partial class BitbucketClient
     public async Task<bool> UpdateAdminUserCredentialsAsync(PasswordChange passwordChange, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users/credentials")
-            .PutJsonAsync(passwordChange, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(passwordChange), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -360,10 +376,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/users/more-members")
+            {
+                var response = await GetAdminUrl("/users/more-members")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<DeletableGroupOrUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -393,10 +413,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/users/more-non-members")
+            {
+                var response = await GetAdminUrl("/users/more-non-members")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<DeletableGroupOrUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -416,7 +440,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetAdminUrl("/users/remove-group")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -433,7 +457,7 @@ public partial class BitbucketClient
     {
         var response = await GetAdminUrl("users/rename")
             .SetQueryParam("avatarSize", avatarSize)
-            .PostJsonAsync(userRename, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(userRename), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<UserInfo>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -446,9 +470,11 @@ public partial class BitbucketClient
     /// <returns>The cluster details.</returns>
     public async Task<Cluster> GetAdminClusterAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAdminUrl("/cluster")
-            .GetJsonAsync<Cluster>(cancellationToken: cancellationToken)
+        var response = await GetAdminUrl("/cluster")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Cluster>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -458,9 +484,11 @@ public partial class BitbucketClient
     /// <returns>The license details.</returns>
     public async Task<LicenseDetails> GetAdminLicenseAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAdminUrl("/license")
-            .GetJsonAsync<LicenseDetails>(cancellationToken: cancellationToken)
+        var response = await GetAdminUrl("/license")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<LicenseDetails>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -472,7 +500,7 @@ public partial class BitbucketClient
     public async Task<LicenseDetails> UpdateAdminLicenseAsync(LicenseInfo licenseInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/license")
-            .PostJsonAsync(licenseInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(licenseInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<LicenseDetails>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -485,9 +513,11 @@ public partial class BitbucketClient
     /// <returns>The mail server configuration.</returns>
     public async Task<MailServerConfiguration> GetAdminMailServerAsync(CancellationToken cancellationToken = default)
     {
-        return await GetAdminUrl("/mail-server")
-            .GetJsonAsync<MailServerConfiguration>(cancellationToken: cancellationToken)
+        var response = await GetAdminUrl("/mail-server")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<MailServerConfiguration>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -499,7 +529,7 @@ public partial class BitbucketClient
     public async Task<MailServerConfiguration> UpdateAdminMailServerAsync(MailServerConfiguration mailServerConfiguration, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server")
-            .PutJsonAsync(mailServerConfiguration, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(mailServerConfiguration), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<MailServerConfiguration>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -542,7 +572,7 @@ public partial class BitbucketClient
     public async Task<string> UpdateAdminMailServerSenderAddressAsync(string senderAddress, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server/sender-address")
-            .PutJsonAsync(senderAddress, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(senderAddress), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, s => s, cancellationToken).ConfigureAwait(false);
@@ -586,10 +616,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/permissions/groups")
+            {
+                var response = await GetAdminUrl("/permissions/groups")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<GroupPermission>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -611,7 +645,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/permissions/groups")
             .SetQueryParams(queryParamValues)
-            .PutJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -657,10 +691,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/permissions/groups/none")
+            {
+                var response = await GetAdminUrl("/permissions/groups/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<DeletableGroupOrUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -691,10 +729,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/permissions/users")
+            {
+                var response = await GetAdminUrl("/permissions/users")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<UserPermission>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -716,7 +758,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/permissions/users")
             .SetQueryParams(queryParamValues)
-            .PutJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -765,10 +807,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetAdminUrl("/permissions/users/none")
+            {
+                var response = await GetAdminUrl("/permissions/users/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -780,9 +826,11 @@ public partial class BitbucketClient
     /// <returns>The merge strategies configuration.</returns>
     public async Task<MergeStrategies> GetAdminPullRequestsMergeStrategiesAsync(string scmId, CancellationToken cancellationToken = default)
     {
-        return await GetAdminUrl($"/pull-requests/{scmId}")
-            .GetJsonAsync<MergeStrategies>(cancellationToken: cancellationToken)
+        var response = await GetAdminUrl($"/pull-requests/{scmId}")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<MergeStrategies>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -795,7 +843,7 @@ public partial class BitbucketClient
     public async Task<MergeStrategies> UpdateAdminPullRequestsMergeStrategiesAsync(string scmId, MergeStrategies mergeStrategies, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl($"/pull-requests/{scmId}")
-            .PostJsonAsync(mergeStrategies, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(mergeStrategies), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<MergeStrategies>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

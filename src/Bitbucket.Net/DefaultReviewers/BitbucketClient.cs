@@ -2,6 +2,7 @@ using Bitbucket.Net.Models.Core.Users;
 using Bitbucket.Net.Models.DefaultReviewers;
 using Flurl.Http;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,7 +55,7 @@ public partial class BitbucketClient
     public async Task<DefaultReviewerPullRequestCondition> CreateDefaultReviewerConditionAsync(string projectKey, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions")
-            .PostJsonAsync(condition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DefaultReviewerPullRequestCondition>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -71,7 +72,7 @@ public partial class BitbucketClient
     public async Task<DefaultReviewerPullRequestCondition> UpdateDefaultReviewerConditionAsync(string projectKey, string defaultReviewerPullRequestConditionId, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions/{defaultReviewerPullRequestConditionId}")
-            .PutJsonAsync(condition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DefaultReviewerPullRequestCondition>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -123,7 +124,7 @@ public partial class BitbucketClient
     public async Task<DefaultReviewerPullRequestCondition> CreateDefaultReviewerConditionAsync(string projectKey, string repositorySlug, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions")
-            .PostJsonAsync(condition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DefaultReviewerPullRequestCondition>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -141,7 +142,7 @@ public partial class BitbucketClient
     public async Task<DefaultReviewerPullRequestCondition> UpdateDefaultReviewerConditionAsync(string projectKey, string repositorySlug, string defaultReviewerPullRequestConditionId, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions/{defaultReviewerPullRequestConditionId}")
-            .PutJsonAsync(condition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DefaultReviewerPullRequestCondition>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

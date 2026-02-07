@@ -1,7 +1,9 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.PersonalAccessTokens;
 using Flurl.Http;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -52,10 +54,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetPatUrl($"/users/{userSlug}")
+            {
+                var response = await GetPatUrl($"/users/{userSlug}")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<AccessToken>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<AccessToken>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -69,7 +75,7 @@ public partial class BitbucketClient
     public async Task<FullAccessToken> CreateAccessTokenAsync(string userSlug, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
         var response = await GetPatUrl($"/users/{userSlug}")
-            .PutJsonAsync(accessToken, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<FullAccessToken>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -85,10 +91,12 @@ public partial class BitbucketClient
     /// <returns>The access token details.</returns>
     public async Task<AccessToken> GetUserAccessTokenAsync(string userSlug, string tokenId, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
-        return await GetPatUrl($"/users/{userSlug}/{tokenId}")
+        var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .SetQueryParam("avatarSize", avatarSize)
-            .GetJsonAsync<AccessToken>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<AccessToken>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -102,7 +110,7 @@ public partial class BitbucketClient
     public async Task<AccessToken> ChangeUserAccessTokenAsync(string userSlug, string tokenId, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
-            .PostJsonAsync(accessToken, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<FullAccessToken>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

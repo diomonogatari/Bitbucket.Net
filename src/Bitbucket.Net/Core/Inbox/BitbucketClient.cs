@@ -54,10 +54,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetInboxUrl("/pull-requests")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<PullRequest>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetInboxUrl("/pull-requests")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 

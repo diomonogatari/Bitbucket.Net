@@ -3,6 +3,7 @@ using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Builds;
 using Flurl.Http;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,10 +37,12 @@ public partial class BitbucketClient
     /// <returns>Build statistics for the commit.</returns>
     public async Task<BuildStats> GetBuildStatsForCommitAsync(string commitId, bool includeUnique = false, CancellationToken cancellationToken = default)
     {
-        return await GetBuildsUrl($"/commits/stats/{commitId}")
+        var response = await GetBuildsUrl($"/commits/stats/{commitId}")
             .SetQueryParam("includeUnique", BitbucketHelpers.BoolToString(includeUnique))
-            .GetJsonAsync<BuildStats>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BuildStats>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -51,7 +54,7 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, BuildStats>> GetBuildStatsForCommitsAsync(CancellationToken cancellationToken, params string[] commitIds)
     {
         var response = await GetBuildsUrl("/commits/stats")
-            .PostJsonAsync(commitIds, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(commitIds), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Dictionary<string, BuildStats>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -90,9 +93,13 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetBuildsUrl($"/commits/{commitId}")
-                    .GetJsonAsync<PagedResults<BuildStatus>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetBuildsUrl($"/commits/{commitId}")
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BuildStatus>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -106,7 +113,7 @@ public partial class BitbucketClient
     public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, BuildStatus buildStatus, CancellationToken cancellationToken = default)
     {
         var response = await GetBuildsUrl($"/commits/{commitId}")
-            .PostJsonAsync(buildStatus, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(buildStatus), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

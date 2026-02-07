@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Flurl.Http;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,9 @@ public partial class BitbucketClient
     public async Task<IDictionary<string, object?>> GetApplicationPropertiesAsync(CancellationToken cancellationToken = default)
     {
         var response = await GetApplicationPropertiesUrl()
-            .GetJsonAsync<Dictionary<string, object?>>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        return response;
+        return await HandleResponseAsync<Dictionary<string, object?>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

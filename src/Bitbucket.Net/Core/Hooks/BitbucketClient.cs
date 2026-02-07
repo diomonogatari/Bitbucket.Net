@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Flurl.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,10 +26,13 @@ public partial class BitbucketClient
     /// <returns>The avatar image bytes.</returns>
     public async Task<byte[]> GetProjectHooksAvatarAsync(string hookKey, string? version = null, CancellationToken cancellationToken = default)
     {
-        return await GetHooksUrl()
+        var response = await GetHooksUrl()
             .AppendPathSegment($"/{hookKey}/avatar")
             .SetQueryParam("version", version)
-            .GetBytesAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ReadResponseBytesAsync(response, cancellationToken).ConfigureAwait(false);
     }
 }

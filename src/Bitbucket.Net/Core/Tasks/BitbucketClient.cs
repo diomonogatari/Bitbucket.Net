@@ -1,5 +1,7 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Tasks;
 using Flurl.Http;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,7 +36,7 @@ public partial class BitbucketClient
     public async Task<BitbucketTask> CreateTaskAsync(TaskInfo taskInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetTasksUrl()
-            .PostJsonAsync(taskInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(taskInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -49,10 +51,12 @@ public partial class BitbucketClient
     /// <returns>The requested task.</returns>
     public async Task<BitbucketTask> GetTaskAsync(long taskId, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
-        return await GetTasksUrl($"/{taskId}")
+        var response = await GetTasksUrl($"/{taskId}")
             .SetQueryParam("avatarSize", avatarSize)
-            .GetJsonAsync<BitbucketTask>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -71,7 +75,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetTasksUrl($"/{taskId}")
-            .PutJsonAsync(obj, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(obj), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

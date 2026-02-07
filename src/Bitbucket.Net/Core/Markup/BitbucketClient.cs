@@ -54,7 +54,7 @@ public partial class BitbucketClient
         var response = await GetMarkupUrl("/preview")
             .WithHeader("X-Atlassian-Token", "no-check")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(text), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(text), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, s =>

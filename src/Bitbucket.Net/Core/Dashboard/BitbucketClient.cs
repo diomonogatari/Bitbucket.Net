@@ -65,10 +65,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetDashboardUrl("/pull-requests")
+            {
+                var response = await GetDashboardUrl("/pull-requests")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<PullRequest>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -96,10 +100,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetDashboardUrl("/pull-request-suggestions")
+            {
+                var response = await GetDashboardUrl("/pull-request-suggestions")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<PullRequestSuggestion>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequestSuggestion>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 }
