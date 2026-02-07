@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- `Comment` no longer inherits from `PullRequestInfo`. Properties such as `Title`, `Description`, `FromRef`, `ToRef`, `Locked`, and `Reviewers` are no longer available on `Comment` objects. These properties were always null/default on comments and should not have been exposed.
+
+### Fixed
+
+- `PullRequest.ToString()` and `Participant.ToString()` now return `"Unknown"` instead of throwing `NullReferenceException` when `Author`/`User` is null.
+
+### Changed
+
+- Removed commented-out `Avatar` property from `ProjectDefinition`.
+- Fixed duplicate `<summary>` XML doc tag on `GetRepositoriesStreamAsync`.
+
 ## [0.1.0-beta.1] - 2026-02-06 (pre-release)
 
 ### Notes
@@ -35,11 +48,13 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
 ### Added
 
 #### CancellationToken Support
+
 - All async methods now accept an optional `CancellationToken` parameter
 - Enables graceful cancellation of long-running operations
 - Fully propagated to underlying HTTP calls
 
 #### IAsyncEnumerable Streaming
+
 - New streaming variants for paginated endpoints that yield items as they arrive:
   - `GetProjectsStreamAsync()`
   - `GetProjectRepositoriesStreamAsync()`
@@ -54,6 +69,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
   - Native `await foreach` support
 
 #### Diff and File Content Streaming
+
 - New streaming methods for large diff responses:
   - `GetCommitDiffStreamAsync()` - Stream diffs for a specific commit
   - `GetRepositoryDiffStreamAsync()` - Stream repository diffs between refs
@@ -68,6 +84,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
   - Reduced memory pressure for large file downloads
 
 #### Dependency Injection Support
+
 - New constructor: `BitbucketClient(HttpClient httpClient, string baseUrl, Func<string> getToken = null)`
   - Enables use with `IHttpClientFactory`
   - Supports Polly resilience policies (retry, circuit breaker, etc.)
@@ -77,6 +94,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
   - Supports `IFlurlClientCache` for named client management
 
 #### Typed Exception Hierarchy
+
 - New `BitbucketApiException` base class with rich error information:
   - `StatusCode`: HTTP status code as `HttpStatusCode` enum
   - `Context`: The field or resource that caused the error
@@ -93,12 +111,14 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
   - `BitbucketServerException` (HTTP 5xx)
 
 #### Code Quality Enforcement
+
 - Added `Meziantou.Analyzer` to enforce library best practices
 - ConfigureAwait(false) requirement enforced via MA0004 (warning level)
 - Nullable reference types enabled project-wide
 - EditorConfig configured with library-appropriate analyzer rules
 
 #### Performance Benchmarks
+
 - New benchmark project (`benchmarks/Bitbucket.Net.Benchmarks`) using BenchmarkDotNet
 - Benchmark categories:
   - **JSON Serialization**: Measure System.Text.Json performance for serialization/deserialization
@@ -126,6 +146,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
 #### Updating from 1.x to 2.0.0
 
 1. **Update Target Framework**
+
    ```xml
    <!-- Old -->
    <TargetFramework>netstandard1.4</TargetFramework>
@@ -137,6 +158,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
 2. **No Code Changes Required** for basic usage - the API remains backward compatible
 
 3. **Optional: Use CancellationToken**
+
    ```csharp
    // Before
    var projects = await client.GetProjectsAsync();
@@ -147,6 +169,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
    ```
 
 4. **Optional: Use Streaming for Large Results**
+
    ```csharp
    // Before - buffers all results in memory
    var allPRs = await client.GetPullRequestsAsync("PROJ", "repo");
@@ -159,6 +182,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
    ```
 
 5. **Optional: Use Dependency Injection**
+
    ```csharp
    // Configure with IHttpClientFactory + Polly
    services.AddHttpClient<BitbucketClient>()
@@ -173,6 +197,7 @@ shipped up to 0.5.0 on NuGet; this fork is versioned independently.
    ```
 
 6. **Update Exception Handling** (Breaking Change)
+
    ```csharp
    // Before - catching generic InvalidOperationException
    try
