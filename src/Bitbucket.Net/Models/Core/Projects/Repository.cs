@@ -10,5 +10,5 @@ public class Repository : RepositoryRef
     public bool Public { get; set; }
     public CloneLinks? Links { get; set; }
 
-    public override string ToString() => Name;
+    public override string ToString() => Name ?? string.Empty;
 }

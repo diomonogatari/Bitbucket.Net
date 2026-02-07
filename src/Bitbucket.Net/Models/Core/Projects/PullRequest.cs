@@ -1,6 +1,4 @@
 using Bitbucket.Net.Common.Converters;
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects;
@@ -17,5 +15,5 @@ public class PullRequest : PullRequestInfo
     public List<Participant>? Participants { get; set; }
     public Links? Links { get; set; }
 
-    public override string ToString() => $"{Author.User.DisplayName}: {Title ?? "(untitled)"}";
+    public override string ToString() => $"{Author?.User?.DisplayName ?? "(unknown)"}: {Title ?? "(untitled)"}";
 }

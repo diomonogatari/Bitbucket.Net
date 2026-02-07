@@ -13,5 +13,5 @@ public class Participant
     [JsonConverter(typeof(ParticipantStatusConverter))]
     public ParticipantStatus Status { get; set; }
 
-    public override string ToString() => User.DisplayName;
+    public override string ToString() => User?.DisplayName ?? string.Empty;
 }

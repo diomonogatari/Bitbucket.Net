@@ -7,5 +7,5 @@ public class Project : ProjectDefinition
     public string? Type { get; set; }
     public Links? Links { get; set; }
 
-    public override string ToString() => Name;
+    public override string ToString() => Name ?? string.Empty;
 }

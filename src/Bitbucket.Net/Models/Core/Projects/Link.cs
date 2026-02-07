@@ -4,5 +4,5 @@ public class Link
 {
     public string? Href { get; set; }
 
-    public override string ToString() => Href;
+    public override string ToString() => Href ?? string.Empty;
 }

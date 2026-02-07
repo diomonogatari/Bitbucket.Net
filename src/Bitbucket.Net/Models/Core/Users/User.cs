@@ -9,5 +9,5 @@ public class User : Identity
     public string? Type { get; set; }
     public string? AvatarUrl { get; set; }
 
-    public override string ToString() => DisplayName;
+    public override string ToString() => DisplayName ?? string.Empty;
 }

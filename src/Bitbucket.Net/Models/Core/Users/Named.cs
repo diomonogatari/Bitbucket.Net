@@ -4,5 +4,5 @@ public class Named
 {
     public string? Name { get; set; }
 
-    public override string ToString() => Name;
+    public override string ToString() => Name ?? string.Empty;
 }

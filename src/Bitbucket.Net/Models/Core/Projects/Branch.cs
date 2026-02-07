@@ -68,5 +68,5 @@ public class Branch : BranchBase
     [JsonPropertyName("metadata")]
     public JsonElement? Metadata { get; set; }
 
-    public override string ToString() => DisplayId;
+    public override string ToString() => DisplayId ?? string.Empty;
 }
