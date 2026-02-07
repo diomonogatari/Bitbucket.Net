@@ -8,9 +8,11 @@ using Flurl.Http;
 using Flurl.Http.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -54,14 +56,6 @@ public partial class BitbucketClient
     };
 
     private static readonly ISerializer s_serializer = new DefaultJsonSerializer(s_jsonOptions);
-
-    static BitbucketClient()
-    {
-        // Configure Flurl to use System.Text.Json globally
-        FlurlHttp.Clients.WithDefaults(builder =>
-            builder.WithSettings(settings =>
-                settings.JsonSerializer = s_serializer));
-    }
 
     private readonly Url _url;
     private readonly Func<string>? _getToken;
@@ -167,28 +161,69 @@ public partial class BitbucketClient
     /// <returns>An <see cref="IFlurlRequest"/> configured with authentication and serialization.</returns>
     private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
     {
+        IFlurlRequest request;
+
         // If using injected client, use it directly
         if (_injectedClient != null)
         {
-            var request = _injectedClient
+            request = _injectedClient
                 .Request()
-                .AppendPathSegment($"/rest{root}/{version}")
-                .WithSettings(settings => settings.JsonSerializer = s_serializer);
+                .AppendPathSegment($"/rest{root}/{version}");
 
             // Apply token authentication if provided
             if (_getToken != null)
             {
                 request = request.WithOAuthBearerToken(_getToken());
             }
-
-            return request;
+        }
+        else
+        {
+            // Original behavior for non-DI scenarios
+            var fullUrl = new Url(_url)
+                .AppendPathSegment($"/rest{root}/{version}");
+            request = new FlurlRequest(fullUrl)
+                .WithAuthentication(_getToken, _userName, _password);
         }
 
-        // Original behavior for non-DI scenarios
-        return new Url(_url)
-            .AppendPathSegment($"/rest{root}/{version}")
-            .WithSettings(settings => settings.JsonSerializer = s_serializer)
-            .WithAuthentication(_getToken, _userName, _password);
+        return request
+            .AllowAnyHttpStatus()
+            .WithSettings(settings => settings.JsonSerializer = s_serializer);
+    }
+
+    private static async Task<string> ReadResponseStringAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    {
+        if (response.ResponseMessage?.Content is null)
+        {
+            return string.Empty;
+        }
+
+        return await response.ResponseMessage.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static StringContent CreateJsonContent<TValue>(TValue value)
+    {
+        var json = JsonSerializer.Serialize(value, s_jsonOptions);
+        return new StringContent(json, Encoding.UTF8, "application/json");
+    }
+
+    private static async Task<byte[]> ReadResponseBytesAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    {
+        if (response.ResponseMessage?.Content is null)
+        {
+            return Array.Empty<byte>();
+        }
+
+        return await response.ResponseMessage.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async Task<Stream> ReadResponseStreamAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    {
+        if (response.ResponseMessage?.Content is null)
+        {
+            return Stream.Null;
+        }
+
+        return await response.ResponseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -201,10 +236,19 @@ public partial class BitbucketClient
     /// <returns>The deserialized response content.</returns>
     private static async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
-        string content = await response.GetStringAsync().ConfigureAwait(false);
-        return contentHandler != null
-            ? contentHandler(content)
-            : JsonSerializer.Deserialize<TResult>(content, s_jsonOptions)!;
+        string content = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
+
+        if (contentHandler is not null)
+        {
+            return contentHandler(content);
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return default!;
+        }
+
+        return JsonSerializer.Deserialize<TResult>(content, s_jsonOptions)!;
     }
 
     /// <summary>
@@ -215,8 +259,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the response body is empty; otherwise, <c>false</c>.</returns>
     private static async Task<bool> ReadResponseContentAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
-        string content = await response.GetStringAsync().ConfigureAwait(false);
-        return content == "";
+        string content = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
+        return string.IsNullOrWhiteSpace(content);
     }
 
     /// <summary>
@@ -236,7 +280,7 @@ public partial class BitbucketClient
             try
             {
                 // Read the response body first so we can include it in the error if parsing fails
-                rawResponseBody = await response.GetStringAsync().ConfigureAwait(false);
+                rawResponseBody = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(rawResponseBody))
                 {
