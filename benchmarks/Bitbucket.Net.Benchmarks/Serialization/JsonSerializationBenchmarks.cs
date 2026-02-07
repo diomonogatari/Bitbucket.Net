@@ -1,9 +1,9 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BenchmarkDotNet.Attributes;
 using Bitbucket.Net.Benchmarks.Config;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Benchmarks.Serialization;
 

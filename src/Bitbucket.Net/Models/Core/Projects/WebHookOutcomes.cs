@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum WebHookOutcomes
 {
-    public enum WebHookOutcomes
-    {
-        Success,
-        Failure,
-        Error
-    }
+    Success,
+    Failure,
+    Error,
 }

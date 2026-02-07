@@ -1,40 +1,34 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class WhoAmIMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class WhoAmIMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetWhoAmIAsync_ReturnsUsername()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetWhoAmI("jsmith");
+        var client = _fixture.CreateClient();
 
-        public WhoAmIMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var username = await client.GetWhoAmIAsync();
 
-        [Fact]
-        public async Task GetWhoAmIAsync_ReturnsUsername()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetWhoAmI("jsmith");
-            var client = _fixture.CreateClient();
+        Assert.Equal("jsmith", username);
+    }
 
-            var username = await client.GetWhoAmIAsync();
+    [Fact]
+    public async Task GetWhoAmIAsync_WithWhitespace_ReturnsTrimmedUsername()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetWhoAmI("  jsmith  ");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal("jsmith", username);
-        }
+        var username = await client.GetWhoAmIAsync();
 
-        [Fact]
-        public async Task GetWhoAmIAsync_WithWhitespace_ReturnsTrimmedUsername()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetWhoAmI("  jsmith  ");
-            var client = _fixture.CreateClient();
-
-            var username = await client.GetWhoAmIAsync();
-
-            Assert.Equal("jsmith", username);
-        }
+        Assert.Equal("jsmith", username);
     }
 }

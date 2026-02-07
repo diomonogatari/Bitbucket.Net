@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum HookTypes
 {
-    public enum HookTypes
-    {
-        PreReceive,
-        PostReceive,
-        PrePullRequestMerge
-    }
+    PreReceive,
+    PostReceive,
+    PrePullRequestMerge,
 }

@@ -1,17 +1,17 @@
-using System.Collections.Generic;
-using System.Net;
 using Bitbucket.Net.Common.Exceptions;
 using Bitbucket.Net.Common.Models;
+using System.Collections.Generic;
+using System.Net;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;
 
 public class ExceptionTests
 {
-    private static readonly List<Error> SampleErrors = new()
-    {
+    private static readonly List<Error> SampleErrors =
+    [
         new Error { Message = "Test error", Context = "test-context" }
-    };
+    ];
 
     #region BitbucketApiException Factory Tests
 
@@ -140,7 +140,7 @@ public class ExceptionTests
     {
         var errors = new List<Error>
         {
-            new Error { Message = "Field is invalid", Context = "username" }
+            new() { Message = "Field is invalid", Context = "username" }
         };
         var exception = BitbucketApiException.Create(400, errors);
 
@@ -153,7 +153,7 @@ public class ExceptionTests
     {
         var errors = new List<Error>
         {
-            new Error { Message = "Something went wrong", Context = null }
+            new() { Message = "Something went wrong", Context = null }
         };
         var exception = BitbucketApiException.Create(400, errors);
 
@@ -168,8 +168,8 @@ public class ExceptionTests
     {
         var errors = new List<Error>
         {
-            new Error { Message = "Error 1", Context = "field1" },
-            new Error { Message = "Error 2", Context = "field2" }
+            new() { Message = "Error 1", Context = "field1" },
+            new() { Message = "Error 2", Context = "field2" }
         };
         var exception = BitbucketApiException.Create(400, errors);
 
@@ -188,7 +188,7 @@ public class ExceptionTests
     {
         var errors = new List<Error>
         {
-            new Error { Message = "Test", Context = "ctx" }
+            new() { Message = "Test", Context = "ctx" }
         };
         var exception = new BitbucketApiException("Test message", HttpStatusCode.NotFound, errors, "https://api.test");
 

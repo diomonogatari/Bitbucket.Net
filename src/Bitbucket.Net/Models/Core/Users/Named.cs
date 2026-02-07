@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Users
-{
-    public class Named
-    {
-        public string Name { get; set; }
+﻿namespace Bitbucket.Net.Models.Core.Users;
 
-        public override string ToString() => Name;
-    }
+public class Named
+{
+    public string? Name { get; set; }
+
+    public override string ToString() => Name;
 }

@@ -1,11 +1,10 @@
-﻿namespace Bitbucket.Net.Models.Core.Logs
+﻿namespace Bitbucket.Net.Models.Core.Logs;
+
+public enum LogLevels
 {
-    public enum LogLevels
-    {
-        Trace,
-        Debug,
-        Info,
-        Warn,
-        Error
-    }
+    Trace,
+    Debug,
+    Info,
+    Warn,
+    Error,
 }

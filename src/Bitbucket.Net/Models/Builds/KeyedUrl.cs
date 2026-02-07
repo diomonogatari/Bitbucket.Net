@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Builds
+﻿namespace Bitbucket.Net.Models.Builds;
+
+public class KeyedUrl
 {
-    public class KeyedUrl
-    {
-        public string Key { get; set; }
-        public string Url { get; set; }
-    }
+    public string? Key { get; set; }
+    public string? Url { get; set; }
 }

@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class WebHookRequest
 {
-    public class WebHookRequest
-    {
-        public string Url { get; set; }
-        public string Method { get; set; }
-    }
+    public string? Url { get; set; }
+    public string? Method { get; set; }
 }

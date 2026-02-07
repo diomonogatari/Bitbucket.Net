@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class WebHookStatistics
 {
-    public class WebHookStatistics
-    {
-        public WebHookStatisticsCounts Counts { get; set; }
-    }
+    public WebHookStatisticsCounts? Counts { get; set; }
 }

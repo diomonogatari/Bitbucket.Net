@@ -2,17 +2,16 @@ using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Users;
 using System.Text.Json.Serialization;
 
-namespace Bitbucket.Net.Models.Core.Projects
-{
-    public class Participant
-    {
-        public User User { get; set; }
-        [JsonConverter(typeof(RolesConverter))]
-        public Roles Role { get; set; }
-        public bool Approved { get; set; }
-        [JsonConverter(typeof(ParticipantStatusConverter))]
-        public ParticipantStatus Status { get; set; }
+namespace Bitbucket.Net.Models.Core.Projects;
 
-        public override string ToString() => User.DisplayName;
-    }
+public class Participant
+{
+    public User? User { get; set; }
+    [JsonConverter(typeof(RolesConverter))]
+    public Roles Role { get; set; }
+    public bool Approved { get; set; }
+    [JsonConverter(typeof(ParticipantStatusConverter))]
+    public ParticipantStatus Status { get; set; }
+
+    public override string ToString() => User.DisplayName;
 }

@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Admin
+﻿namespace Bitbucket.Net.Models.Core.Admin;
+
+public class LicenseInfo
 {
-    public class LicenseInfo
-    {
-        public string License { get; set; }
-    }
+    public string? License { get; set; }
 }

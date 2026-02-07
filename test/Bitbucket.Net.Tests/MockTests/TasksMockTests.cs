@@ -1,82 +1,76 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class TasksMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class TasksMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task CreateTaskAsync_ReturnsCreatedTask()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupCreateTask();
+        var client = _fixture.CreateClient();
 
-        public TasksMockTests(BitbucketMockFixture fixture)
+        var taskInfo = new TaskInfo
         {
-            _fixture = fixture;
-        }
+            Anchor = new TaskBasicAnchor { Id = 101, Type = "COMMENT" },
+            Text = "Fix the null pointer exception"
+        };
 
-        [Fact]
-        public async Task CreateTaskAsync_ReturnsCreatedTask()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateTask();
-            var client = _fixture.CreateClient();
+        var task = await client.CreateTaskAsync(taskInfo);
 
-            var taskInfo = new TaskInfo
-            {
-                Anchor = new TaskBasicAnchor { Id = 101, Type = "COMMENT" },
-                Text = "Fix the null pointer exception"
-            };
+        Assert.NotNull(task);
+        Assert.Equal(1, task.Id);
+        Assert.Equal("Fix the null pointer exception", task.Text);
+        Assert.Equal("OPEN", task.State);
+        Assert.NotNull(task.Author);
+        Assert.Equal("jsmith", task.Author.Name);
+    }
 
-            var task = await client.CreateTaskAsync(taskInfo);
+    [Fact]
+    public async Task GetTaskAsync_ReturnsTask()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetTask(1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(task);
-            Assert.Equal(1, task.Id);
-            Assert.Equal("Fix the null pointer exception", task.Text);
-            Assert.Equal("OPEN", task.State);
-            Assert.NotNull(task.Author);
-            Assert.Equal("jsmith", task.Author.Name);
-        }
+        var task = await client.GetTaskAsync(1);
 
-        [Fact]
-        public async Task GetTaskAsync_ReturnsTask()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetTask(1);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(task);
+        Assert.Equal(1, task.Id);
+        Assert.Equal("Fix the null pointer exception", task.Text);
+        Assert.Equal("OPEN", task.State);
+        Assert.NotNull(task.Anchor);
+    }
 
-            var task = await client.GetTaskAsync(1);
+    [Fact]
+    public async Task UpdateTaskAsync_ReturnsUpdatedTask()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupUpdateTask(1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(task);
-            Assert.Equal(1, task.Id);
-            Assert.Equal("Fix the null pointer exception", task.Text);
-            Assert.Equal("OPEN", task.State);
-            Assert.NotNull(task.Anchor);
-        }
+        var task = await client.UpdateTaskAsync(1, "Updated task text");
 
-        [Fact]
-        public async Task UpdateTaskAsync_ReturnsUpdatedTask()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupUpdateTask(1);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(task);
+        Assert.Equal(1, task.Id);
+        Assert.NotNull(task.Author);
+    }
 
-            var task = await client.UpdateTaskAsync(1, "Updated task text");
+    [Fact]
+    public async Task DeleteTaskAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteTask(1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(task);
-            Assert.Equal(1, task.Id);
-            Assert.NotNull(task.Author);
-        }
+        var result = await client.DeleteTaskAsync(1);
 
-        [Fact]
-        public async Task DeleteTaskAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteTask(1);
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeleteTaskAsync(1);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

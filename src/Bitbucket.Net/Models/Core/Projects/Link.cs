@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
-{
-    public class Link
-    {
-        public string Href { get; set; }
+﻿namespace Bitbucket.Net.Models.Core.Projects;
 
-        public override string ToString() => Href;
-    }
+public class Link
+{
+    public string? Href { get; set; }
+
+    public override string ToString() => Href;
 }

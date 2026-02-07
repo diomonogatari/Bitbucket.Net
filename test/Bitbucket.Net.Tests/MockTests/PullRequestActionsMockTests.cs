@@ -1,94 +1,88 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class PullRequestActionsMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class PullRequestActionsMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task ApprovePullRequestAsync_ReturnsReviewer()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupApprovePullRequest(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-        public PullRequestActionsMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var reviewer = await client.ApprovePullRequestAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task ApprovePullRequestAsync_ReturnsReviewer()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupApprovePullRequest(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(reviewer);
+        Assert.True(reviewer.Approved);
+        Assert.Equal(ParticipantStatus.Approved, reviewer.Status);
+    }
 
-            var reviewer = await client.ApprovePullRequestAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
+    [Fact]
+    public async Task MergePullRequestAsync_ReturnsMergedPullRequest()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupMergePullRequest(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(reviewer);
-            Assert.True(reviewer.Approved);
-            Assert.Equal(ParticipantStatus.Approved, reviewer.Status);
-        }
+        var pullRequest = await client.MergePullRequestAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task MergePullRequestAsync_ReturnsMergedPullRequest()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupMergePullRequest(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(pullRequest);
+        Assert.Equal(TestConstants.TestPullRequestId, pullRequest.Id);
+    }
 
-            var pullRequest = await client.MergePullRequestAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
+    [Fact]
+    public async Task DeclinePullRequestAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeclinePullRequest(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(pullRequest);
-            Assert.Equal(TestConstants.TestPullRequestId, pullRequest.Id);
-        }
+        var result = await client.DeclinePullRequestAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task DeclinePullRequestAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeclinePullRequest(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.True(result);
+    }
 
-            var result = await client.DeclinePullRequestAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
+    [Fact]
+    public async Task GetPullRequestMergeStateAsync_ReturnsMergeState()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetPullRequestMergeState(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.True(result);
-        }
+        var mergeState = await client.GetPullRequestMergeStateAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task GetPullRequestMergeStateAsync_ReturnsMergeState()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetPullRequestMergeState(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
-
-            var mergeState = await client.GetPullRequestMergeStateAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-
-            Assert.NotNull(mergeState);
-            Assert.True(mergeState.CanMerge);
-            Assert.False(mergeState.Conflicted);
-        }
+        Assert.NotNull(mergeState);
+        Assert.True(mergeState.CanMerge);
+        Assert.False(mergeState.Conflicted);
     }
 }

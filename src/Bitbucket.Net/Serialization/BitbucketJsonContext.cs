@@ -1,52 +1,36 @@
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 using Bitbucket.Net.Common.Models;
-
 // Audit
 using Bitbucket.Net.Models.Audit;
-
 // Branches
 using Bitbucket.Net.Models.Branches;
-
 // Builds
 using Bitbucket.Net.Models.Builds;
-
 // Core - Admin
 using Bitbucket.Net.Models.Core.Admin;
-
 // Core - Logs
 using Bitbucket.Net.Models.Core.Logs;
-
 // Core - Projects
 using Bitbucket.Net.Models.Core.Projects;
-
 // Core - Tasks
 using Bitbucket.Net.Models.Core.Tasks;
-
 // Core - Users
 using Bitbucket.Net.Models.Core.Users;
-
 // DefaultReviewers
 using Bitbucket.Net.Models.DefaultReviewers;
-
 // Git
 using Bitbucket.Net.Models.Git;
-
 // Jira
 using Bitbucket.Net.Models.Jira;
-
 // PersonalAccessTokens
 using Bitbucket.Net.Models.PersonalAccessTokens;
-
 // RefRestrictions
 using Bitbucket.Net.Models.RefRestrictions;
-
 // RefSync
 using Bitbucket.Net.Models.RefSync;
-
 // Ssh
 using Bitbucket.Net.Models.Ssh;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Serialization;
 

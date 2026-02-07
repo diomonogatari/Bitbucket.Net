@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum ChangeScopes
 {
-    public enum ChangeScopes
-    {
-        All,
-        Unreviewed,
-        Range
-    }
+    All,
+    Unreviewed,
+    Range,
 }

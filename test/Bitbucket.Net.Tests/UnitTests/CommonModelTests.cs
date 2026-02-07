@@ -1,11 +1,11 @@
 #nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;
@@ -195,7 +195,7 @@ public class CommonModelTests
 
         Assert.NotNull(deserialized);
         Assert.NotNull(deserialized.Errors);
-        
+
         var errorList = new List<Error>(deserialized.Errors);
         Assert.Equal(2, errorList.Count);
         Assert.Equal("First error", errorList[0].Message);

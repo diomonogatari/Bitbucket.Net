@@ -1,19 +1,18 @@
-using System;
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Users;
+using System;
 using System.Text.Json.Serialization;
 
-namespace Bitbucket.Net.Models.PersonalAccessTokens
+namespace Bitbucket.Net.Models.PersonalAccessTokens;
+
+public class AccessToken : AccessTokenCreate
 {
-    public class AccessToken : AccessTokenCreate
-    {
-        public string Id { get; set; }
-        [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-        public DateTimeOffset CreatedDate { get; set; }
-        [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-        public DateTimeOffset LastAuthenticated { get; set; }
-        public User User { get; set; }
-        [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-        public DateTimeOffset ExpiryDate { get; set; }
-    }
+    public string? Id { get; set; }
+    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    public DateTimeOffset CreatedDate { get; set; }
+    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    public DateTimeOffset LastAuthenticated { get; set; }
+    public User? User { get; set; }
+    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    public DateTimeOffset ExpiryDate { get; set; }
 }

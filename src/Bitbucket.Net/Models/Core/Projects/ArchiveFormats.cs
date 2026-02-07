@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum ArchiveFormats
 {
-    public enum ArchiveFormats
-    {
-        Zip,
-        Tar,
-        TarGz,
-        Tgz
-    }
+    Zip,
+    Tar,
+    TarGz,
+    Tgz,
 }

@@ -1,12 +1,12 @@
 #nullable enable
 
-using System;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Models.RefRestrictions;
 using Bitbucket.Net.Models.RefSync;
+using System;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;

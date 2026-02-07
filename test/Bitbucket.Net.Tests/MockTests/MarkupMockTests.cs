@@ -1,29 +1,23 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class MarkupMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class MarkupMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task PreviewMarkupAsync_ReturnsHtml()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupPreviewMarkup();
+        var client = _fixture.CreateClient();
 
-        public MarkupMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var result = await client.PreviewMarkupAsync("**Bold** text");
 
-        [Fact]
-        public async Task PreviewMarkupAsync_ReturnsHtml()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupPreviewMarkup();
-            var client = _fixture.CreateClient();
-
-            var result = await client.PreviewMarkupAsync("**Bold** text");
-
-            Assert.NotNull(result);
-            Assert.Contains("<strong>markdown</strong>", result);
-        }
+        Assert.NotNull(result);
+        Assert.Contains("<strong>markdown</strong>", result);
     }
 }

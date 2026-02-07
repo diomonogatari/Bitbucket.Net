@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Bitbucket.Net.Common
+namespace Bitbucket.Net.Common;
+
+public static class TypeExtensions
 {
-    public static class TypeExtensions
-    {
-        public static bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-    }
+    public static bool IsNullableType(Type type) => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 }

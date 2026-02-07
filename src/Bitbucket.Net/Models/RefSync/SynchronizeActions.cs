@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.RefSync
+﻿namespace Bitbucket.Net.Models.RefSync;
+
+public enum SynchronizeActions
 {
-    public enum SynchronizeActions
-    {
-        Merge,
-        Discard
-    }
+    Merge,
+    Discard,
 }

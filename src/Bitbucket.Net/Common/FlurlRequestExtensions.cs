@@ -1,19 +1,18 @@
-﻿using System;
-using Flurl.Http;
+﻿using Flurl.Http;
+using System;
 
-namespace Bitbucket.Net.Common
+namespace Bitbucket.Net.Common;
+
+public static class FlurlRequestExtensions
 {
-    public static class FlurlRequestExtensions
+    public static IFlurlRequest WithAuthentication(this IFlurlRequest request, Func<string>? getToken, string? userName, string? password)
     {
-        public static IFlurlRequest WithAuthentication(this IFlurlRequest request, Func<string>? getToken, string? userName, string? password)
+        if (getToken != null)
         {
-            if (getToken != null)
-            {
-                string token = getToken();
-                return request.WithOAuthBearerToken(token);
-            }
-
-            return request.WithBasicAuth(userName, password);
+            string token = getToken();
+            return request.WithOAuthBearerToken(token);
         }
+
+        return request.WithBasicAuth(userName, password);
     }
 }

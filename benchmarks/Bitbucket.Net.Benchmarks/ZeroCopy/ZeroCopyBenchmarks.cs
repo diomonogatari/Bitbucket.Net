@@ -1,9 +1,9 @@
+using BenchmarkDotNet.Attributes;
+using Bitbucket.Net.Benchmarks.Config;
 using System.Buffers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BenchmarkDotNet.Attributes;
-using Bitbucket.Net.Benchmarks.Config;
 
 namespace Bitbucket.Net.Benchmarks.ZeroCopy;
 
@@ -375,7 +375,7 @@ public sealed class BenchmarkPath
     public string? Parent { get; set; }
     public string? Name { get; set; }
     public string? Extension { get; set; }
-    
+
     [JsonPropertyName("toString")]
     public string? PathString { get; set; }
 }

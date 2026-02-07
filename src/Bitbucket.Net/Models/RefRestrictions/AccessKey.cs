@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.RefRestrictions
+﻿namespace Bitbucket.Net.Models.RefRestrictions;
+
+public class AccessKey
 {
-    public class AccessKey
-    {
-        public Key Key { get; set; }
-    }
+    public Key? Key { get; set; }
 }

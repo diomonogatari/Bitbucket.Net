@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum PullRequestOrders
 {
-    public enum PullRequestOrders
-    {
-        Newest,
-        Oldest,
-        ParticipantStatus,
-        ClosedDate
-    }
+    Newest,
+    Oldest,
+    ParticipantStatus,
+    ClosedDate,
 }

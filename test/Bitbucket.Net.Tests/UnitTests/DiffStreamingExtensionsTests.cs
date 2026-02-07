@@ -1,10 +1,10 @@
 #nullable enable
 
+using Bitbucket.Net.Common.Mcp;
+using Bitbucket.Net.Models.Core.Projects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Bitbucket.Net.Common.Mcp;
-using Bitbucket.Net.Models.Core.Projects;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;

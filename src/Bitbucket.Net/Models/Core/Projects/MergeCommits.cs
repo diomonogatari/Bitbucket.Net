@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum MergeCommits
 {
-    public enum MergeCommits
-    {
-        Exclude,
-        Include,
-        Only
-    }
+    Exclude,
+    Include,
+    Only,
 }

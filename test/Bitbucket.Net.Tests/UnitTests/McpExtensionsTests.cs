@@ -1,11 +1,11 @@
 #nullable enable
 
+using Bitbucket.Net.Common.Mcp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bitbucket.Net.Common.Mcp;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;
@@ -27,10 +27,12 @@ public class McpExtensionsTests
         Assert.Equal(0, result.Count);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task TakeWithPaginationAsync_LessThanLimit_ReturnsAllItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeWithPaginationAsync(10);
 
@@ -40,10 +42,12 @@ public class McpExtensionsTests
         Assert.Null(result.NextOffset);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3, 4, 5 };
+
     [Fact]
     public async Task TakeWithPaginationAsync_ExactlyLimit_ReturnsAllItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3, 4, 5 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeWithPaginationAsync(5);
 
@@ -52,10 +56,12 @@ public class McpExtensionsTests
         Assert.Null(result.NextOffset);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3, 4, 5, 6, 7 };
+
     [Fact]
     public async Task TakeWithPaginationAsync_MoreThanLimit_ReturnsLimitedItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3, 4, 5, 6, 7 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeWithPaginationAsync(5);
 
@@ -65,12 +71,14 @@ public class McpExtensionsTests
         Assert.Equal(5, result.NextOffset);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task TakeWithPaginationAsync_AcceptsCancellationToken()
     {
         // Just verify the method accepts and passes through the cancellation token
         var cts = new CancellationTokenSource();
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeWithPaginationAsync(10, cts.Token);
 
@@ -91,30 +99,36 @@ public class McpExtensionsTests
         Assert.Empty(result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task TakeAsync_LessThanLimit_YieldsAllItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeAsync(10).ToListAsync();
 
         Assert.Equal(new[] { 1, 2, 3 }, result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3, 4, 5, 6, 7 };
+
     [Fact]
     public async Task TakeAsync_MoreThanLimit_YieldsLimitedItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3, 4, 5, 6, 7 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeAsync(3).ToListAsync();
 
         Assert.Equal(new[] { 1, 2, 3 }, result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task TakeAsync_ZeroLimit_YieldsNothing()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.TakeAsync(0).ToListAsync();
 
@@ -135,30 +149,36 @@ public class McpExtensionsTests
         Assert.Empty(result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3, 4, 5 };
+
     [Fact]
     public async Task SkipAsync_SkipLessThanCount_YieldsRemaining()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3, 4, 5 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.SkipAsync(2).ToListAsync();
 
         Assert.Equal(new[] { 3, 4, 5 }, result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task SkipAsync_SkipMoreThanCount_YieldsNothing()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.SkipAsync(10).ToListAsync();
 
         Assert.Empty(result);
     }
 
+    private static readonly int[] int32Array = new[] { 1, 2, 3 };
+
     [Fact]
     public async Task SkipAsync_SkipZero_YieldsAllItems()
     {
-        var source = CreateAsyncEnumerable(new[] { 1, 2, 3 });
+        var source = CreateAsyncEnumerable(int32Array);
 
         var result = await source.SkipAsync(0).ToListAsync();
 
@@ -246,7 +266,7 @@ public class McpExtensionsTests
     {
         var result = new PaginatedResult<int>([1, 2, 3], hasMore: false, nextOffset: null);
 
-        Assert.IsAssignableFrom<IReadOnlyList<int>>(result.Items);
+        Assert.IsType<IReadOnlyList<int>>(result.Items, exactMatch: false);
     }
 
     #endregion

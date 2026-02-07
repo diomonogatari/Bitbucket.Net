@@ -2994,7 +2994,7 @@ public static class MockSetupExtensions
             .RespondWith(Response.Create()
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithHeader("Content-Type", "image/png")
-                .WithBody(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }));
+                .WithBody([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]));
 
         return server;
     }
@@ -3037,7 +3037,7 @@ public static class MockSetupExtensions
             .RespondWith(Response.Create()
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithHeader("Content-Type", "application/zip")
-                .WithBody(new byte[] { 0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00 }));
+                .WithBody([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00]));
 
         return server;
     }
@@ -3221,6 +3221,3 @@ public static class MockSetupExtensions
         return Path.Combine(FixturesBasePath, category, fileName);
     }
 }
-
-
-

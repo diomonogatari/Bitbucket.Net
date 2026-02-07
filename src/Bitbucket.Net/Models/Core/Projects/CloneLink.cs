@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class CloneLink : Link
 {
-    public class CloneLink : Link
-    {
-        public string Name { get; set; }
-    }
+    public string? Name { get; set; }
 }

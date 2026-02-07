@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.RefRestrictions
+﻿namespace Bitbucket.Net.Models.RefRestrictions;
+
+public enum RefRestrictionTypes
 {
-    public enum RefRestrictionTypes
-    {
-        AllChanges,
-        RewritingHistory,
-        Deletion,
-        ChangesWithoutPullRequest
-    }
+    AllChanges,
+    RewritingHistory,
+    Deletion,
+    ChangesWithoutPullRequest,
 }

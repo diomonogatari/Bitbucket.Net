@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Common.Models
+﻿namespace Bitbucket.Net.Common.Models;
+
+public abstract class PagedResultsBase
 {
-    public abstract class PagedResultsBase
-    {
-        public int Size { get; set; }
-        public bool IsLastPage { get; set; }
-        public int Start { get; set; }
-    }
+    public int Size { get; set; }
+    public bool IsLastPage { get; set; }
+    public int Start { get; set; }
 }

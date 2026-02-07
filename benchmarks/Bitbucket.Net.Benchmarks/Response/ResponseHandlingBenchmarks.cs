@@ -1,6 +1,6 @@
-using System.Text;
 using BenchmarkDotNet.Attributes;
 using Bitbucket.Net.Benchmarks.Config;
+using System.Text;
 
 namespace Bitbucket.Net.Benchmarks.Response;
 
@@ -57,7 +57,7 @@ public class ResponseHandlingBenchmarks
     [Benchmark(Description = "Buffered diff processing (1000 lines)")]
     public List<string> BufferedDiffProcessing()
     {
-        return _largeDiff.Split('\n').ToList();
+        return [.. _largeDiff.Split('\n')];
     }
 
     /// <summary>
@@ -205,14 +205,14 @@ public class ResponseHandlingBenchmarks
         {
             if (content[i] == '\n')
             {
-                yield return content.Substring(start, i - start);
+                yield return content[start..i];
                 start = i + 1;
             }
         }
 
         if (start < content.Length)
         {
-            yield return content.Substring(start);
+            yield return content[start..];
         }
     }
 

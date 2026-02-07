@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Admin
+﻿namespace Bitbucket.Net.Models.Core.Admin;
+
+public class LicenseStatus
 {
-    public class LicenseStatus
-    {
-        public string ServerId { get; set; }
-        public int CurrentNumberOfUsers { get; set; }
-    }
+    public string? ServerId { get; set; }
+    public int CurrentNumberOfUsers { get; set; }
 }

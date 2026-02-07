@@ -1,160 +1,154 @@
+using Bitbucket.Net.Tests.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
-using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class AdminMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class AdminMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetAdminGroupsAsync_ReturnsGroups()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminGroups();
+        var client = _fixture.CreateClient();
 
-        public AdminMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var groups = await client.GetAdminGroupsAsync();
 
-        [Fact]
-        public async Task GetAdminGroupsAsync_ReturnsGroups()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminGroups();
-            var client = _fixture.CreateClient();
+        var groupList = groups.ToList();
+        Assert.NotEmpty(groupList);
+        Assert.Equal(2, groupList.Count);
+        Assert.Equal("developers", groupList[0].Name);
+        Assert.True(groupList[0].Deletable);
+        Assert.Equal("administrators", groupList[1].Name);
+        Assert.False(groupList[1].Deletable);
+    }
 
-            var groups = await client.GetAdminGroupsAsync();
+    [Fact]
+    public async Task CreateAdminGroupAsync_ReturnsCreatedGroup()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupCreateAdminGroup("new-group");
+        var client = _fixture.CreateClient();
 
-            var groupList = groups.ToList();
-            Assert.NotEmpty(groupList);
-            Assert.Equal(2, groupList.Count);
-            Assert.Equal("developers", groupList[0].Name);
-            Assert.True(groupList[0].Deletable);
-            Assert.Equal("administrators", groupList[1].Name);
-            Assert.False(groupList[1].Deletable);
-        }
+        var group = await client.CreateAdminGroupAsync("new-group");
 
-        [Fact]
-        public async Task CreateAdminGroupAsync_ReturnsCreatedGroup()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateAdminGroup("new-group");
-            var client = _fixture.CreateClient();
+        Assert.NotNull(group);
+        Assert.Equal("new-group", group.Name);
+        Assert.True(group.Deletable);
+    }
 
-            var group = await client.CreateAdminGroupAsync("new-group");
+    [Fact]
+    public async Task DeleteAdminGroupAsync_ReturnsDeletedGroup()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteAdminGroup("old-group");
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(group);
-            Assert.Equal("new-group", group.Name);
-            Assert.True(group.Deletable);
-        }
+        var group = await client.DeleteAdminGroupAsync("old-group");
 
-        [Fact]
-        public async Task DeleteAdminGroupAsync_ReturnsDeletedGroup()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteAdminGroup("old-group");
-            var client = _fixture.CreateClient();
+        Assert.NotNull(group);
+        Assert.Equal("new-group", group.Name);
+    }
 
-            var group = await client.DeleteAdminGroupAsync("old-group");
+    [Fact]
+    public async Task GetAdminUsersAsync_ReturnsUsers()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminUsers();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(group);
-            Assert.Equal("new-group", group.Name);
-        }
+        var users = await client.GetAdminUsersAsync();
 
-        [Fact]
-        public async Task GetAdminUsersAsync_ReturnsUsers()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminUsers();
-            var client = _fixture.CreateClient();
+        var userList = users.ToList();
+        Assert.NotEmpty(userList);
+        Assert.Equal(2, userList.Count);
+        Assert.Equal("admin", userList[0].Name);
+        Assert.Equal("admin@example.com", userList[0].EmailAddress);
+        Assert.Equal("jsmith", userList[1].Name);
+    }
 
-            var users = await client.GetAdminUsersAsync();
+    [Fact]
+    public async Task DeleteAdminUserAsync_ReturnsDeletedUser()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteAdminUser("olduser");
+        var client = _fixture.CreateClient();
 
-            var userList = users.ToList();
-            Assert.NotEmpty(userList);
-            Assert.Equal(2, userList.Count);
-            Assert.Equal("admin", userList[0].Name);
-            Assert.Equal("admin@example.com", userList[0].EmailAddress);
-            Assert.Equal("jsmith", userList[1].Name);
-        }
+        var user = await client.DeleteAdminUserAsync("olduser");
 
-        [Fact]
-        public async Task DeleteAdminUserAsync_ReturnsDeletedUser()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteAdminUser("olduser");
-            var client = _fixture.CreateClient();
+        Assert.NotNull(user);
+        Assert.Equal("newuser", user.Name);
+        Assert.Equal("newuser@example.com", user.EmailAddress);
+    }
 
-            var user = await client.DeleteAdminUserAsync("olduser");
+    [Fact]
+    public async Task GetAdminClusterAsync_ReturnsClusterInfo()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminCluster();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(user);
-            Assert.Equal("newuser", user.Name);
-            Assert.Equal("newuser@example.com", user.EmailAddress);
-        }
+        var cluster = await client.GetAdminClusterAsync();
 
-        [Fact]
-        public async Task GetAdminClusterAsync_ReturnsClusterInfo()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminCluster();
-            var client = _fixture.CreateClient();
+        Assert.NotNull(cluster);
+        Assert.True(cluster.Running);
+        Assert.NotNull(cluster.LocalNode);
+        Assert.Equal("node-1", cluster.LocalNode.Id);
+        Assert.Equal("bitbucket-node-1", cluster.LocalNode.Name);
+        Assert.True(cluster.LocalNode.Local);
+        Assert.Equal(2, cluster.Nodes.Count);
+    }
 
-            var cluster = await client.GetAdminClusterAsync();
+    [Fact]
+    public async Task GetAdminLicenseAsync_ReturnsLicenseDetails()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminLicense();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(cluster);
-            Assert.True(cluster.Running);
-            Assert.NotNull(cluster.LocalNode);
-            Assert.Equal("node-1", cluster.LocalNode.Id);
-            Assert.Equal("bitbucket-node-1", cluster.LocalNode.Name);
-            Assert.True(cluster.LocalNode.Local);
-            Assert.Equal(2, cluster.Nodes.Count);
-        }
+        var license = await client.GetAdminLicenseAsync();
 
-        [Fact]
-        public async Task GetAdminLicenseAsync_ReturnsLicenseDetails()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminLicense();
-            var client = _fixture.CreateClient();
+        Assert.NotNull(license);
+        Assert.Equal("SERV-1234-5678", license.ServerId);
+        Assert.Equal("SEN-12345", license.SupportEntitlementNumber);
+        Assert.Equal(500, license.MaximumNumberOfUsers);
+        Assert.False(license.UnlimitedNumberOfUsers);
+        Assert.Equal(365, license.NumberOfDaysBeforeExpiry);
+    }
 
-            var license = await client.GetAdminLicenseAsync();
+    [Fact]
+    public async Task GetAdminGroupPermissionsAsync_ReturnsPermissions()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminGroupPermissions();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(license);
-            Assert.Equal("SERV-1234-5678", license.ServerId);
-            Assert.Equal("SEN-12345", license.SupportEntitlementNumber);
-            Assert.Equal(500, license.MaximumNumberOfUsers);
-            Assert.False(license.UnlimitedNumberOfUsers);
-            Assert.Equal(365, license.NumberOfDaysBeforeExpiry);
-        }
+        var permissions = await client.GetAdminGroupPermissionsAsync();
 
-        [Fact]
-        public async Task GetAdminGroupPermissionsAsync_ReturnsPermissions()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminGroupPermissions();
-            var client = _fixture.CreateClient();
+        var permList = permissions.ToList();
+        Assert.NotEmpty(permList);
+        Assert.Equal(2, permList.Count);
+        Assert.Equal("administrators", permList[0].Group.Name);
+        Assert.Equal("developers", permList[1].Group.Name);
+    }
 
-            var permissions = await client.GetAdminGroupPermissionsAsync();
+    [Fact]
+    public async Task GetAdminUserPermissionsAsync_ReturnsPermissions()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminUserPermissions();
+        var client = _fixture.CreateClient();
 
-            var permList = permissions.ToList();
-            Assert.NotEmpty(permList);
-            Assert.Equal(2, permList.Count);
-            Assert.Equal("administrators", permList[0].Group.Name);
-            Assert.Equal("developers", permList[1].Group.Name);
-        }
+        var permissions = await client.GetAdminUserPermissionsAsync();
 
-        [Fact]
-        public async Task GetAdminUserPermissionsAsync_ReturnsPermissions()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminUserPermissions();
-            var client = _fixture.CreateClient();
-
-            var permissions = await client.GetAdminUserPermissionsAsync();
-
-            var permList = permissions.ToList();
-            Assert.NotEmpty(permList);
-            Assert.Equal(2, permList.Count);
-            Assert.Equal("admin", permList[0].User.Name);
-            Assert.Equal("jsmith", permList[1].User.Name);
-        }
+        var permList = permissions.ToList();
+        Assert.NotEmpty(permList);
+        Assert.Equal(2, permList.Count);
+        Assert.Equal("admin", permList[0].User.Name);
+        Assert.Equal("jsmith", permList[1].User.Name);
     }
 }

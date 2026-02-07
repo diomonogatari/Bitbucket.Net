@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Bitbucket.Net.Models.Core.Projects
+namespace Bitbucket.Net.Models.Core.Projects;
+
+public class Differences : DiffInfo
 {
-    public class Differences : DiffInfo
-    {
-        public List<Diff> Diffs { get; set; }
-    }
+    public List<Diff>? Diffs { get; set; }
 }

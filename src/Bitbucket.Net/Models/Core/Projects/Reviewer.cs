@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class Reviewer : Participant
 {
-    public class Reviewer : Participant
-    {
-        public string LastReviewedCommit { get; set; }
-    }
+    public string? LastReviewedCommit { get; set; }
 }

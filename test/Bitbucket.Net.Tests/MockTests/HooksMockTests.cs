@@ -1,42 +1,36 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class HooksMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class HooksMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetProjectHooksAvatarAsync_ReturnsBytes()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetProjectHooksAvatar("com.example.myhook");
+        var client = _fixture.CreateClient();
 
-        public HooksMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var avatar = await client.GetProjectHooksAvatarAsync("com.example.myhook");
 
-        [Fact]
-        public async Task GetProjectHooksAvatarAsync_ReturnsBytes()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetProjectHooksAvatar("com.example.myhook");
-            var client = _fixture.CreateClient();
+        Assert.NotNull(avatar);
+        Assert.True(avatar.Length > 0);
+    }
 
-            var avatar = await client.GetProjectHooksAvatarAsync("com.example.myhook");
+    [Fact]
+    public async Task GetProjectHooksAvatarAsync_WithVersion_ReturnsBytes()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetProjectHooksAvatar("com.example.myhook");
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(avatar);
-            Assert.True(avatar.Length > 0);
-        }
+        var avatar = await client.GetProjectHooksAvatarAsync("com.example.myhook", version: "1.0.0");
 
-        [Fact]
-        public async Task GetProjectHooksAvatarAsync_WithVersion_ReturnsBytes()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetProjectHooksAvatar("com.example.myhook");
-            var client = _fixture.CreateClient();
-
-            var avatar = await client.GetProjectHooksAvatarAsync("com.example.myhook", version: "1.0.0");
-
-            Assert.NotNull(avatar);
-            Assert.True(avatar.Length > 0);
-        }
+        Assert.NotNull(avatar);
+        Assert.True(avatar.Length > 0);
     }
 }

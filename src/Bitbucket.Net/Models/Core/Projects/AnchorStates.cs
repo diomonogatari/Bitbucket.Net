@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum AnchorStates
 {
-    public enum AnchorStates
-    {
-        Active,
-        Orphaned,
-        All
-    }
+    Active,
+    Orphaned,
+    All,
 }

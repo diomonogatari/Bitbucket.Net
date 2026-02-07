@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum PullRequestFromTypes
 {
-    public enum PullRequestFromTypes
-    {
-        Comment,
-        Activity
-    }
+    Comment,
+    Activity,
 }

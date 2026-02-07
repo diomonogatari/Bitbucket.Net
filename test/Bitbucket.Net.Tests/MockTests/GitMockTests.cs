@@ -1,74 +1,68 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class GitMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class GitMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+    private const string ProjectKey = "TEST";
+    private const string RepoSlug = "test-repo";
+    private const long PullRequestId = 1;
+
+    [Fact]
+    public async Task GetCanRebasePullRequestAsync_ReturnsCondition()
     {
-        private readonly BitbucketMockFixture _fixture;
-        private const string ProjectKey = "TEST";
-        private const string RepoSlug = "test-repo";
-        private const long PullRequestId = 1;
+        _fixture.Reset();
+        _fixture.Server.SetupGetCanRebasePullRequest(ProjectKey, RepoSlug, PullRequestId);
+        var client = _fixture.CreateClient();
 
-        public GitMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var result = await client.GetCanRebasePullRequestAsync(ProjectKey, RepoSlug, PullRequestId);
 
-        [Fact]
-        public async Task GetCanRebasePullRequestAsync_ReturnsCondition()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCanRebasePullRequest(ProjectKey, RepoSlug, PullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.True(result.CanRebase);
+        Assert.NotNull(result.Vetoes);
+        Assert.Empty(result.Vetoes);
+    }
 
-            var result = await client.GetCanRebasePullRequestAsync(ProjectKey, RepoSlug, PullRequestId);
+    [Fact]
+    public async Task RebasePullRequestAsync_ReturnsUpdatedPullRequest()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupRebasePullRequest(ProjectKey, RepoSlug, PullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.True(result.CanRebase);
-            Assert.NotNull(result.Vetoes);
-            Assert.Empty(result.Vetoes);
-        }
+        var result = await client.RebasePullRequestAsync(ProjectKey, RepoSlug, PullRequestId, version: 1);
 
-        [Fact]
-        public async Task RebasePullRequestAsync_ReturnsUpdatedPullRequest()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupRebasePullRequest(ProjectKey, RepoSlug, PullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.Equal(1, result.Id);
+    }
 
-            var result = await client.RebasePullRequestAsync(ProjectKey, RepoSlug, PullRequestId, version: 1);
+    [Fact]
+    public async Task CreateTagAsync_ReturnsCreatedTag()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupCreateTag(ProjectKey, RepoSlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.Equal(1, result.Id);
-        }
+        var result = await client.CreateTagAsync(ProjectKey, RepoSlug, TagTypes.Annotated, "v1.0.0", "abc123");
 
-        [Fact]
-        public async Task CreateTagAsync_ReturnsCreatedTag()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateTag(ProjectKey, RepoSlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.Equal("v1.0.0", result.DisplayId);
+        Assert.Equal("refs/tags/v1.0.0", result.Id);
+    }
 
-            var result = await client.CreateTagAsync(ProjectKey, RepoSlug, TagTypes.Annotated, "v1.0.0", "abc123");
+    [Fact]
+    public async Task DeleteTagAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteTag(ProjectKey, RepoSlug, "v1.0.0");
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.Equal("v1.0.0", result.DisplayId);
-            Assert.Equal("refs/tags/v1.0.0", result.Id);
-        }
+        var result = await client.DeleteTagAsync(ProjectKey, RepoSlug, "v1.0.0");
 
-        [Fact]
-        public async Task DeleteTagAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteTag(ProjectKey, RepoSlug, "v1.0.0");
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeleteTagAsync(ProjectKey, RepoSlug, "v1.0.0");
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class ProjectRef
 {
-    public class ProjectRef
-    {
-        public string Key { get; set; }
-    }
+    public string? Key { get; set; }
 }

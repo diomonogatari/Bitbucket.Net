@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum DiffTypes
 {
-    public enum DiffTypes
-    {
-        Effective,
-        Range,
-        Commit
-    }
+    Effective,
+    Range,
+    Commit,
 }

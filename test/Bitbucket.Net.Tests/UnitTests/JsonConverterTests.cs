@@ -1,7 +1,7 @@
-using System;
-using System.Text.Json;
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Projects;
+using System;
+using System.Text.Json;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;

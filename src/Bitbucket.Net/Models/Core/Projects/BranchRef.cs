@@ -1,5 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
-{
-    public class BranchRef : WithId
-    { }
-}
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class BranchRef : WithId
+{ }

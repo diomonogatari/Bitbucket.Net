@@ -1,50 +1,49 @@
-using System.Threading;
-using System.Threading.Tasks;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.RefSync;
 using Flurl.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Bitbucket.Net
+namespace Bitbucket.Net;
+
+public partial class BitbucketClient
 {
-    public partial class BitbucketClient
+    private IFlurlRequest GetRefSyncUrl() => GetBaseUrl("/sync");
+
+    private IFlurlRequest GetRefSyncUrl(string path) => GetRefSyncUrl()
+        .AppendPathSegment(path);
+
+    public async Task<RepositorySynchronizationStatus> GetRepositorySynchronizationStatusAsync(string projectKey, string repositorySlug,
+        string? at = null, CancellationToken cancellationToken = default)
     {
-        private IFlurlRequest GetRefSyncUrl() => GetBaseUrl("/sync");
+        var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
+            .SetQueryParam("at", at)
+            .GetAsync(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        private IFlurlRequest GetRefSyncUrl(string path) => GetRefSyncUrl()
-            .AppendPathSegment(path);
+        return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
 
-        public async Task<RepositorySynchronizationStatus> GetRepositorySynchronizationStatusAsync(string projectKey, string repositorySlug,
-            string? at = null, CancellationToken cancellationToken = default)
+    public async Task<RepositorySynchronizationStatus> EnableRepositorySynchronizationAsync(string projectKey, string repositorySlug, bool enabled, CancellationToken cancellationToken = default)
+    {
+        var data = new
         {
-            var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-                .SetQueryParam("at", at)
-                .GetAsync(cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+            enabled = BitbucketHelpers.BoolToString(enabled),
+        };
 
-            return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
+        var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
+            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        public async Task<RepositorySynchronizationStatus> EnableRepositorySynchronizationAsync(string projectKey, string repositorySlug, bool enabled, CancellationToken cancellationToken = default)
-        {
-            var data = new
-            {
-                enabled = BitbucketHelpers.BoolToString(enabled)
-            };
+        return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
 
-            var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-                .PostJsonAsync(data, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+    public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize, CancellationToken cancellationToken = default)
+    {
+        var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
+            .PostJsonAsync(synchronize, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-            return await HandleResponseAsync<RepositorySynchronizationStatus>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize, CancellationToken cancellationToken = default)
-        {
-            var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
-                .PostJsonAsync(synchronize, cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            return await HandleResponseAsync<FullRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
+        return await HandleResponseAsync<FullRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

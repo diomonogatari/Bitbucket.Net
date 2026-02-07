@@ -1,18 +1,17 @@
 using Bitbucket.Net.Common.Converters;
 using System.Text.Json.Serialization;
 
-namespace Bitbucket.Net.Models.Core.Projects
+namespace Bitbucket.Net.Models.Core.Projects;
+
+public class CommentAnchor
 {
-    public class CommentAnchor
-    {
-        public int? Line { get; set; }
-        [JsonConverter(typeof(LineTypesConverter))]
-        public LineTypes LineType { get; set; }
-        [JsonConverter(typeof(FileTypesConverter))]
-        public FileTypes FileType { get; set; }
-        public string FromHash { get; set; }
-        public string ToHash { get; set; }
-        public string Path { get; set; }
-        public string SrcPath { get; set; }
-    }
+    public int? Line { get; set; }
+    [JsonConverter(typeof(LineTypesConverter))]
+    public LineTypes LineType { get; set; }
+    [JsonConverter(typeof(FileTypesConverter))]
+    public FileTypes FileType { get; set; }
+    public string? FromHash { get; set; }
+    public string? ToHash { get; set; }
+    public string? Path { get; set; }
+    public string? SrcPath { get; set; }
 }
