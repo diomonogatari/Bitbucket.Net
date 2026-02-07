@@ -12,13 +12,36 @@ using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Provides branch-related Bitbucket API operations.
+/// </summary>
 public partial class BitbucketClient
 {
+    /// <summary>
+    /// Gets the base URL for branch utilities.
+    /// </summary>
+    /// <returns>An <see cref="IFlurlRequest"/> configured for branch utilities.</returns>
     private IFlurlRequest GetBranchUrl() => GetBaseUrl("/branch-utils");
 
+    /// <summary>
+    /// Gets the branch utilities URL for the specified path.
+    /// </summary>
+    /// <param name="path">The path to append to the branch utilities root.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the requested branch utilities path.</returns>
     private IFlurlRequest GetBranchUrl(string path) => GetBranchUrl()
         .AppendPathSegment(path);
 
+    /// <summary>
+    /// Retrieves branch information for a specific commit.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="fullSha">The full commit SHA to query.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of branch information entries for the commit.</returns>
     public async Task<IEnumerable<BranchBase>> GetCommitBranchInfoAsync(string projectKey, string repositorySlug, string fullSha,
         int? maxPages = null,
         int? limit = null,
@@ -40,6 +63,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves the branch model configuration for a repository.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The branch model configuration.</returns>
     public async Task<BranchModel> GetRepoBranchModelAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
         return await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branchmodel")
@@ -47,6 +77,15 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Creates a new branch in a repository.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="branchName">The name of the new branch.</param>
+    /// <param name="startPoint">The commit or ref from which to branch.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The created branch.</returns>
     public async Task<Branch> CreateRepoBranchAsync(string projectKey, string repositorySlug, string branchName, string startPoint, CancellationToken cancellationToken = default)
     {
         var data = new
@@ -62,6 +101,16 @@ public partial class BitbucketClient
         return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes a branch from a repository.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="branchName">The name of the branch to delete.</param>
+    /// <param name="dryRun">If true, performs validation without deleting.</param>
+    /// <param name="endPoint">Optional endpoint ref to compare for merge checks.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if the branch was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteRepoBranchAsync(string projectKey, string repositorySlug, string branchName, bool dryRun, string? endPoint = null, CancellationToken cancellationToken = default)
     {
         var data = new

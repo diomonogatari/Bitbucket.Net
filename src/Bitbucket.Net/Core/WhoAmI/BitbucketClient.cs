@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Provides user identity helper operations.
+/// </summary>
 public partial class BitbucketClient
 {
     /// <summary>

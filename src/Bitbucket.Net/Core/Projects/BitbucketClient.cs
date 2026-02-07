@@ -20,22 +20,62 @@ using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Provides project and repository management Bitbucket API operations.
+/// </summary>
 public partial class BitbucketClient
 {
+    /// <summary>
+    /// Gets the base projects URL.
+    /// </summary>
+    /// <returns>An <see cref="IFlurlRequest"/> targeting the projects endpoint.</returns>
     private IFlurlRequest GetProjectsUrl() => GetBaseUrl()
         .AppendPathSegment("/projects");
 
+    /// <summary>
+    /// Gets the projects URL for the specified path.
+    /// </summary>
+    /// <param name="path">The path to append.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the projects path.</returns>
     private IFlurlRequest GetProjectsUrl(string path) => GetProjectsUrl()
         .AppendPathSegment(path);
 
+    /// <summary>
+    /// Gets the URL for a specific project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the project.</returns>
     private IFlurlRequest GetProjectUrl(string projectKey) => GetProjectsUrl()
         .AppendPathSegment($"/{projectKey}");
 
+    /// <summary>
+    /// Gets the URL for a repository within a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the repository.</returns>
     private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug) => GetProjectsUrl($"/{projectKey}/repos/{repositorySlug}");
 
+    /// <summary>
+    /// Gets the URL for a specific path within a project repository.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="path">The additional path to append.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the repository path.</returns>
     private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug, string path) => GetProjectsReposUrl(projectKey, repositorySlug)
         .AppendPathSegment(path);
 
+    /// <summary>
+    /// Retrieves projects accessible to the current user.
+    /// </summary>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="name">Optional project name filter.</param>
+    /// <param name="permission">Optional permission filter.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of projects.</returns>
     public async Task<IEnumerable<Project>> GetProjectsAsync(
         int? maxPages = null,
         int? limit = null,
@@ -65,6 +105,16 @@ public partial class BitbucketClient
     /// Streams all projects as an IAsyncEnumerable, yielding items as they are retrieved.
     /// This is more memory-efficient for large result sets.
     /// </summary>
+    /// <summary>
+    /// Streams projects accessible to the current user.
+    /// </summary>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="name">Optional project name filter.</param>
+    /// <param name="permission">Optional permission filter.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of projects.</returns>
     public IAsyncEnumerable<Project> GetProjectsStreamAsync(
         int? maxPages = null,
         int? limit = null,
@@ -89,6 +139,12 @@ public partial class BitbucketClient
                 .ConfigureAwait(false), cancellationToken);
     }
 
+    /// <summary>
+    /// Creates a project.
+    /// </summary>
+    /// <param name="projectDefinition">The project definition.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The created project.</returns>
     public async Task<Project> CreateProjectAsync(ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl()
@@ -98,6 +154,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectAsync(string projectKey, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl($"/{projectKey}")
@@ -107,6 +169,13 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="projectDefinition">The updated project definition.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The updated project.</returns>
     public async Task<Project> UpdateProjectAsync(string projectKey, ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl($"/{projectKey}")
@@ -116,6 +185,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves a project by key.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The requested project.</returns>
     public async Task<Project> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl($"/{projectKey}")
@@ -125,6 +200,17 @@ public partial class BitbucketClient
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves user permissions for a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of user permissions.</returns>
     public async Task<IEnumerable<UserPermission>> GetProjectUserPermissionsAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -149,6 +235,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Removes a user's permissions from a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="userName">The user name.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if removal succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectUserPermissionsAsync(string projectKey, string userName, CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
@@ -165,6 +258,14 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates a user's permissions for a project.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="userName">The user name.</param>
+    /// <param name="permission">The permission to grant.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectUserPermissionsAsync(string projectKey, string userName, Permissions permission, CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>

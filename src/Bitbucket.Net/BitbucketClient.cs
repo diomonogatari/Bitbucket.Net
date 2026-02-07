@@ -19,6 +19,9 @@ using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Client for interacting with Bitbucket Server REST APIs.
+/// </summary>
 public partial class BitbucketClient
 {
     private static readonly JsonSerializerOptions s_jsonOptions = new()
@@ -66,6 +69,10 @@ public partial class BitbucketClient
     private readonly string? _password;
     private readonly IFlurlClient? _injectedClient;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BitbucketClient"/> class with the specified base URL.
+    /// </summary>
+    /// <param name="url">The base Bitbucket Server URL.</param>
     private BitbucketClient(string url)
     {
         _url = url;
@@ -152,6 +159,12 @@ public partial class BitbucketClient
         _getToken = getToken;
     }
 
+    /// <summary>
+    /// Builds a Flurl request rooted at the Bitbucket REST API.
+    /// </summary>
+    /// <param name="root">The API root segment (default is <c>/api</c>).</param>
+    /// <param name="version">The API version segment (default is <c>1.0</c>).</param>
+    /// <returns>An <see cref="IFlurlRequest"/> configured with authentication and serialization.</returns>
     private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
     {
         // If using injected client, use it directly
@@ -178,6 +191,14 @@ public partial class BitbucketClient
             .WithAuthentication(_getToken, _userName, _password);
     }
 
+    /// <summary>
+    /// Reads the response content and deserializes it.
+    /// </summary>
+    /// <typeparam name="TResult">The type of the result.</typeparam>
+    /// <param name="response">The HTTP response.</param>
+    /// <param name="contentHandler">Optional custom handler to parse the response content.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The deserialized response content.</returns>
     private static async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
         string content = await response.GetStringAsync().ConfigureAwait(false);
@@ -186,12 +207,24 @@ public partial class BitbucketClient
             : JsonSerializer.Deserialize<TResult>(content, s_jsonOptions)!;
     }
 
+    /// <summary>
+    /// Reads the response content and returns success based on empty body.
+    /// </summary>
+    /// <param name="response">The HTTP response.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if the response body is empty; otherwise, <c>false</c>.</returns>
     private static async Task<bool> ReadResponseContentAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         string content = await response.GetStringAsync().ConfigureAwait(false);
         return content == "";
     }
 
+    /// <summary>
+    /// Throws an exception if the response indicates an error.
+    /// </summary>
+    /// <param name="response">The HTTP response.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A task that completes when error handling is finished.</returns>
     private static async Task HandleErrorsAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         if (response.StatusCode >= 400)
@@ -231,18 +264,41 @@ public partial class BitbucketClient
         }
     }
 
+    /// <summary>
+    /// Handles an HTTP response, throwing on errors and deserializing the content.
+    /// </summary>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="response">The HTTP response.</param>
+    /// <param name="contentHandler">Optional custom content handler.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The deserialized response content.</returns>
     private static async Task<TResult> HandleResponseAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
         await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
         return await ReadResponseContentAsync(response, contentHandler, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Handles an HTTP response, throwing on errors and returning a boolean success indicator.
+    /// </summary>
+    /// <param name="response">The HTTP response.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns><c>true</c> if the response body is empty; otherwise, <c>false</c>.</returns>
     private static async Task<bool> HandleResponseAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
         return await ReadResponseContentAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves paged results from a paginated endpoint.
+    /// </summary>
+    /// <typeparam name="T">The item type in the paged results.</typeparam>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="queryParamValues">The query parameter values for requests.</param>
+    /// <param name="selector">A delegate that retrieves a page of results.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>All retrieved items.</returns>
     private static async Task<IEnumerable<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
     {
         var results = new List<T>();

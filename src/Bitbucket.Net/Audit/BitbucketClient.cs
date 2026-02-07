@@ -61,7 +61,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The key of the project.</param>
     /// <param name="repositorySlug">The slug (identifier) of the repository.</param>
-    /// <param name="maxPages">The maximum number of pages to retrieve. If <c>null</c>, all pages are retrieved.</param>
+    /// <param name="maxPages">The maximum number of pages to retrieve. If <see langword="null"/>, all pages are retrieved.</param>
     /// <param name="limit">The maximum number of results per page.</param>
     /// <param name="start">The starting index for pagination.</param>
     /// <param name="avatarSize">The size of user avatars to include in the response.</param>

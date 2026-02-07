@@ -9,14 +9,39 @@ using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Provides dashboard-related Bitbucket API operations.
+/// </summary>
 public partial class BitbucketClient
 {
+    /// <summary>
+    /// Gets the base dashboard URL.
+    /// </summary>
+    /// <returns>An <see cref="IFlurlRequest"/> targeting the dashboard root.</returns>
     private IFlurlRequest GetDashboardUrl() => GetBaseUrl()
         .AppendPathSegment("/dashboard");
 
+    /// <summary>
+    /// Gets the dashboard URL for the specified path.
+    /// </summary>
+    /// <param name="path">The path to append to the dashboard root.</param>
+    /// <returns>An <see cref="IFlurlRequest"/> pointing to the dashboard path.</returns>
     private IFlurlRequest GetDashboardUrl(string path) => GetDashboardUrl()
         .AppendPathSegment(path);
 
+    /// <summary>
+    /// Retrieves pull requests for the current user's dashboard.
+    /// </summary>
+    /// <param name="state">Optional pull request state filter.</param>
+    /// <param name="role">Optional participant role filter.</param>
+    /// <param name="status">Optional participant status filters.</param>
+    /// <param name="order">Optional sort order.</param>
+    /// <param name="closedSinceSeconds">Optional filter for recently closed PRs (seconds).</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of pull requests.</returns>
     public async Task<IEnumerable<PullRequest>> GetDashboardPullRequestsAsync(PullRequestStates? state = null,
         Roles? role = null,
         List<ParticipantStatus>? status = null,
@@ -47,6 +72,15 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves pull request suggestions for the current user.
+    /// </summary>
+    /// <param name="changesSinceSeconds">Time window in seconds to consider changes.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size (default 3).</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of pull request suggestions.</returns>
     public async Task<IEnumerable<PullRequestSuggestion>> GetDashboardPullRequestSuggestionsAsync(int changesSinceSeconds = 172800,
         int? maxPages = null,
         int? limit = 3,
