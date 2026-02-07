@@ -108,12 +108,12 @@ csharp_style_prefer_readonly_struct = true
 csharp_style_prefer_readonly_struct_member = true
 
 # Code-block preferences
-csharp_prefer_braces = true
-csharp_prefer_simple_using_statement = true
-csharp_style_namespace_declarations = file_scoped
-csharp_style_prefer_method_group_conversion = true
-csharp_style_prefer_primary_constructors = true
-csharp_style_prefer_top_level_statements = true
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_prefer_method_group_conversion = true:suggestion
+csharp_style_prefer_primary_constructors = true:warning
+csharp_style_prefer_top_level_statements = true:silent
 
 # Expression-level preferences
 csharp_prefer_simple_default_expression = true
@@ -239,3 +239,11 @@ dotnet_diagnostic.IDE0055.severity = none
 # IDE0130: Namespace does not match folder structure — this codebase uses
 # partial classes across folders, so namespace != folder is expected
 dotnet_diagnostic.IDE0130.severity = none
+
+# Meziantou/CA rules that have no auto code-fix — suppress so dotnet format
+# does not emit "Unable to fix" warnings
+dotnet_diagnostic.MA0011.severity = none
+dotnet_diagnostic.MA0015.severity = none
+dotnet_diagnostic.MA0016.severity = none
+dotnet_diagnostic.MA0048.severity = none
+dotnet_diagnostic.CA2024.severity = none
