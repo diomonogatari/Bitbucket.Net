@@ -1,5 +1,7 @@
+using Bitbucket.Net.Common.Models;
 using System.IO;
 using System.Net;
+using System.Text.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -145,6 +147,72 @@ public static class MockSetupExtensions
                 .WithStatusCode(HttpStatusCode.InternalServerError)
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyFromFile(GetFixturePath("Errors", "error-500.json")));
+
+        return server;
+    }
+
+    public static WireMockServer SetupBadRequest(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.BadRequest,
+            new Error { Message = "Bad request" });
+    }
+
+    public static WireMockServer SetupForbidden(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.Forbidden,
+            new Error { Message = "Forbidden" });
+    }
+
+    public static WireMockServer SetupConflict(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.Conflict,
+            new Error { Message = "Conflict" });
+    }
+
+    public static WireMockServer SetupRateLimited(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.TooManyRequests,
+            new Error { Message = "Rate limit exceeded" });
+    }
+
+    public static WireMockServer SetupErrorWithJsonBody(this WireMockServer server, string path, HttpStatusCode statusCode, params Error[] errors)
+    {
+        var json = JsonSerializer.Serialize(new { errors }, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(json));
+
+        return server;
+    }
+
+    public static WireMockServer SetupErrorWithHtmlBody(this WireMockServer server, string path, HttpStatusCode statusCode, string htmlContent)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithHeader("Content-Type", "text/html")
+                .WithBody(htmlContent));
+
+        return server;
+    }
+
+    public static WireMockServer SetupErrorWithEmptyBody(this WireMockServer server, string path, HttpStatusCode statusCode)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode));
 
         return server;
     }

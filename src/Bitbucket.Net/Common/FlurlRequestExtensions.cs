@@ -1,5 +1,8 @@
 ﻿using Flurl.Http;
 using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bitbucket.Net.Common;
 
@@ -14,5 +17,10 @@ public static class FlurlRequestExtensions
         }
 
         return request.WithBasicAuth(userName, password);
+    }
+
+    public static Task<IFlurlResponse> GetAsync(this IFlurlRequest request, CancellationToken cancellationToken)
+    {
+        return request.GetAsync(HttpCompletionOption.ResponseContentRead, cancellationToken);
     }
 }
