@@ -56,10 +56,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branches/info/{fullSha}")
+            {
+                var response = await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branches/info/{fullSha}")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<BranchBase>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BranchBase>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -72,9 +76,11 @@ public partial class BitbucketClient
     /// <returns>The branch model configuration.</returns>
     public async Task<BranchModel> GetRepoBranchModelAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
-        return await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branchmodel")
-            .GetJsonAsync<BranchModel>(cancellationToken: cancellationToken)
+        var response = await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branchmodel")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BranchModel>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -95,7 +101,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branches")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
