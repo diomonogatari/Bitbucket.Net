@@ -94,10 +94,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl()
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Project>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsUrl()
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Project>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -129,10 +133,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl()
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Project>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken);
+            {
+                var response = await GetProjectsUrl()
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Project>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -144,7 +152,7 @@ public partial class BitbucketClient
     public async Task<Project> CreateProjectAsync(ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl()
-            .PostJsonAsync(projectDefinition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(projectDefinition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -175,7 +183,7 @@ public partial class BitbucketClient
     public async Task<Project> UpdateProjectAsync(string projectKey, ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsUrl($"/{projectKey}")
-            .PutJsonAsync(projectDefinition, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(projectDefinition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -224,10 +232,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl($"/{projectKey}/permissions/users")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<UserPermission>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/permissions/users")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -304,10 +316,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsUrl($"/{projectKey}/permissions/users/none")
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/permissions/users/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<LicensedUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<LicensedUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -336,10 +352,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl($"/{projectKey}/permissions/groups")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<GroupPermission>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/permissions/groups")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -416,10 +436,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsUrl($"/{projectKey}/permissions/groups/none")
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/permissions/groups/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<LicensedUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<LicensedUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -454,7 +478,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsUrl($"/{projectKey}/permissions/{BitbucketHelpers.PermissionToString(permission)}/all")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -507,10 +531,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl($"/{projectKey}/repos")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/repos")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -531,10 +559,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsUrl($"/{projectKey}/repos")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken);
+            {
+                var response = await GetProjectsUrl($"/{projectKey}/repos")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -554,7 +586,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetProjectsUrl($"/{projectKey}/repos")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -569,9 +601,11 @@ public partial class BitbucketClient
     /// <returns>The requested repository.</returns>
     public async Task<Repository> GetProjectRepositoryAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
-            .GetJsonAsync<Repository>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -594,7 +628,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<RepositoryFork>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -643,7 +677,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
-            .PutJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -673,10 +707,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/forks")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/forks")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<RepositoryFork>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<RepositoryFork>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -690,7 +728,7 @@ public partial class BitbucketClient
     public async Task<Repository> RecreateProjectRepositoryAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/recreate")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -720,10 +758,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/related")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/related")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<RepositoryFork>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<RepositoryFork>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -757,10 +799,13 @@ public partial class BitbucketClient
             ["prefix"] = prefix,
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/archive")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/archive")
             .SetQueryParams(queryParamValues)
-            .GetBytesAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ReadResponseBytesAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -790,10 +835,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<GroupPermission>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -817,7 +866,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups")
             .SetQueryParams(queryParamValues)
-            .PutJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -868,10 +917,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups/none")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<DeletableGroupOrUser>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -905,10 +958,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<UserPermission>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -932,7 +989,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users")
             .SetQueryParams(queryParamValues)
-            .PutJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -987,10 +1044,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users/none")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users/none")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<User>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1030,10 +1091,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Branch>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1062,10 +1127,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Branch>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken);
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -1079,7 +1148,7 @@ public partial class BitbucketClient
     public async Task<Branch> CreateBranchAsync(string projectKey, string repositorySlug, BranchInfo branchInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-            .PostJsonAsync(branchInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(branchInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -1094,9 +1163,11 @@ public partial class BitbucketClient
     /// <returns>The default branch.</returns>
     public async Task<Branch> GetDefaultBranchAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/branches/default")
-            .GetJsonAsync<Branch>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches/default")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1110,7 +1181,7 @@ public partial class BitbucketClient
     public async Task<bool> SetDefaultBranchAsync(string projectKey, string repositorySlug, BranchRef branchRef, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-            .PutJsonAsync(branchRef, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(branchRef), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -1147,10 +1218,12 @@ public partial class BitbucketClient
             queryParamValues.Add("noContent", value: null);
         }
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/browse")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/browse")
             .SetQueryParams(queryParamValues, Flurl.NullValueHandling.NameOnly)
-            .GetJsonAsync<BrowseItem>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BrowseItem>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1185,10 +1258,12 @@ public partial class BitbucketClient
             queryParamValues.Add("noContent", value: null);
         }
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/browse/{path}")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/browse/{path}")
             .SetQueryParams(queryParamValues, Flurl.NullValueHandling.NameOnly)
-            .GetJsonAsync<BrowsePathItem>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BrowsePathItem>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1211,9 +1286,12 @@ public partial class BitbucketClient
             request = request.SetQueryParam("at", at);
         }
 
-        return await request
-            .GetStreamAsync(cancellationToken: cancellationToken)
+        var response = await request
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1330,10 +1408,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/changes")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/changes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Change>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1382,10 +1464,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Commit>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1420,10 +1506,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Commit>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken);
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -1443,10 +1533,12 @@ public partial class BitbucketClient
             ["path"] = path,
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Commit>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Commit>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1480,10 +1572,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Change>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1518,10 +1614,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Comment>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Comment>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1546,7 +1646,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(commentInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(commentInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -1566,10 +1666,12 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments/{commentId}")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments/{commentId}")
             .SetQueryParam("avatarSize", avatarSize)
-            .GetJsonAsync<CommentRef>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1586,7 +1688,7 @@ public partial class BitbucketClient
         CommentText commentText, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments/{commentId}")
-            .PutJsonAsync(commentText, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(commentText), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -1654,10 +1756,12 @@ public partial class BitbucketClient
             ["withComments"] = BitbucketHelpers.BoolToString(withComments),
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/diff")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Differences>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Differences>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1695,10 +1799,13 @@ public partial class BitbucketClient
             ["withComments"] = BitbucketHelpers.BoolToString(withComments),
         };
 
-        var responseStream = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/diff")
             .SetQueryParams(queryParamValues)
-            .GetStreamAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        var responseStream = await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
 
         await using (responseStream.ConfigureAwait(false))
         {
@@ -1720,7 +1827,7 @@ public partial class BitbucketClient
     public async Task<bool> CreateCommitWatchAsync(string projectKey, string repositorySlug, string commitId, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/watch")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -1774,10 +1881,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/changes")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/changes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Change>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1812,10 +1923,12 @@ public partial class BitbucketClient
             ["whitespace"] = whitespace,
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/diff")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Differences>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Differences>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1850,10 +1963,13 @@ public partial class BitbucketClient
             ["whitespace"] = whitespace,
         };
 
-        var responseStream = await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/diff")
             .SetQueryParams(queryParamValues)
-            .GetStreamAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        var responseStream = await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
 
         await using (responseStream.ConfigureAwait(false))
         {
@@ -1895,10 +2011,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/commits")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/compare/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Commit>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -1931,10 +2051,12 @@ public partial class BitbucketClient
             ["whitespace"] = whitespace,
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/diff")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Differences>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Differences>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1967,10 +2089,13 @@ public partial class BitbucketClient
             ["whitespace"] = whitespace,
         };
 
-        var responseStream = await GetProjectsReposUrl(projectKey, repositorySlug, "/diff")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/diff")
             .SetQueryParams(queryParamValues)
-            .GetStreamAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        var responseStream = await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
 
         await using (responseStream.ConfigureAwait(false))
         {
@@ -2007,10 +2132,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/files")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/files")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<string>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<string>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2024,10 +2153,12 @@ public partial class BitbucketClient
     /// <returns>Last modified information.</returns>
     public async Task<LastModified> GetProjectRepositoryLastModifiedAsync(string projectKey, string repositorySlug, string at, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/last-modified")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/last-modified")
             .SetQueryParam("at", at)
-            .GetJsonAsync<LastModified>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<LastModified>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2063,10 +2194,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/participants")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/participants")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Identity>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Identity>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2112,10 +2247,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<PullRequest>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2148,10 +2287,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<PullRequest>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken);
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -2165,7 +2308,7 @@ public partial class BitbucketClient
     public async Task<PullRequest> CreatePullRequestAsync(string projectKey, string repositorySlug, PullRequestInfo pullRequestInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
-            .PostJsonAsync(pullRequestInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(pullRequestInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2181,9 +2324,11 @@ public partial class BitbucketClient
     /// <returns>The requested pull request.</returns>
     public async Task<PullRequest> GetPullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}")
-            .GetJsonAsync<PullRequest>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2198,7 +2343,7 @@ public partial class BitbucketClient
     public async Task<PullRequest> UpdatePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, PullRequestUpdate pullRequestUpdate, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}")
-            .PutJsonAsync(pullRequestUpdate, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(pullRequestUpdate), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2216,7 +2361,7 @@ public partial class BitbucketClient
     public async Task<bool> DeletePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, VersionInfo versionInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}")
-            .SendJsonAsync(HttpMethod.Delete, versionInfo, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Delete, CreateJsonContent(versionInfo), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -2256,10 +2401,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/activities")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/activities")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<PullRequestActivity>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequestActivity>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2282,7 +2431,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/decline")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -2305,10 +2454,12 @@ public partial class BitbucketClient
             ["version"] = version,
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/merge")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/merge")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<PullRequestMergeState>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<PullRequestMergeState>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2338,7 +2489,7 @@ public partial class BitbucketClient
             return null;
         }
 
-        return await response.GetJsonAsync<Commit>().ConfigureAwait(false);
+        return await HandleResponseAsync<Commit>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2360,7 +2511,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/merge")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2385,7 +2536,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/reopen")
             .SetQueryParams(queryParamValues)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2402,7 +2553,7 @@ public partial class BitbucketClient
     public async Task<Reviewer> ApprovePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/approve")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Reviewer>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2462,10 +2613,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/changes")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/changes")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Change>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2542,7 +2697,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/comments")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2591,10 +2746,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<CommentRef>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<CommentRef>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2612,11 +2771,13 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/comments/{commentId}")
             .SetQueryParam("avatarSize", avatarSize)
-            .GetJsonAsync<CommentRef>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2642,7 +2803,7 @@ public partial class BitbucketClient
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/comments/{commentId}")
             .SetQueryParam("version", version)
-            .PutJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<CommentRef>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -2699,10 +2860,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/commits")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Commit>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2725,10 +2890,14 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/commits")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/commits")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Commit>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken);
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -2758,11 +2927,13 @@ public partial class BitbucketClient
     {
         var queryParamValues = CreatePullRequestDiffQueryParams(contextLines, diffType, sinceId, srcPath, untilId, whitespace, withComments);
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/diff")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Differences>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Differences>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -2791,11 +2962,14 @@ public partial class BitbucketClient
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var queryParamValues = CreatePullRequestDiffQueryParams(contextLines, diffType, sinceId, srcPath, untilId, whitespace, withComments);
-        var responseStream = await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/diff")
             .SetQueryParams(queryParamValues)
-            .GetStreamAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        var responseStream = await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
 
         try
         {
@@ -2839,11 +3013,13 @@ public partial class BitbucketClient
     {
         var queryParamValues = CreatePullRequestDiffQueryParams(contextLines, diffType, sinceId, srcPath, untilId, whitespace, withComments);
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/diff/{path}")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<Differences>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Differences>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     private static Dictionary<string, object?> CreatePullRequestDiffQueryParams(int contextLines, DiffTypes diffType, string? sinceId,
@@ -2929,11 +3105,15 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug)
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug)
                     .AppendPathSegment($"/pull-requests/{pullRequestId}/participants")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Participant>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Participant>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -2960,7 +3140,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/participants")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Participant>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3014,7 +3194,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/participants/{userSlug}")
-            .PutJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Participant>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3077,10 +3257,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<BitbucketTask>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BitbucketTask>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -3103,10 +3287,12 @@ public partial class BitbucketClient
     [Obsolete("This endpoint is deprecated in Bitbucket Server 9.0+. Use GetPullRequestBlockerCommentsAsync and count the results for 9.0+ compatibility.")]
     public async Task<BitbucketTaskCount> GetPullRequestTaskCountAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/tasks/count")
-            .GetJsonAsync<BitbucketTaskCount>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BitbucketTaskCount>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     #region Blocker Comments (Bitbucket Server 9.0+)
@@ -3152,10 +3338,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<BlockerComment>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BlockerComment>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -3176,10 +3366,12 @@ public partial class BitbucketClient
         long blockerCommentId,
         CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/blocker-comments/{blockerCommentId}")
-            .GetJsonAsync<BlockerComment>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<BlockerComment>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3210,7 +3402,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/blocker-comments")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<BlockerComment>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3245,7 +3437,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/blocker-comments/{blockerCommentId}")
-            .PutJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<BlockerComment>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3413,7 +3605,7 @@ public partial class BitbucketClient
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/watch")
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -3465,11 +3657,14 @@ public partial class BitbucketClient
             ["htmlEscape"] = BitbucketHelpers.BoolToString(htmlEscape),
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/raw/{path}")
             .SetQueryParams(queryParamValues)
-            .GetStreamAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
+        return await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3481,9 +3676,11 @@ public partial class BitbucketClient
     /// <returns>The pull request settings.</returns>
     public async Task<PullRequestSettings> GetProjectRepositoryPullRequestSettingsAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/pull-requests")
-            .GetJsonAsync<PullRequestSettings>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/pull-requests")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<PullRequestSettings>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3498,7 +3695,7 @@ public partial class BitbucketClient
         PullRequestSettings pullRequestSettings, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/pull-requests")
-            .PostJsonAsync(pullRequestSettings, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(pullRequestSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequestSettings>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3531,10 +3728,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Hook>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Hook>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -3548,9 +3749,11 @@ public partial class BitbucketClient
     /// <returns>The hook configuration.</returns>
     public async Task<Hook> GetProjectRepositoryHookSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
-            .GetJsonAsync<Hook>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Hook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3582,7 +3785,7 @@ public partial class BitbucketClient
     public async Task<Hook> EnableProjectRepositoryHookAsync(string projectKey, string repositorySlug, string hookKey, object? hookSettings = null, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/enabled")
-            .PutJsonAsync(hookSettings, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(hookSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Hook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3615,9 +3818,11 @@ public partial class BitbucketClient
     /// <returns>A dictionary of hook settings.</returns>
     public async Task<Dictionary<string, object?>> GetProjectRepositoryHookAllSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
-            .GetJsonAsync<Dictionary<string, object?>>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Dictionary<string, object?>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3633,7 +3838,7 @@ public partial class BitbucketClient
         Dictionary<string, object?> allSettings, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
-            .PutJsonAsync(allSettings, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(allSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Dictionary<string, object?>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3648,10 +3853,12 @@ public partial class BitbucketClient
     /// <returns>The pull request settings.</returns>
     public async Task<PullRequestSettings> GetProjectPullRequestsMergeStrategiesAsync(string projectKey, string scmId, CancellationToken cancellationToken = default)
     {
-        return await GetProjectUrl(projectKey)
+        var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
-            .GetJsonAsync<PullRequestSettings>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<PullRequestSettings>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3666,7 +3873,7 @@ public partial class BitbucketClient
     {
         var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
-            .PostJsonAsync(mergeStrategies, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(mergeStrategies), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<MergeStrategies>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3702,10 +3909,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<Tag>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -3733,7 +3944,7 @@ public partial class BitbucketClient
         };
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
-            .PostJsonAsync(data, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Tag>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3749,9 +3960,11 @@ public partial class BitbucketClient
     /// <returns>The requested tag.</returns>
     public async Task<Tag> GetProjectRepositoryTagAsync(string projectKey, string repositorySlug, string tagName, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/tags/{tagName}")
-            .GetJsonAsync<Tag>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/tags/{tagName}")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Tag>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3784,10 +3997,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-                await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
                     .SetQueryParams(qpv)
-                    .GetJsonAsync<PagedResults<WebHook>>(cancellationToken: ct)
-                    .ConfigureAwait(false), cancellationToken)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<WebHook>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -3802,7 +4019,7 @@ public partial class BitbucketClient
     public async Task<WebHook> CreateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug, WebHook webHook, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
-            .PostJsonAsync(webHook, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(webHook), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3820,7 +4037,7 @@ public partial class BitbucketClient
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks/test")
             .SetQueryParam("url", url)
-            .PostJsonAsync(new StringContent(""), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHookTestRequestResponse>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3846,10 +4063,12 @@ public partial class BitbucketClient
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
             .SetQueryParams(queryParamValues)
-            .GetJsonAsync<WebHook>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3865,7 +4084,7 @@ public partial class BitbucketClient
         string webHookId, WebHook webHook, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
-            .PutJsonAsync(webHook, cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(webHook), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -3913,11 +4132,13 @@ public partial class BitbucketClient
             ["outcome"] = BitbucketHelpers.WebHookOutcomeToString(outcome),
         };
 
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/latest")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/latest")
             .SetQueryParams(queryParamValues)
             //.GetJsonAsync<WebHookInvocation>()
-            .GetStringAsync(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync(response, s => s, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3934,10 +4155,12 @@ public partial class BitbucketClient
         string? @event = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics")
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics")
             .SetQueryParam("event", @event)
-            .GetJsonAsync<WebHookStatistics>(cancellationToken: cancellationToken)
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<WebHookStatistics>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -3951,8 +4174,10 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, WebHookStatisticsCounts>> GetProjectRepositoryWebHookStatisticsSummaryAsync(string projectKey, string repositorySlug,
         string webHookId, CancellationToken cancellationToken = default)
     {
-        return await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics/summary")
-            .GetJsonAsync<Dictionary<string, WebHookStatisticsCounts>>(cancellationToken: cancellationToken)
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics/summary")
+            .GetAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Dictionary<string, WebHookStatisticsCounts>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }
