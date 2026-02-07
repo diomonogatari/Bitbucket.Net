@@ -11,6 +11,9 @@ using PasswordChange = Bitbucket.Net.Models.Core.Admin.PasswordChange;
 
 namespace Bitbucket.Net;
 
+/// <summary>
+/// Provides administrative operations for Bitbucket Server, including user, group, permissions, license, and mail server management.
+/// </summary>
 public partial class BitbucketClient
 {
     private IFlurlRequest GetAdminUrl() => GetBaseUrl()
@@ -19,6 +22,15 @@ public partial class BitbucketClient
     private IFlurlRequest GetAdminUrl(string path) => GetAdminUrl()
         .AppendPathSegment(path);
 
+    /// <summary>
+    /// Retrieves groups with optional filtering.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of groups.</returns>
     public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminGroupsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -41,6 +53,12 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Creates a group.
+    /// </summary>
+    /// <param name="name">The group name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The created group.</returns>
     public async Task<DeletableGroupOrUser> CreateAdminGroupAsync(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/groups")
@@ -51,6 +69,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<DeletableGroupOrUser>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes a group.
+    /// </summary>
+    /// <param name="name">The group name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The deleted group info.</returns>
     public async Task<DeletableGroupOrUser> DeleteAdminGroupAsync(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/groups")
@@ -61,6 +85,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<DeletableGroupOrUser>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Adds users to a group.
+    /// </summary>
+    /// <param name="groupUsers">The group and user payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if users were added; otherwise, <c>false</c>.</returns>
     public async Task<bool> AddAdminGroupUsersAsync(GroupUsers groupUsers, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/groups/add-users")
@@ -70,6 +100,17 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves members of a group beyond the initial page.
+    /// </summary>
+    /// <param name="context">The group context.</param>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of group members.</returns>
     public async Task<IEnumerable<UserInfo>> GetAdminGroupMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -95,6 +136,17 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves non-members for a group beyond the initial page.
+    /// </summary>
+    /// <param name="context">The group context.</param>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of non-members.</returns>
     public async Task<IEnumerable<UserInfo>> GetAdminGroupMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -120,6 +172,16 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves users with optional filtering.
+    /// </summary>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of users.</returns>
     public async Task<IEnumerable<UserInfo>> GetAdminUsersAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -144,6 +206,17 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Creates a user.
+    /// </summary>
+    /// <param name="name">The username.</param>
+    /// <param name="password">The password.</param>
+    /// <param name="displayName">The display name.</param>
+    /// <param name="emailAddress">The email address.</param>
+    /// <param name="addToDefaultGroup">Whether to add to the default group.</param>
+    /// <param name="notify">Whether to notify the user.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if creation succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> CreateAdminUserAsync(string name, string password, string displayName, string emailAddress,
         bool addToDefaultGroup = true, string notify = "false", CancellationToken cancellationToken = default)
     {
@@ -166,6 +239,14 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates user details.
+    /// </summary>
+    /// <param name="name">Optional username to update.</param>
+    /// <param name="displayName">Optional display name.</param>
+    /// <param name="emailAddress">Optional email address.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated user.</returns>
     public async Task<UserInfo> UpdateAdminUserAsync(string? name = null, string? displayName = null, string? emailAddress = null, CancellationToken cancellationToken = default)
     {
         var data = new
@@ -182,6 +263,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<UserInfo>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes a user.
+    /// </summary>
+    /// <param name="name">The username.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The deleted user info.</returns>
     public async Task<UserInfo> DeleteAdminUserAsync(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users")
@@ -192,6 +279,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync<UserInfo>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Adds groups to a user.
+    /// </summary>
+    /// <param name="userGroups">The user groups payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if groups were added; otherwise, <c>false</c>.</returns>
     public async Task<bool> AddAdminUserGroupsAsync(UserGroups userGroups, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users/add-groups")
@@ -201,6 +294,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes captcha for a user.
+    /// </summary>
+    /// <param name="name">The username.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteAdminUserCaptcha(string name, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users/captcha")
@@ -211,6 +310,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates user credentials.
+    /// </summary>
+    /// <param name="passwordChange">The password change payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateAdminUserCredentialsAsync(PasswordChange passwordChange, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/users/credentials")
@@ -220,6 +325,16 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves additional groups for a user (memberships) beyond the first page.
+    /// </summary>
+    /// <param name="context">The username context.</param>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of group memberships.</returns>
     public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminUserMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -243,6 +358,16 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves additional groups that a user is not a member of.
+    /// </summary>
+    /// <param name="context">The username context.</param>
+    /// <param name="filter">Optional filter string.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A collection of non-member groups.</returns>
     public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminUserMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -266,6 +391,13 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Removes a user from a group.
+    /// </summary>
+    /// <param name="userName">The username.</param>
+    /// <param name="groupName">The group name.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if removal succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> RemoveAdminUserFromGroupAsync(string userName, string groupName, CancellationToken cancellationToken = default)
     {
         var data = new
@@ -281,6 +413,13 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Renames a user.
+    /// </summary>
+    /// <param name="userRename">The rename payload.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated user info.</returns>
     public async Task<UserInfo> RenameAdminUserAsync(UserRename userRename, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("users/rename")
@@ -291,6 +430,11 @@ public partial class BitbucketClient
         return await HandleResponseAsync<UserInfo>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves cluster information.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The cluster details.</returns>
     public async Task<Cluster> GetAdminClusterAsync(CancellationToken cancellationToken = default)
     {
         return await GetAdminUrl("/cluster")
@@ -298,6 +442,11 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves license details.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The license details.</returns>
     public async Task<LicenseDetails> GetAdminLicenseAsync(CancellationToken cancellationToken = default)
     {
         return await GetAdminUrl("/license")
@@ -305,6 +454,12 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates license information.
+    /// </summary>
+    /// <param name="licenseInfo">The license payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated license details.</returns>
     public async Task<LicenseDetails> UpdateAdminLicenseAsync(LicenseInfo licenseInfo, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/license")
@@ -314,6 +469,11 @@ public partial class BitbucketClient
         return await HandleResponseAsync<LicenseDetails>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves mail server configuration.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The mail server configuration.</returns>
     public async Task<MailServerConfiguration> GetAdminMailServerAsync(CancellationToken cancellationToken = default)
     {
         return await GetAdminUrl("/mail-server")
@@ -321,6 +481,12 @@ public partial class BitbucketClient
             .ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates mail server configuration.
+    /// </summary>
+    /// <param name="mailServerConfiguration">The configuration payload.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated configuration.</returns>
     public async Task<MailServerConfiguration> UpdateAdminMailServerAsync(MailServerConfiguration mailServerConfiguration, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server")
@@ -330,6 +496,11 @@ public partial class BitbucketClient
         return await HandleResponseAsync<MailServerConfiguration>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes mail server configuration.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteAdminMailServerAsync(CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server")
@@ -339,6 +510,11 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Retrieves the mail server sender address.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The sender address.</returns>
     public async Task<string> GetAdminMailServerSenderAddressAsync(CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server/sender-address")
@@ -348,6 +524,12 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, s => s, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Updates the mail server sender address.
+    /// </summary>
+    /// <param name="senderAddress">The sender address.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated sender address.</returns>
     public async Task<string> UpdateAdminMailServerSenderAddressAsync(string senderAddress, CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server/sender-address")
@@ -357,6 +539,11 @@ public partial class BitbucketClient
         return await HandleResponseAsync(response, s => s, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Deletes the mail server sender address.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteAdminMailServerSenderAddressAsync(CancellationToken cancellationToken = default)
     {
         var response = await GetAdminUrl("/mail-server/sender-address")
