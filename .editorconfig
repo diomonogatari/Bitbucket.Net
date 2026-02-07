@@ -240,6 +240,14 @@ dotnet_diagnostic.IDE0055.severity = none
 # partial classes across folders, so namespace != folder is expected
 dotnet_diagnostic.IDE0130.severity = none
 
+# IDE* suggestions that can cause noisy or potentially breaking refactors when
+# running `dotnet format style --severity info` (e.g., renames). Keep formatting
+# verification focused on whitespace + explicit style preferences.
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.IDE0028.severity = none
+dotnet_diagnostic.IDE0300.severity = none
+dotnet_diagnostic.IDE0305.severity = none
+
 # Meziantou/CA rules that have no auto code-fix — suppress so dotnet format
 # does not emit "Unable to fix" warnings
 dotnet_diagnostic.MA0011.severity = none

@@ -10,6 +10,11 @@
 
 Modernized C# client for **Bitbucket Server** (Stash) REST API.
 
+## Contributing
+
+Development setup (including the pre-commit formatting hook) is documented in
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 > **Fork notice** &mdash; This is an actively maintained fork of
 > [lvermeulen/Bitbucket.Net](https://github.com/lvermeulen/Bitbucket.Net),
 > which appears to be abandoned (last release 2020).
