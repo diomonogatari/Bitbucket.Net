@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects;
 
-public class Comment : PullRequestInfo
+public class Comment
 {
     public int Id { get; set; }
     public int Version { get; set; }
@@ -15,11 +15,7 @@ public class Comment : PullRequestInfo
     /// Bitbucket Server comment state.
     /// Common values: OPEN, PENDING, RESOLVED.
     /// </summary>
-    /// <remarks>
-    /// This intentionally hides <see cref="PullRequestInfo.State"/>. Although inheriting from <see cref="PullRequestInfo"/>
-    /// is not ideal for a comment model, using the same CLR member name avoids System.Text.Json property-name collisions.
-    /// </remarks>
-    public new string? State { get; set; }
+    public string? State { get; set; }
 
     /// <summary>
     /// Indicates whether the whole comment thread is resolved.
