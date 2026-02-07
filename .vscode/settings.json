@@ -4,6 +4,7 @@
   "editor.formatOnType": false,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always",
+    "source.removeUnusedImports": "always",
     "source.fixAll": "always"
   }
 }
