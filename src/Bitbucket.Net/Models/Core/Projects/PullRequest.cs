@@ -15,5 +15,5 @@ public class PullRequest : PullRequestInfo
     public List<Participant>? Participants { get; set; }
     public Links? Links { get; set; }
 
-    public override string ToString() => $"{Author?.User?.DisplayName ?? "(unknown)"}: {Title ?? "(untitled)"}";
+    public override string ToString() => $"{Author?.User?.DisplayName ?? "Unknown"}: {Title ?? "(untitled)"}";
 }

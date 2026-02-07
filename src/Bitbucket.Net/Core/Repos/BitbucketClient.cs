@@ -64,10 +64,7 @@ public partial class BitbucketClient
     }
 
     /// <summary>
-    /// Streams all repositories as an IAsyncEnumerable, yielding items as they are retrieved.
-    /// </summary>
-    /// <summary>
-    /// Streams repositories accessible to the current user.
+    /// Streams all repositories accessible to the current user, yielding items as they are retrieved.
     /// </summary>
     /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
     /// <param name="limit">Optional page size.</param>
