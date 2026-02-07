@@ -8,6 +8,6 @@ namespace Bitbucket.Net.Models.PersonalAccessTokens;
 public class AccessTokenCreate
 {
     public string? Name { get; set; }
-    [JsonConverter(typeof(PermissionsConverter))]
+    [JsonConverter(typeof(PermissionsListConverter))]
     public List<Permissions>? Permissions { get; set; }
 }

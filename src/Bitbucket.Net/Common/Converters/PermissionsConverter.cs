@@ -14,3 +14,16 @@ public class PermissionsConverter : JsonEnumConverter<Permissions>
         return BitbucketHelpers.StringToPermission(s);
     }
 }
+
+public class PermissionsListConverter : JsonEnumListConverter<Permissions>
+{
+    protected override string ConvertToString(Permissions value)
+    {
+        return BitbucketHelpers.PermissionToString(value);
+    }
+
+    protected override Permissions ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToPermission(s);
+    }
+}
