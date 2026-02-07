@@ -4,9 +4,6 @@ using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Models.RefRestrictions;
 using Bitbucket.Net.Models.RefSync;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bitbucket.Net.Common;
 

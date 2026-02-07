@@ -1,8 +1,6 @@
 #nullable enable
 
 using Flurl.Http;
-using System;
-using System.Net.Http;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;

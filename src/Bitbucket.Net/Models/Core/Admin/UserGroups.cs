@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bitbucket.Net.Models.Core.Admin;
+﻿namespace Bitbucket.Net.Models.Core.Admin;
 
 public class UserGroups
 {

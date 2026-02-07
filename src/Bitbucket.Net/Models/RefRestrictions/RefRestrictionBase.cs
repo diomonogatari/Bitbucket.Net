@@ -1,6 +1,5 @@
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.DefaultReviewers;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.RefRestrictions;

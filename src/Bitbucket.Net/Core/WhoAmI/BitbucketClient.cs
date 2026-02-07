@@ -1,8 +1,6 @@
 using Bitbucket.Net.Common;
 using Flurl;
 using Flurl.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

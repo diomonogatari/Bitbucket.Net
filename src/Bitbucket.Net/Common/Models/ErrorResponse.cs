@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bitbucket.Net.Common.Models;
+﻿namespace Bitbucket.Net.Common.Models;
 
 /// <summary>
 /// Represents the error response returned by the Bitbucket Server API.

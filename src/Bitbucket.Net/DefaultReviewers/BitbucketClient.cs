@@ -1,10 +1,6 @@
 using Bitbucket.Net.Models.Core.Users;
 using Bitbucket.Net.Models.DefaultReviewers;
 using Flurl.Http;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

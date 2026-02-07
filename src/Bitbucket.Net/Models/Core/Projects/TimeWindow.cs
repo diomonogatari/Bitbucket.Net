@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common.Converters;
-using System;
 using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects;

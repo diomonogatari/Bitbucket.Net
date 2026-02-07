@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common.Models;
-using System.IO;
 using System.Net;
 using System.Text.Json;
 using WireMock.Matchers;

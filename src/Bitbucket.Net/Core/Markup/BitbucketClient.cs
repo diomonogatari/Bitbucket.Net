@@ -1,10 +1,6 @@
 using Bitbucket.Net.Common;
 using Flurl.Http;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

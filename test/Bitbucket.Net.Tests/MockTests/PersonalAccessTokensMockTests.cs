@@ -1,9 +1,6 @@
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.PersonalAccessTokens;
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;

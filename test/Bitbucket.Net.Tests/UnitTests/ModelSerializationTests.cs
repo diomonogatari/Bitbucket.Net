@@ -5,8 +5,6 @@ using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Users;
 using Bitbucket.Net.Serialization;
-using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using Xunit;
 

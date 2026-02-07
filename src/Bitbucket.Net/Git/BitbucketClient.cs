@@ -2,9 +2,6 @@ using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Flurl.Http;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

@@ -1,8 +1,6 @@
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Users;
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;

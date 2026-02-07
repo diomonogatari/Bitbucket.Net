@@ -3,12 +3,8 @@ using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Branches;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

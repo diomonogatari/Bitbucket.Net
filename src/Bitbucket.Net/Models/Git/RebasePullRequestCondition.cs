@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bitbucket.Net.Models.Git;
+﻿namespace Bitbucket.Net.Models.Git;
 
 public class RebasePullRequestCondition
 {

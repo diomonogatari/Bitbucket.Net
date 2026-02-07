@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bitbucket.Net.Models.Core.Projects;
+﻿namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
 /// Represents a file path in a Bitbucket repository.

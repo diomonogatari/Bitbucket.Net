@@ -2,7 +2,6 @@ using Bitbucket.Net.Common.Exceptions;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Tests.Infrastructure;
 using System.Net;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;

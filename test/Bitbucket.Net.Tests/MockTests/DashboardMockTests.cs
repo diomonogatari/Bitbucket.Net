@@ -1,7 +1,5 @@
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;
@@ -39,6 +37,6 @@ public class DashboardMockTests(BitbucketMockFixture fixture) : IClassFixture<Bi
         var suggestions = result.ToList();
         Assert.Single(suggestions);
         Assert.NotNull(suggestions[0].FromRef);
-        Assert.Equal("feature/branch", suggestions[0].FromRef.DisplayId);
+        Assert.Equal("feature/branch", suggestions[0].FromRef!.DisplayId);
     }
 }

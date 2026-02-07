@@ -1,6 +1,4 @@
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;
@@ -55,7 +53,7 @@ public class JiraMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuck
         var changeSets = result.ToList();
         Assert.Single(changeSets);
         Assert.NotNull(changeSets[0].ToCommit);
-        Assert.Equal("def456abc789", changeSets[0].ToCommit.Id);
+        Assert.Equal("def456abc789", changeSets[0].ToCommit!.Id);
     }
 
     private const string CommentId = "100";

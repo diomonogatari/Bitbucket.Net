@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Bitbucket.Net.Common;
+﻿namespace Bitbucket.Net.Common;
 
 public static class UnixDateTimeExtensions
 {

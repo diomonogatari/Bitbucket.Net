@@ -1,7 +1,5 @@
 using Bitbucket.Net.Models.RefSync;
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;

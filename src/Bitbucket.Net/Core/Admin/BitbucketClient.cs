@@ -3,10 +3,6 @@ using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using PasswordChange = Bitbucket.Net.Models.Core.Admin.PasswordChange;
 
 namespace Bitbucket.Net;

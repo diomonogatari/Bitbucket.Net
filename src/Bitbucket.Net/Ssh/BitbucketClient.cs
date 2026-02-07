@@ -4,12 +4,8 @@ using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.RefRestrictions;
 using Bitbucket.Net.Models.Ssh;
 using Flurl.Http;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bitbucket.Net;
 

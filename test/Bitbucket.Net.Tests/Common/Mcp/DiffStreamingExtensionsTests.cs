@@ -1,12 +1,8 @@
 using Bitbucket.Net.Common.Mcp;
 using Bitbucket.Net.Models.Core.Projects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
+using ProjectPath = Bitbucket.Net.Models.Core.Projects.Path;
 
 namespace Bitbucket.Net.Tests.Common.Mcp;
 
@@ -233,8 +229,8 @@ public class DiffStreamingExtensionsTests
     {
         return new Diff
         {
-            Source = new Path { toString = "source.cs" },
-            Destination = new Path { toString = "dest.cs" },
+            Source = new ProjectPath { toString = "source.cs" },
+            Destination = new ProjectPath { toString = "dest.cs" },
             Hunks = [.. Enumerable.Range(0, hunks).Select(_ => new DiffHunk
             {
                 SourceLine = 1,

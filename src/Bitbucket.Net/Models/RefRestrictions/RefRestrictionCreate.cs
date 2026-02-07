@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Bitbucket.Net.Models.RefRestrictions;
+﻿namespace Bitbucket.Net.Models.RefRestrictions;
 
 public class RefRestrictionCreate : RefRestrictionBase
 {

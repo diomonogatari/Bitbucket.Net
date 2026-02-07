@@ -1,6 +1,5 @@
 using Bitbucket.Net.Common.Exceptions;
 using Bitbucket.Net.Common.Models;
-using System.Collections.Generic;
 using System.Net;
 using Xunit;
 

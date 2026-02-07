@@ -1,6 +1,5 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Users;
-using System.Collections.Generic;
 
 namespace Bitbucket.Net.Models.RefRestrictions;
 

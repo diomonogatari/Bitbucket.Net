@@ -1,6 +1,4 @@
 using Bitbucket.Net.Tests.Infrastructure;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;
@@ -97,10 +95,11 @@ public class AdminMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         Assert.NotNull(cluster);
         Assert.True(cluster.Running);
         Assert.NotNull(cluster.LocalNode);
-        Assert.Equal("node-1", cluster.LocalNode.Id);
-        Assert.Equal("bitbucket-node-1", cluster.LocalNode.Name);
-        Assert.True(cluster.LocalNode.Local);
-        Assert.Equal(2, cluster.Nodes.Count);
+        Assert.Equal("node-1", cluster.LocalNode!.Id);
+        Assert.Equal("bitbucket-node-1", cluster.LocalNode!.Name);
+        Assert.True(cluster.LocalNode!.Local);
+        Assert.NotNull(cluster.Nodes);
+        Assert.Equal(2, cluster.Nodes!.Count);
     }
 
     [Fact]
@@ -132,8 +131,8 @@ public class AdminMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         var permList = permissions.ToList();
         Assert.NotEmpty(permList);
         Assert.Equal(2, permList.Count);
-        Assert.Equal("administrators", permList[0].Group.Name);
-        Assert.Equal("developers", permList[1].Group.Name);
+        Assert.Equal("administrators", permList[0].Group!.Name);
+        Assert.Equal("developers", permList[1].Group!.Name);
     }
 
     [Fact]
@@ -148,7 +147,7 @@ public class AdminMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         var permList = permissions.ToList();
         Assert.NotEmpty(permList);
         Assert.Equal(2, permList.Count);
-        Assert.Equal("admin", permList[0].User.Name);
-        Assert.Equal("jsmith", permList[1].User.Name);
+        Assert.Equal("admin", permList[0].User!.Name);
+        Assert.Equal("jsmith", permList[1].User!.Name);
     }
 }

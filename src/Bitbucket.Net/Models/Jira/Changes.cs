@@ -1,5 +1,4 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
-using System.Collections.Generic;
 
 namespace Bitbucket.Net.Models.Jira;
 
