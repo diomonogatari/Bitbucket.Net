@@ -55,10 +55,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetReposUrl()
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetReposUrl()
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -99,9 +103,13 @@ public partial class BitbucketClient
         };
 
         return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetReposUrl()
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken);
+            {
+                var response = await GetReposUrl()
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 }

@@ -53,10 +53,14 @@ public partial class BitbucketClient
         };
 
         return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            await GetProfileUrl("/recent/repos")
-                .SetQueryParams(qpv)
-                .GetJsonAsync<PagedResults<Repository>>(cancellationToken: ct)
-                .ConfigureAwait(false), cancellationToken)
+            {
+                var response = await GetProfileUrl("/recent/repos")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken)
             .ConfigureAwait(false);
     }
 }
