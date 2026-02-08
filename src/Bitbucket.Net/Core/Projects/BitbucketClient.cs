@@ -1412,6 +1412,44 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams changes for a repository between refs, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="until">The target ref.</param>
+    /// <param name="since">Optional starting ref.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of changes.</returns>
+    public IAsyncEnumerable<Change> GetChangesStreamAsync(string projectKey, string repositorySlug, string until, string? since = null,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["since"] = since,
+            ["until"] = until,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/changes")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Retrieves commits for a repository.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
@@ -1573,6 +1611,47 @@ public partial class BitbucketClient
                 return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
             }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Streams changes for a specific commit, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="commitId">The commit ID.</param>
+    /// <param name="since">Optional starting commit ID.</param>
+    /// <param name="withComments">Whether to include comment counts.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of changes.</returns>
+    public IAsyncEnumerable<Change> GetCommitChangesStreamAsync(string projectKey, string repositorySlug, string commitId,
+        string? since = null,
+        bool withComments = true,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["since"] = since,
+            ["withComments"] = BitbucketHelpers.BoolToString(withComments),
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -2405,6 +2484,50 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams activities for a pull request, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="fromId">Optional starting activity ID.</param>
+    /// <param name="fromType">Optional from type filter.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of pull request activities.</returns>
+    public IAsyncEnumerable<PullRequestActivity> GetPullRequestActivitiesStreamAsync(string projectKey, string repositorySlug, long pullRequestId,
+        long? fromId = null,
+        PullRequestFromTypes? fromType = null,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        int? avatarSize = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["fromId"] = fromId,
+            ["fromType"] = BitbucketHelpers.PullRequestFromTypeToString(fromType),
+            ["avatarSize"] = avatarSize,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/activities")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequestActivity>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Declines a pull request.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
@@ -2617,6 +2740,53 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams changes for a pull request, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="changeScope">The change scope filter.</param>
+    /// <param name="sinceId">Optional since commit ID.</param>
+    /// <param name="untilId">Optional until commit ID.</param>
+    /// <param name="withComments">Whether to include comment counts.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of changes.</returns>
+    public IAsyncEnumerable<Change> GetPullRequestChangesStreamAsync(string projectKey, string repositorySlug, long pullRequestId,
+        ChangeScopes changeScope = ChangeScopes.All,
+        string? sinceId = null,
+        string? untilId = null,
+        bool withComments = true,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["changeScope"] = BitbucketHelpers.ChangeScopeToString(changeScope),
+            ["sinceId"] = sinceId,
+            ["untilId"] = untilId,
+            ["withComments"] = BitbucketHelpers.BoolToString(withComments),
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/changes")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Creates a comment on a pull request.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
@@ -2747,6 +2917,59 @@ public partial class BitbucketClient
                 return await HandleResponseAsync<PagedResults<CommentRef>>(response, cancellationToken: ct).ConfigureAwait(false);
             }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Streams comments for a pull request, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="path">The file path to filter comments for.</param>
+    /// <param name="anchorState">The anchor state filter.</param>
+    /// <param name="diffType">The diff type filter.</param>
+    /// <param name="fromHash">Optional from commit hash.</param>
+    /// <param name="toHash">Optional to commit hash.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of comment references.</returns>
+    public IAsyncEnumerable<CommentRef> GetPullRequestCommentsStreamAsync(string projectKey, string repositorySlug, long pullRequestId,
+        string path,
+        AnchorStates anchorState = AnchorStates.Active,
+        DiffTypes diffType = DiffTypes.Effective,
+        string? fromHash = null,
+        string? toHash = null,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        int? avatarSize = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["avatarSize"] = avatarSize,
+            ["path"] = path,
+            ["anchorState"] = BitbucketHelpers.AnchorStateToString(anchorState),
+            ["diffType"] = BitbucketHelpers.DiffTypeToString(diffType),
+            ["fromHash"] = fromHash,
+            ["toHash"] = toHash,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<CommentRef>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -3110,6 +3333,45 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams participants for a pull request, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of participants.</returns>
+    public IAsyncEnumerable<Participant> GetPullRequestParticipantsStreamAsync(string projectKey, string repositorySlug, long pullRequestId,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        int? avatarSize = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["avatarSize"] = avatarSize,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug)
+                    .AppendPathSegment($"/pull-requests/{pullRequestId}/participants")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Participant>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Assigns a role to a user in a pull request.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
@@ -3261,6 +3523,53 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams tasks for a pull request, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of tasks.</returns>
+    /// <remarks>
+    /// <para>
+    /// <b>Deprecation Notice:</b> This endpoint was deprecated in Bitbucket Server 9.0 and returns 404 Not Found on servers version 9.0+.
+    /// </para>
+    /// <para>
+    /// For Bitbucket Server 9.0+, use <see cref="GetPullRequestBlockerCommentsStreamAsync"/> instead.
+    /// </para>
+    /// </remarks>
+    [Obsolete("This endpoint is deprecated in Bitbucket Server 9.0+. Use GetPullRequestBlockerCommentsStreamAsync for 9.0+ compatibility.")]
+    public IAsyncEnumerable<BitbucketTask> GetPullRequestTasksStreamAsync(string projectKey, string repositorySlug, long pullRequestId,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        int? avatarSize = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["avatarSize"] = avatarSize,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BitbucketTask>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Gets the task count for a pull request using the legacy tasks endpoint.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
@@ -3339,6 +3648,48 @@ public partial class BitbucketClient
                 return await HandleResponseAsync<PagedResults<BlockerComment>>(response, cancellationToken: ct).ConfigureAwait(false);
             }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Streams blocker comments for a pull request, yielding items as they are retrieved.
+    /// This endpoint is available in Bitbucket Server 9.0+.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="pullRequestId">The pull request ID.</param>
+    /// <param name="state">Optional blocker comment state filter.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of blocker comments.</returns>
+    public IAsyncEnumerable<BlockerComment> GetPullRequestBlockerCommentsStreamAsync(
+        string projectKey,
+        string repositorySlug,
+        long pullRequestId,
+        BlockerCommentState? state = null,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["state"] = BitbucketHelpers.BlockerCommentStateToString(state),
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<BlockerComment>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
@@ -3910,6 +4261,46 @@ public partial class BitbucketClient
                 return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
             }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Streams tags for a repository, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="filterText">Filter text for tag names.</param>
+    /// <param name="orderBy">Ordering option.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of tags.</returns>
+    public IAsyncEnumerable<Tag> GetProjectRepositoryTagsStreamAsync(string projectKey, string repositorySlug,
+        string filterText,
+        BranchOrderBy orderBy,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["filterText"] = filterText,
+            ["orderBy"] = BitbucketHelpers.BranchOrderByToString(orderBy),
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>

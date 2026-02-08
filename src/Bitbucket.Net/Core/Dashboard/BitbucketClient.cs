@@ -49,7 +49,7 @@ public partial class BitbucketClient
         CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+(StringComparer.Ordinal)
         {
             ["state"] = BitbucketHelpers.PullRequestStateToString(state),
             ["role"] = BitbucketHelpers.RoleToString(role),
@@ -73,6 +73,51 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Streams pull requests for the current user's dashboard, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="state">Optional pull request state filter.</param>
+    /// <param name="role">Optional participant role filter.</param>
+    /// <param name="status">Optional participant status filters.</param>
+    /// <param name="order">Optional sort order.</param>
+    /// <param name="closedSinceSeconds">Optional filter for recently closed PRs (seconds).</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of pull requests.</returns>
+    public IAsyncEnumerable<PullRequest> GetDashboardPullRequestsStreamAsync(PullRequestStates? state = null,
+        Roles? role = null,
+        List<ParticipantStatus>? status = null,
+        PullRequestOrders? order = PullRequestOrders.Newest,
+        int? closedSinceSeconds = null,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["state"] = BitbucketHelpers.PullRequestStateToString(state),
+            ["role"] = BitbucketHelpers.RoleToString(role),
+            ["status"] = status is not null ? string.Join(',', status.Select(BitbucketHelpers.ParticipantStatusToString)) : null,
+            ["order"] = BitbucketHelpers.PullRequestOrderToString(order),
+            ["closedSince"] = closedSinceSeconds,
+            ["limit"] = limit,
+            ["start"] = start,
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetDashboardUrl("/pull-requests")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
+    }
+
+    /// <summary>
     /// Retrieves pull request suggestions for the current user.
     /// </summary>
     /// <param name="changesSinceSeconds">Time window in seconds to consider changes.</param>
@@ -88,7 +133,7 @@ public partial class BitbucketClient
         CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+(StringComparer.Ordinal)
         {
             ["changesSince"] = changesSinceSeconds,
             ["limit"] = limit,

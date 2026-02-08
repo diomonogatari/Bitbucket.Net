@@ -43,7 +43,7 @@ public partial class BitbucketClient
         CancellationToken cancellationToken = default)
     {
         var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -60,6 +60,41 @@ public partial class BitbucketClient
                 return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
             }, cancellationToken)
             .ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Streams pull requests from the user's inbox, yielding items as they are retrieved.
+    /// </summary>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size (default 25).</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="role">The participant role filter (default reviewer).</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of pull requests.</returns>
+    public IAsyncEnumerable<PullRequest> GetInboxPullRequestsStreamAsync(
+        int? maxPages = null,
+        int? limit = 25,
+        int? start = 0,
+        Roles role = Roles.Reviewer,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = new Dictionary<string, object?>
+(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["role"] = BitbucketHelpers.RoleToString(role),
+        };
+
+        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
+            {
+                var response = await GetInboxUrl("/pull-requests")
+                    .SetQueryParams(qpv)
+                    .GetAsync(ct)
+                    .ConfigureAwait(false);
+
+                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
+            }, cancellationToken);
     }
 
     /// <summary>
