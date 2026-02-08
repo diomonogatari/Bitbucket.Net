@@ -1,0 +1,123 @@
+{
+    "diffs": [
+        {
+            "source": {
+                "parent": "src",
+                "name": "file1.cs",
+                "toString": "src/file1.cs"
+            },
+            "destination": {
+                "parent": "src",
+                "name": "file1.cs",
+                "toString": "src/file1.cs"
+            },
+            "hunks": [
+                {
+                    "sourceLine": 1,
+                    "sourceSpan": 3,
+                    "destinationLine": 1,
+                    "destinationSpan": 4,
+                    "segments": [
+                        {
+                            "type": "ADDED",
+                            "lines": [
+                                {
+                                    "source": 0,
+                                    "destination": 1,
+                                    "line": "// New line in file1"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "truncated": false
+        },
+        {
+            "source": {
+                "parent": "src",
+                "name": "file2.cs",
+                "toString": "src/file2.cs"
+            },
+            "destination": {
+                "parent": "src",
+                "name": "file2.cs",
+                "toString": "src/file2.cs"
+            },
+            "hunks": [
+                {
+                    "sourceLine": 10,
+                    "sourceSpan": 5,
+                    "destinationLine": 10,
+                    "destinationSpan": 6,
+                    "segments": [
+                        {
+                            "type": "REMOVED",
+                            "lines": [
+                                {
+                                    "source": 10,
+                                    "destination": 0,
+                                    "line": "// Removed line in file2"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "ADDED",
+                            "lines": [
+                                {
+                                    "source": 0,
+                                    "destination": 10,
+                                    "line": "// Added line in file2"
+                                },
+                                {
+                                    "source": 0,
+                                    "destination": 11,
+                                    "line": "// Another added line"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "truncated": false
+        },
+        {
+            "source": {
+                "parent": "tests",
+                "name": "test.cs",
+                "toString": "tests/test.cs"
+            },
+            "destination": {
+                "parent": "tests",
+                "name": "test.cs",
+                "toString": "tests/test.cs"
+            },
+            "hunks": [
+                {
+                    "sourceLine": 1,
+                    "sourceSpan": 1,
+                    "destinationLine": 1,
+                    "destinationSpan": 2,
+                    "segments": [
+                        {
+                            "type": "CONTEXT",
+                            "lines": [
+                                {
+                                    "source": 1,
+                                    "destination": 1,
+                                    "line": "using Xunit;"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "truncated": false
+        }
+    ],
+    "truncated": false,
+    "contextLines": "10",
+    "fromHash": "abc123",
+    "toHash": "def456",
+    "whitespace": "IGNORE_ALL"
+}

@@ -1,0 +1,27 @@
+{
+    "size": 1,
+    "limit": 2,
+    "isLastPage": true,
+    "start": 2,
+    "values": [
+        {
+            "slug": "repo-gamma",
+            "id": 3,
+            "name": "Repo Gamma",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "forkable": true,
+            "public": false,
+            "project": {
+                "key": "TEST"
+            },
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/TEST/repos/repo-gamma"
+                    }
+                ]
+            }
+        }
+    ]
+}

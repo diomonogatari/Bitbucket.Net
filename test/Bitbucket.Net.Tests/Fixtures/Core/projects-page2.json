@@ -1,0 +1,23 @@
+{
+    "size": 1,
+    "limit": 2,
+    "isLastPage": true,
+    "start": 2,
+    "values": [
+        {
+            "key": "PROJ3",
+            "id": 3,
+            "name": "Project Three",
+            "description": "Third project",
+            "public": false,
+            "type": "NORMAL",
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/PROJ3"
+                    }
+                ]
+            }
+        }
+    ]
+}

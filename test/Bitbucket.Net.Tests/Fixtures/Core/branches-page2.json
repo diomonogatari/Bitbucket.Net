@@ -1,0 +1,15 @@
+{
+    "size": 1,
+    "limit": 2,
+    "isLastPage": true,
+    "start": 2,
+    "values": [
+        {
+            "id": "refs/heads/feature-x",
+            "displayId": "feature-x",
+            "type": "BRANCH",
+            "latestCommit": "ccc333ddd444eee555fff666777888999aaabbb00",
+            "isDefault": false
+        }
+    ]
+}
