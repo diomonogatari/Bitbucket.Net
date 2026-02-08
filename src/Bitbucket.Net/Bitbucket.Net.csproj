@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>BitbucketServer.Net</PackageId>
-    <Version>0.1.0-beta.1</Version>
+    <Version>0.2.0</Version>
     <Authors>Diogo Carvalho</Authors>
     <Description>Modernized fork of Bitbucket.Net — C# client for Bitbucket Server (Stash) REST API. Adds streaming, CancellationToken support, System.Text.Json, typed exceptions, and Bitbucket Server 9.0+ compatibility.</Description>
     <PackageTags>bitbucket;bitbucket-server;stash;api;client;rest</PackageTags>

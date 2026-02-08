@@ -7,32 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-08
+
 ### Breaking Changes
 
-- `Comment` no longer inherits from `PullRequestInfo`. Properties such as `Title`, `Description`, `FromRef`, `ToRef`, `Locked`, and `Reviewers` are no longer available on `Comment` objects. These properties were always null/default on comments and should not have been exposed.
+- **Exception handling**: The library now throws `BitbucketApiException` (and its typed subtypes) instead of `FlurlHttpException`. Consumers catching `FlurlHttpException` must update their catch blocks.
+- **`Comment` model**: No longer inherits from `PullRequestInfo`. Properties such as `Title`, `Description`, `FromRef`, `ToRef`, `Locked`, and `Reviewers` are removed from `Comment`. These were always null/default on comments and should not have been exposed.
+- **`Comment.State`**: Changed from `new string?` (hiding a `PullRequestStates` enum) to a plain `string?` property.
+- **Global Flurl configuration removed**: The library no longer calls `FlurlHttp.Clients.WithDefaults()`. Other Flurl consumers in the same process are no longer affected.
+
+### Added
+
+- **SourceLink**: Consumers can step into library source during debugging.
+- **Symbol packages**: `.snupkg` published alongside `.nupkg`.
+- **XML documentation**: IntelliSense documentation included in the NuGet package. Model classes now have comprehensive `<summary>` and `<param>` XML docs.
+- **New streaming methods**:
+  - `GetPullRequestActivitiesStreamAsync`
+  - `GetPullRequestChangesStreamAsync`
+  - `GetPullRequestCommentsStreamAsync`
+  - `GetPullRequestParticipantsStreamAsync`
+  - `GetPullRequestTasksStreamAsync`
+  - `GetPullRequestBlockerCommentsStreamAsync`
+  - `GetDashboardPullRequestsStreamAsync`
+  - `GetInboxPullRequestsStreamAsync`
+  - `GetProjectRepositoryTagsStreamAsync`
+  - `GetChangesStreamAsync`
+  - `GetCommitChangesStreamAsync`
+- **`global.json`**: SDK version pinned for reproducible builds.
+- **`Directory.Build.props`**: Centralized build configuration (TFM, language version, nullable, warnings-as-errors).
+- **Code coverage**: CI collects and reports test coverage.
+- **File splitting**: Monolithic `Core/Projects/BitbucketClient.cs` (4 491 lines) split into 10 focused partial-class files by domain (projects, repositories, branches, commits, compare, pull requests, PR comments, PR details, tasks, repository settings).
 
 ### Fixed
 
-- `PullRequest.ToString()` and `Participant.ToString()` now return `"Unknown"` instead of throwing `NullReferenceException` when `Author`/`User` is null.
+- **Typed exceptions now fire correctly** for all HTTP error responses. Previously, Flurl intercepted errors before the custom handling could run.
+- **`CancellationToken` propagation**: Helper methods now pass the token to underlying HTTP calls.
+- **`PullRequest.ToString()`**: No longer throws `NullReferenceException` when `Author` or `Author.User` is null.
+- **`Participant.ToString()`**: Same null-safety fix.
 
 ### Changed
 
 - Removed commented-out `Avatar` property from `ProjectDefinition`.
 - Fixed duplicate `<summary>` XML doc tag on `GetRepositoriesStreamAsync`.
-
-### Added
-
-- `GetPullRequestActivitiesStreamAsync` — stream PR activities as `IAsyncEnumerable<PullRequestActivity>`
-- `GetPullRequestChangesStreamAsync` — stream PR changes as `IAsyncEnumerable<Change>`
-- `GetPullRequestCommentsStreamAsync` — stream PR comments as `IAsyncEnumerable<CommentRef>`
-- `GetPullRequestParticipantsStreamAsync` — stream PR participants as `IAsyncEnumerable<Participant>`
-- `GetDashboardPullRequestsStreamAsync` — stream dashboard PRs as `IAsyncEnumerable<PullRequest>`
-- `GetInboxPullRequestsStreamAsync` — stream inbox PRs as `IAsyncEnumerable<PullRequest>`
-- `GetProjectRepositoryTagsStreamAsync` — stream repository tags as `IAsyncEnumerable<Tag>`
-- `GetPullRequestTasksStreamAsync` — stream PR tasks as `IAsyncEnumerable<BitbucketTask>` (deprecated, pre-9.0)
-- `GetPullRequestBlockerCommentsStreamAsync` — stream blocker comments as `IAsyncEnumerable<BlockerComment>` (9.0+)
-- `GetChangesStreamAsync` — stream repository changes between refs as `IAsyncEnumerable<Change>`
-- `GetCommitChangesStreamAsync` — stream commit changes as `IAsyncEnumerable<Change>`
 
 ### Testing
 
@@ -48,15 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Notes
 
-This is the first public release of the modernized fork by
-[diomonogatari](https://github.com/diomonogatari).
-The version number intentionally starts at `0.x` to signal that the
-library is **not yet production-ready** &mdash; it is being dog-fooded
-in an MCP Server for on-prem Bitbucket Server but not every endpoint
-has been exhaustively tested.
-
-The original [lvermeulen/Bitbucket.Net](https://github.com/lvermeulen/Bitbucket.Net)
-shipped up to 0.5.0 on NuGet; this fork is versioned independently.
+First public pre-release of the modernized fork. Superseded by 0.2.0.
 
 ## [2.0.0] - 2025-11-28 (internal)
 
