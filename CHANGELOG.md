@@ -20,6 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed commented-out `Avatar` property from `ProjectDefinition`.
 - Fixed duplicate `<summary>` XML doc tag on `GetRepositoriesStreamAsync`.
 
+### Added
+
+- `GetPullRequestActivitiesStreamAsync` — stream PR activities as `IAsyncEnumerable<PullRequestActivity>`
+- `GetPullRequestChangesStreamAsync` — stream PR changes as `IAsyncEnumerable<Change>`
+- `GetPullRequestCommentsStreamAsync` — stream PR comments as `IAsyncEnumerable<CommentRef>`
+- `GetPullRequestParticipantsStreamAsync` — stream PR participants as `IAsyncEnumerable<Participant>`
+- `GetDashboardPullRequestsStreamAsync` — stream dashboard PRs as `IAsyncEnumerable<PullRequest>`
+- `GetInboxPullRequestsStreamAsync` — stream inbox PRs as `IAsyncEnumerable<PullRequest>`
+- `GetProjectRepositoryTagsStreamAsync` — stream repository tags as `IAsyncEnumerable<Tag>`
+- `GetPullRequestTasksStreamAsync` — stream PR tasks as `IAsyncEnumerable<BitbucketTask>` (deprecated, pre-9.0)
+- `GetPullRequestBlockerCommentsStreamAsync` — stream blocker comments as `IAsyncEnumerable<BlockerComment>` (9.0+)
+- `GetChangesStreamAsync` — stream repository changes between refs as `IAsyncEnumerable<Change>`
+- `GetCommitChangesStreamAsync` — stream commit changes as `IAsyncEnumerable<Change>`
+
 ## [0.1.0-beta.1] - 2026-02-06 (pre-release)
 
 ### Notes
