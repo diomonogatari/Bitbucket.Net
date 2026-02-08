@@ -1,0 +1,2 @@
+# Normalize all text files to CRLF on checkout (matches .editorconfig end_of_line = crlf)
+* text=auto eol=crlf
