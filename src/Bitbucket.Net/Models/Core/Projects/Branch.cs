@@ -47,15 +47,15 @@ public class Branch : BranchBase
 
                 var valueJson = valueElement.GetRawText();
 
-                if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-branch:ahead-behind-metadata-provider", System.StringComparison.Ordinal))
+                if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-branch:ahead-behind-metadata-provider", StringComparison.Ordinal))
                 {
                     _branchMetadata.AheadBehind = JsonSerializer.Deserialize<AheadBehindMetaData>(valueJson, s_jsonOptions);
                 }
-                else if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata", System.StringComparison.Ordinal))
+                else if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata", StringComparison.Ordinal))
                 {
                     _branchMetadata.BuildStatus = JsonSerializer.Deserialize<BuildStatusMetadata>(valueJson, s_jsonOptions);
                 }
-                else if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-ref-metadata:outgoing-pull-request-metadata", System.StringComparison.Ordinal))
+                else if (string.Equals(name, "com.atlassian.bitbucket.server.bitbucket-ref-metadata:outgoing-pull-request-metadata", StringComparison.Ordinal))
                 {
                     _branchMetadata.OutgoingPullRequest = JsonSerializer.Deserialize<PullRequestMetadata>(valueJson, s_jsonOptions);
                 }

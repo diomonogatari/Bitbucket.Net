@@ -56,7 +56,7 @@ public class GitAndTagMockTests(BitbucketMockFixture fixture) : IClassFixture<Bi
         var tag = await client.CreateTagAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            Bitbucket.Net.Models.Git.TagTypes.LightWeight,
+            Models.Git.TagTypes.LightWeight,
             "v1.0.0",
             "abc123");
 

@@ -90,7 +90,7 @@ public class ProjectSettingsMockTests(BitbucketMockFixture fixture) : IClassFixt
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
             filterText: "",
-            orderBy: Bitbucket.Net.Models.Core.Projects.BranchOrderBy.Alphabetical);
+            orderBy: Models.Core.Projects.BranchOrderBy.Alphabetical);
 
         Assert.NotNull(result);
         var tags = result.ToList();
