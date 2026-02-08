@@ -42,8 +42,7 @@ public partial class BitbucketClient
         Roles role = Roles.Reviewer,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -78,8 +77,7 @@ public partial class BitbucketClient
         Roles role = Roles.Reviewer,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,

@@ -46,8 +46,7 @@ public partial class BitbucketClient
         CancellationToken cancellationToken = default,
         params string[] permissionN)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,

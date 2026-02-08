@@ -39,8 +39,7 @@ public partial class BitbucketClient
         bool? htmlEscape = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["urlMode"] = urlMode,
             ["hardWrap"] = BitbucketHelpers.BoolToString(hardWrap),

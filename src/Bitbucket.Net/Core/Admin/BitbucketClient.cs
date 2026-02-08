@@ -42,8 +42,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -127,8 +126,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -167,8 +165,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -206,8 +203,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -241,8 +237,7 @@ public partial class BitbucketClient
     public async Task<bool> CreateAdminUserAsync(string name, string password, string displayName, string emailAddress,
         bool addToDefaultGroup = true, string notify = "false", CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = name,
             ["password"] = password,
@@ -362,8 +357,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -399,8 +393,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -603,8 +596,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -632,8 +624,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateAdminGroupPermissionsAsync(Permissions permission, string name, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["permission"] = permission,
             ["name"] = name,
@@ -678,8 +669,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -715,8 +705,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -745,8 +734,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateAdminUserPermissionsAsync(Permissions permission, string name, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["permission"] = permission,
             ["name"] = name,
@@ -793,8 +781,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,

@@ -76,8 +76,7 @@ public partial class BitbucketClient
         Permissions? permission = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -115,8 +114,7 @@ public partial class BitbucketClient
         Permissions? permission = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -214,8 +212,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -244,8 +241,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if removal succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectUserPermissionsAsync(string projectKey, string userName, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = userName,
         };
@@ -268,8 +264,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectUserPermissionsAsync(string projectKey, string userName, Permissions permission, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = userName,
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
@@ -299,8 +294,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -335,8 +329,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -364,8 +357,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the group permissions were removed; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectGroupPermissionsAsync(string projectKey, string groupName, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = groupName,
         };
@@ -388,8 +380,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectGroupPermissionsAsync(string projectKey, string groupName, Permissions permission, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = groupName,
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
@@ -419,8 +410,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -462,8 +452,7 @@ public partial class BitbucketClient
 
     private async Task<bool> SetProjectDefaultPermissionAsync(string projectKey, Permissions permission, bool allow, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["allow"] = BitbucketHelpers.BoolToString(allow),
         };
@@ -515,8 +504,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -543,8 +531,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -691,8 +678,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -742,8 +728,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -781,8 +766,7 @@ public partial class BitbucketClient
         string prefix,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
             ["fileName"] = fileName,
@@ -818,8 +802,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["filter"] = filter,
             ["limit"] = limit,
@@ -849,8 +832,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectRepositoryGroupPermissionsAsync(string projectKey, string repositorySlug, Permissions permission, string name, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
             ["name"] = name,
@@ -900,8 +882,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -940,8 +921,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["filter"] = filter,
             ["limit"] = limit,
@@ -972,8 +952,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectRepositoryUserPermissionsAsync(string projectKey, string repositorySlug, Permissions permission, string name, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
             ["name"] = name,
@@ -1027,8 +1006,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1071,8 +1049,7 @@ public partial class BitbucketClient
         BranchOrderBy? orderBy = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1107,8 +1084,7 @@ public partial class BitbucketClient
         BranchOrderBy? orderBy = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1195,8 +1171,7 @@ public partial class BitbucketClient
         bool noContent = false,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
             ["type"] = BitbucketHelpers.BoolToString(type),
@@ -1235,8 +1210,7 @@ public partial class BitbucketClient
         bool noContent = false,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
             ["type"] = BitbucketHelpers.BoolToString(type),
@@ -1390,8 +1364,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1429,8 +1402,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1479,8 +1451,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1521,8 +1492,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1557,8 +1527,7 @@ public partial class BitbucketClient
     /// <returns>The requested commit.</returns>
     public async Task<Commit> GetCommitAsync(string projectKey, string repositorySlug, string commitId, string? path = null, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["path"] = path,
         };
@@ -1592,8 +1561,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1634,8 +1602,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1675,8 +1642,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1709,8 +1675,7 @@ public partial class BitbucketClient
     public async Task<CommentRef> CreateCommitCommentAsync(string projectKey, string repositorySlug, string commitId,
         CommentInfo commentInfo, string? since = null, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["since"] = since,
         };
@@ -1779,8 +1744,7 @@ public partial class BitbucketClient
         int version = -1,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
         };
@@ -1816,8 +1780,7 @@ public partial class BitbucketClient
         bool withComments = true,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["autoSrcPath"] = BitbucketHelpers.BoolToString(autoSrcPath),
             ["contextLines"] = contextLines,
@@ -1859,8 +1822,7 @@ public partial class BitbucketClient
         bool withComments = true,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["autoSrcPath"] = BitbucketHelpers.BoolToString(autoSrcPath),
             ["contextLines"] = contextLines,
@@ -1941,8 +1903,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -1983,8 +1944,7 @@ public partial class BitbucketClient
         string whitespace = "ignore-all",
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["from"] = from,
             ["to"] = to,
@@ -2023,8 +1983,7 @@ public partial class BitbucketClient
         string whitespace = "ignore-all",
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["from"] = from,
             ["to"] = to,
@@ -2071,8 +2030,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2112,8 +2070,7 @@ public partial class BitbucketClient
         string whitespace = "ignore-all",
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["contextLines"] = contextLines,
             ["since"] = since,
@@ -2150,8 +2107,7 @@ public partial class BitbucketClient
         string whitespace = "ignore-all",
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["contextLines"] = contextLines,
             ["since"] = since,
@@ -2194,8 +2150,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2254,8 +2209,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2304,8 +2258,7 @@ public partial class BitbucketClient
         bool withProperties = true,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2344,8 +2297,7 @@ public partial class BitbucketClient
         bool withProperties = true,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2461,8 +2413,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2506,8 +2457,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2538,8 +2488,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the pull request was declined; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeclinePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, int version = -1, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
         };
@@ -2563,8 +2512,7 @@ public partial class BitbucketClient
     /// <returns>The merge state.</returns>
     public async Task<PullRequestMergeState> GetPullRequestMergeStateAsync(string projectKey, string repositorySlug, long pullRequestId, int version = -1, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
         };
@@ -2618,8 +2566,7 @@ public partial class BitbucketClient
     /// <returns>The merged pull request.</returns>
     public async Task<PullRequest> MergePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, int version = -1, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
         };
@@ -2643,8 +2590,7 @@ public partial class BitbucketClient
     /// <returns>The reopened pull request.</returns>
     public async Task<PullRequest> ReopenPullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, int version = -1, CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
         };
@@ -2716,8 +2662,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2764,8 +2709,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2820,8 +2764,7 @@ public partial class BitbucketClient
         // Build the comment payload dynamically to avoid sending empty anchor objects
         // which Bitbucket Server 9.0 rejects with HTTP 500.
         // See: BUG-003 - add_pull_request_comment returns 500 error
-        var data = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var data = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["text"] = text,
         };
@@ -2894,8 +2837,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -2948,8 +2890,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3066,8 +3007,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3096,8 +3036,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3240,8 +3179,7 @@ public partial class BitbucketClient
     private static Dictionary<string, object?> CreatePullRequestDiffQueryParams(int contextLines, DiffTypes diffType, string? sinceId,
         string? srcPath, string? untilId, string whitespace, bool withComments)
     {
-        return new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        return new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["contextLines"] = contextLines,
             ["diffType"] = BitbucketHelpers.DiffTypeToString(diffType),
@@ -3311,8 +3249,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3351,8 +3288,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3502,8 +3438,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3550,8 +3485,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3630,8 +3564,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3673,8 +3606,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -3991,8 +3923,7 @@ public partial class BitbucketClient
         bool htmlEscape = true,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
             ["markup"] = BitbucketHelpers.BoolToString(markup),
@@ -4062,8 +3993,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -4242,8 +4172,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -4283,8 +4212,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -4370,8 +4298,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
@@ -4440,8 +4367,7 @@ public partial class BitbucketClient
         bool statistics = false,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
         };
@@ -4508,8 +4434,7 @@ public partial class BitbucketClient
         WebHookOutcomes? outcome = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["event"] = @event,
             ["outcome"] = BitbucketHelpers.WebHookOutcomeToString(outcome),

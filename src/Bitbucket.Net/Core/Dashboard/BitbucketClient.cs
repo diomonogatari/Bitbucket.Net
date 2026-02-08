@@ -48,8 +48,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["state"] = BitbucketHelpers.PullRequestStateToString(state),
             ["role"] = BitbucketHelpers.RoleToString(role),
@@ -132,8 +131,7 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["changesSince"] = changesSinceSeconds,
             ["limit"] = limit,

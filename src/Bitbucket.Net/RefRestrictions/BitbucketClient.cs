@@ -47,8 +47,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["type"] = BitbucketHelpers.RefRestrictionTypeToString(type),
             ["matcherType"] = BitbucketHelpers.RefMatcherTypeToString(matcherType),
@@ -172,8 +171,7 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>
-(System.StringComparer.Ordinal)
+        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["type"] = BitbucketHelpers.RefRestrictionTypeToString(type),
             ["matcherType"] = BitbucketHelpers.RefMatcherTypeToString(matcherType),
