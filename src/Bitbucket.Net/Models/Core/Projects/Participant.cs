@@ -31,5 +31,8 @@ public class Participant
     [JsonConverter(typeof(ParticipantStatusConverter))]
     public ParticipantStatus Status { get; set; }
 
+    /// <summary>
+    /// Returns the participant's display name when available.
+    /// </summary>
     public override string ToString() => User?.DisplayName ?? "Unknown";
 }

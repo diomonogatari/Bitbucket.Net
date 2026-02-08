@@ -25,5 +25,8 @@ public class Project : ProjectDefinition
     /// </summary>
     public Links? Links { get; set; }
 
+    /// <summary>
+    /// Returns the project name, when available.
+    /// </summary>
     public override string ToString() => Name ?? string.Empty;
 }

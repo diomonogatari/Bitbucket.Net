@@ -9,6 +9,7 @@ namespace Bitbucket.Net.Common.Converters;
 /// </summary>
 public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
+    /// <inheritdoc />
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.TokenType switch
@@ -20,6 +21,7 @@ public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
         };
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
     {
         writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
@@ -32,6 +34,7 @@ public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 /// </summary>
 public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset?>
 {
+    /// <inheritdoc />
     public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.TokenType switch
@@ -44,6 +47,7 @@ public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTime
         };
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
     {
         if (value.HasValue)

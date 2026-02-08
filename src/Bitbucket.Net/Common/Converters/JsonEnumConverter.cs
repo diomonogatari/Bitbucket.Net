@@ -20,6 +20,7 @@ public abstract class JsonEnumConverter<TEnum> : JsonConverter<TEnum>
     /// </summary>
     protected abstract TEnum ConvertFromString(string s);
 
+    /// <inheritdoc />
     public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -36,6 +37,7 @@ public abstract class JsonEnumConverter<TEnum> : JsonConverter<TEnum>
         throw new JsonException($"Unexpected token {reader.TokenType} when parsing enum {typeof(TEnum).Name}.");
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(ConvertToString(value));
@@ -59,6 +61,7 @@ public abstract class JsonEnumListConverter<TEnum> : JsonConverter<List<TEnum>?>
     /// </summary>
     protected abstract TEnum ConvertFromString(string s);
 
+    /// <inheritdoc />
     public override List<TEnum>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -88,6 +91,7 @@ public abstract class JsonEnumListConverter<TEnum> : JsonConverter<List<TEnum>?>
         throw new JsonException("Unexpected end of JSON while reading array.");
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, List<TEnum>? value, JsonSerializerOptions options)
     {
         if (value is null)

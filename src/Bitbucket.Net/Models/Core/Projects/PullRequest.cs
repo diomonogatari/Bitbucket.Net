@@ -45,5 +45,8 @@ public class PullRequest : PullRequestInfo
     /// </summary>
     public Links? Links { get; set; }
 
+    /// <summary>
+    /// Returns a human-readable label combining the author display name and title.
+    /// </summary>
     public override string ToString() => $"{Author?.User?.DisplayName ?? "Unknown"}: {Title ?? "(untitled)"}";
 }

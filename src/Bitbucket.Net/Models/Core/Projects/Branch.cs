@@ -88,5 +88,8 @@ public class Branch : BranchBase
     [JsonPropertyName("metadata")]
     public JsonElement? Metadata { get; set; }
 
+    /// <summary>
+    /// Returns the branch display identifier.
+    /// </summary>
     public override string ToString() => DisplayId ?? string.Empty;
 }

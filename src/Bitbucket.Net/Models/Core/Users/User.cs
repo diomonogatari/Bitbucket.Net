@@ -35,5 +35,8 @@ public class User : Identity
     /// </summary>
     public string? AvatarUrl { get; set; }
 
+    /// <summary>
+    /// Returns the user's display name when available.
+    /// </summary>
     public override string ToString() => DisplayName ?? string.Empty;
 }

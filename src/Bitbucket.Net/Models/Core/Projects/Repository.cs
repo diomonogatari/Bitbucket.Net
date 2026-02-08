@@ -40,5 +40,8 @@ public class Repository : RepositoryRef
     /// </summary>
     public CloneLinks? Links { get; set; }
 
+    /// <summary>
+    /// Returns the repository name, when available.
+    /// </summary>
     public override string ToString() => Name ?? string.Empty;
 }

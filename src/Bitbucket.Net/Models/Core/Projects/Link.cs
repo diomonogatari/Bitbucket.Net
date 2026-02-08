@@ -10,5 +10,8 @@ public class Link
     /// </summary>
     public string? Href { get; set; }
 
+    /// <summary>
+    /// Returns the link URL or an empty string when not set.
+    /// </summary>
     public override string ToString() => Href ?? string.Empty;
 }
