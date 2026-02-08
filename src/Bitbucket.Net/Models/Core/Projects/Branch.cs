@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects;
 
+/// <summary>
+/// Full Bitbucket branch. Extends <see cref="BranchBase"/> with commit info, default status, and parsed metadata.
+/// </summary>
 public class Branch : BranchBase
 {
     private BranchMetaData? _branchMetadata;
@@ -12,10 +15,24 @@ public class Branch : BranchBase
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
+    /// <summary>
+    /// Gets or sets the SHA of the latest commit on this branch.
+    /// </summary>
     public string? LatestCommit { get; set; }
+
+    /// <summary>
+    /// Gets or sets the changeset identifier of the latest change on this branch.
+    /// </summary>
     public string? LatestChangeset { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this is the repository's default branch.
+    /// </summary>
     public bool IsDefault { get; set; }
 
+    /// <summary>
+    /// Gets parsed branch metadata (ahead/behind counts, build status, outgoing pull requests) from the raw <see cref="Metadata"/> JSON.
+    /// </summary>
     public BranchMetaData? BranchMetadata
     {
         get
@@ -65,6 +82,9 @@ public class Branch : BranchBase
         }
     }
 
+    /// <summary>
+    /// Gets or sets the raw JSON metadata array returned by Bitbucket Server for this branch.
+    /// </summary>
     [JsonPropertyName("metadata")]
     public JsonElement? Metadata { get; set; }
 

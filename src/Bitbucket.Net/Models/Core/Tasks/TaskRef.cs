@@ -5,13 +5,39 @@ using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Tasks;
 
+/// <summary>
+/// Abstract base class for Bitbucket tasks with identity, text, author, and creation date.
+/// </summary>
 public abstract class TaskRef
 {
+    /// <summary>
+    /// Gets or sets the additional properties bag.
+    /// </summary>
     public Properties? Properties { get; set; }
+
+    /// <summary>
+    /// Gets or sets the server-assigned task identifier.
+    /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the task description text.
+    /// </summary>
     public string? Text { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user who created the task.
+    /// </summary>
     public User? Author { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date and time when the task was created.
+    /// </summary>
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the operations the current user is permitted to perform on this task.
+    /// </summary>
     public Permittedoperations? PermittedOperations { get; set; }
 }
