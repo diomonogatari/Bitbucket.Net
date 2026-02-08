@@ -258,7 +258,7 @@ public class CommonModelTests
         long timestamp = 0;
         var result = timestamp.FromUnixTimeMilliseconds();
 
-        var expected = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime();
+        var expected = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
         Assert.Equal(expected, result);
     }
 
@@ -269,7 +269,7 @@ public class CommonModelTests
         long timestamp = 1609459200000;
         var result = timestamp.FromUnixTimeMilliseconds();
 
-        var expected = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime();
+        var expected = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
         Assert.Equal(expected, result);
     }
 
@@ -298,7 +298,7 @@ public class CommonModelTests
         var milliseconds = original.ToUnixTimeMilliseconds();
         var restored = milliseconds.FromUnixTimeMilliseconds();
 
-        Assert.Equal(original.ToLocalTime(), restored);
+        Assert.Equal(original, restored);
     }
 
     #endregion

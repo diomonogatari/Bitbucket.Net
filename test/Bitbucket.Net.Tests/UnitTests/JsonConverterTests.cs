@@ -31,11 +31,10 @@ public class JsonConverterTests
     [Fact]
     public void UnixDateTimeOffsetConverter_Read_FromNumber_ReturnsCorrectValue()
     {
-        // The converter uses milliseconds internally (despite the "seconds" naming)
+        // The converter uses milliseconds internally
         var json = "1609459200000"; // 2021-01-01 00:00:00 UTC in milliseconds
         var result = JsonSerializer.Deserialize<DateTimeOffset>(json, s_options);
-        // The result will be in local time
-        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime(), result);
+        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero), result);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class JsonConverterTests
     {
         var json = "\"1609459200000\""; // 2021-01-01 00:00:00 UTC in milliseconds
         var result = JsonSerializer.Deserialize<DateTimeOffset>(json, s_options);
-        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime(), result);
+        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero), result);
     }
 
     [Fact]
@@ -73,7 +72,7 @@ public class JsonConverterTests
     {
         var json = "1609459200000"; // 2021-01-01 00:00:00 UTC in milliseconds
         var result = JsonSerializer.Deserialize<DateTimeOffset?>(json, s_options);
-        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime(), result);
+        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero), result);
     }
 
     [Fact]
@@ -81,7 +80,7 @@ public class JsonConverterTests
     {
         var json = "\"1609459200000\""; // 2021-01-01 00:00:00 UTC in milliseconds
         var result = JsonSerializer.Deserialize<DateTimeOffset?>(json, s_options);
-        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime(), result);
+        Assert.Equal(new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero), result);
     }
 
     [Fact]
