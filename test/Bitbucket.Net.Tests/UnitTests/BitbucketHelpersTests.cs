@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;

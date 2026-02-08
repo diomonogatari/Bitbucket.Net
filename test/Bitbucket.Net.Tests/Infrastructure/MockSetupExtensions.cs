@@ -1,5 +1,6 @@
-using System.IO;
+using Bitbucket.Net.Common.Models;
 using System.Net;
+using System.Text.Json;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -11,6 +12,78 @@ public static class MockSetupExtensions
 {
     private const string ApiBasePath = "/rest/api/1.0";
     private const string FixturesBasePath = "Fixtures";
+
+    public static WireMockServer SetupPagedEndpoint(this WireMockServer server, string path, string fixtureCategory, string page1File, string page2File)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "0")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page1File)));
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "2")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page2File)));
+
+        return server;
+    }
+
+    public static WireMockServer SetupPagedEndpointNoStartParam(this WireMockServer server, string path, string fixtureCategory, string page1File, string page2File)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", false)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page1File)));
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "2")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page2File)));
+
+        return server;
+    }
+
+    public static WireMockServer SetupEmptyPagedEndpoint(this WireMockServer server, string path)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath("Core", "empty-paged.json")));
+
+        return server;
+    }
+
+    public static WireMockServer SetupDiffEndpoint(this WireMockServer server, string path, string fixtureFile)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath("Core", fixtureFile)));
+
+        return server;
+    }
 
     public static WireMockServer SetupGetProjects(this WireMockServer server, int? start = null)
     {
@@ -145,6 +218,72 @@ public static class MockSetupExtensions
                 .WithStatusCode(HttpStatusCode.InternalServerError)
                 .WithHeader("Content-Type", "application/json")
                 .WithBodyFromFile(GetFixturePath("Errors", "error-500.json")));
+
+        return server;
+    }
+
+    public static WireMockServer SetupBadRequest(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.BadRequest,
+            new Error { Message = "Bad request" });
+    }
+
+    public static WireMockServer SetupForbidden(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.Forbidden,
+            new Error { Message = "Forbidden" });
+    }
+
+    public static WireMockServer SetupConflict(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.Conflict,
+            new Error { Message = "Conflict" });
+    }
+
+    public static WireMockServer SetupRateLimited(this WireMockServer server, string path)
+    {
+        return server.SetupErrorWithJsonBody(path, HttpStatusCode.TooManyRequests,
+            new Error { Message = "Rate limit exceeded" });
+    }
+
+    public static WireMockServer SetupErrorWithJsonBody(this WireMockServer server, string path, HttpStatusCode statusCode, params Error[] errors)
+    {
+        var json = JsonSerializer.Serialize(new { errors }, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(json));
+
+        return server;
+    }
+
+    public static WireMockServer SetupErrorWithHtmlBody(this WireMockServer server, string path, HttpStatusCode statusCode, string htmlContent)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithHeader("Content-Type", "text/html")
+                .WithBody(htmlContent));
+
+        return server;
+    }
+
+    public static WireMockServer SetupErrorWithEmptyBody(this WireMockServer server, string path, HttpStatusCode statusCode)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode));
 
         return server;
     }
@@ -2994,7 +3133,7 @@ public static class MockSetupExtensions
             .RespondWith(Response.Create()
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithHeader("Content-Type", "image/png")
-                .WithBody(new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }));
+                .WithBody([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]));
 
         return server;
     }
@@ -3037,7 +3176,7 @@ public static class MockSetupExtensions
             .RespondWith(Response.Create()
                 .WithStatusCode(HttpStatusCode.OK)
                 .WithHeader("Content-Type", "application/zip")
-                .WithBody(new byte[] { 0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00 }));
+                .WithBody([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00]));
 
         return server;
     }
@@ -3221,6 +3360,3 @@ public static class MockSetupExtensions
         return Path.Combine(FixturesBasePath, category, fileName);
     }
 }
-
-
-

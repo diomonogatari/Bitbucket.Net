@@ -1,0 +1,5 @@
+# Normalize all text files to CRLF on checkout (matches .editorconfig end_of_line = crlf)
+* text=auto eol=crlf
+
+# Shell scripts must keep LF to run on Linux/macOS
+*.sh text eol=lf

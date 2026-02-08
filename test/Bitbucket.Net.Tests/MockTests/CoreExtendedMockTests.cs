@@ -1,231 +1,223 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class CoreExtendedMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class CoreExtendedMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task BrowseProjectRepositoryAsync_ReturnsBrowseItem()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupBrowseRepository(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-        public CoreExtendedMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var browseItem = await client.BrowseProjectRepositoryAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            at: "refs/heads/master");
 
-        [Fact]
-        public async Task BrowseProjectRepositoryAsync_ReturnsBrowseItem()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupBrowseRepository(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(browseItem);
+    }
 
-            var browseItem = await client.BrowseProjectRepositoryAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                at: "refs/heads/master");
+    [Fact]
+    public async Task GetProjectRepositoryLastModifiedAsync_ReturnsLastModified()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetLastModified(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(browseItem);
-        }
+        var lastModified = await client.GetProjectRepositoryLastModifiedAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            at: "refs/heads/master");
 
-        [Fact]
-        public async Task GetProjectRepositoryLastModifiedAsync_ReturnsLastModified()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetLastModified(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(lastModified);
+    }
 
-            var lastModified = await client.GetProjectRepositoryLastModifiedAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                at: "refs/heads/master");
+    [Fact]
+    public async Task GetRepositoryCompareChangesAsync_ReturnsChanges()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetCompareChanges(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(lastModified);
-        }
+        var changes = await client.GetRepositoryCompareChangesAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            from: "refs/heads/feature",
+            to: "refs/heads/master");
 
-        [Fact]
-        public async Task GetRepositoryCompareChangesAsync_ReturnsChanges()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCompareChanges(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(changes);
+        var changeList = changes.ToList();
+        Assert.Single(changeList);
+    }
 
-            var changes = await client.GetRepositoryCompareChangesAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                from: "refs/heads/feature",
-                to: "refs/heads/master");
+    [Fact]
+    public async Task GetCommitDiffAsync_ReturnsDifferences()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetCommitDiff(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(changes);
-            var changeList = changes.ToList();
-            Assert.Single(changeList);
-        }
+        var diff = await client.GetCommitDiffAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
 
-        [Fact]
-        public async Task GetCommitDiffAsync_ReturnsDifferences()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCommitDiff(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(diff);
+        Assert.NotNull(diff.Diffs);
+    }
 
-            var diff = await client.GetCommitDiffAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
+    [Fact]
+    public async Task GetPullRequestMergeBaseAsync_ReturnsCommit()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetPullRequestMergeBase(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(diff);
-            Assert.NotNull(diff.Diffs);
-        }
+        var commit = await client.GetPullRequestMergeBaseAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task GetPullRequestMergeBaseAsync_ReturnsCommit()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetPullRequestMergeBase(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(commit);
+        Assert.Equal(TestConstants.TestCommitId, commit.Id);
+    }
 
-            var commit = await client.GetPullRequestMergeBaseAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
+    [Fact]
+    public async Task CreateCommitWatchAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupCreateCommitWatch(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(commit);
-            Assert.Equal(TestConstants.TestCommitId, commit.Id);
-        }
+        var result = await client.CreateCommitWatchAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
 
-        [Fact]
-        public async Task CreateCommitWatchAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateCommitWatch(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        Assert.True(result);
+    }
 
-            var result = await client.CreateCommitWatchAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
+    [Fact]
+    public async Task DeleteCommitWatchAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteCommitWatch(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-            Assert.True(result);
-        }
+        var result = await client.DeleteCommitWatchAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
 
-        [Fact]
-        public async Task DeleteCommitWatchAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteCommitWatch(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        Assert.True(result);
+    }
 
-            var result = await client.DeleteCommitWatchAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
+    [Fact]
+    public async Task CreateCommitCommentAsync_ReturnsComment()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupCreateCommitComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-            Assert.True(result);
-        }
+        var commentInfo = new CommentInfo { Text = "Test comment" };
 
-        [Fact]
-        public async Task CreateCommitCommentAsync_ReturnsComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateCommitComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        var comment = await client.CreateCommitCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            commentInfo);
 
-            var commentInfo = new CommentInfo { Text = "Test comment" };
+        Assert.NotNull(comment);
+    }
 
-            var comment = await client.CreateCommitCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                commentInfo);
+    [Fact]
+    public async Task GetCommitCommentAsync_ReturnsComment()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetCommitComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(comment);
-        }
+        var comment = await client.GetCommitCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1);
 
-        [Fact]
-        public async Task GetCommitCommentAsync_ReturnsComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCommitComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(comment);
+    }
 
-            var comment = await client.GetCommitCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1);
+    [Fact]
+    public async Task UpdateCommitCommentAsync_ReturnsComment()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupUpdateCommitComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(comment);
-        }
+        var commentText = new CommentText { Text = "Updated comment", Version = 0 };
 
-        [Fact]
-        public async Task UpdateCommitCommentAsync_ReturnsComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupUpdateCommitComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1);
-            var client = _fixture.CreateClient();
+        var comment = await client.UpdateCommitCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1,
+            commentText);
 
-            var commentText = new CommentText { Text = "Updated comment", Version = 0 };
+        Assert.NotNull(comment);
+    }
 
-            var comment = await client.UpdateCommitCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1,
-                commentText);
+    [Fact]
+    public async Task DeleteCommitCommentAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteCommitComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(comment);
-        }
+        var result = await client.DeleteCommitCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId,
+            1,
+            version: 0);
 
-        [Fact]
-        public async Task DeleteCommitCommentAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteCommitComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1);
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeleteCommitCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId,
-                1,
-                version: 0);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

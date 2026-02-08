@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class Author
 {
-    public class Author
-    {
-        public string Name { get; set; }
-        public string EmailAddress { get; set; }
-    }
+    public string? Name { get; set; }
+    public string? EmailAddress { get; set; }
 }

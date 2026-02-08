@@ -1,9 +1,17 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
-{
-    public class Link
-    {
-        public string Href { get; set; }
+﻿namespace Bitbucket.Net.Models.Core.Projects;
 
-        public override string ToString() => Href;
-    }
+/// <summary>
+/// A single hyperlink in the Bitbucket REST API response.
+/// </summary>
+public class Link
+{
+    /// <summary>
+    /// Gets or sets the URL of the link.
+    /// </summary>
+    public string? Href { get; set; }
+
+    /// <summary>
+    /// Returns the link URL or an empty string when not set.
+    /// </summary>
+    public override string ToString() => Href ?? string.Empty;
 }

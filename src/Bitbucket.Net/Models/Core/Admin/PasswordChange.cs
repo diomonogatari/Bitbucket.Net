@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Admin
+﻿namespace Bitbucket.Net.Models.Core.Admin;
+
+public class PasswordChange : PasswordBasic
 {
-    public class PasswordChange : PasswordBasic
-    {
-        public string Name { get; set; }
-    }
+    public string? Name { get; set; }
 }

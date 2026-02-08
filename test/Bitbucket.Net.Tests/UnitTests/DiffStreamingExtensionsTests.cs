@@ -1,11 +1,9 @@
 #nullable enable
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Common.Mcp;
 using Bitbucket.Net.Models.Core.Projects;
 using Xunit;
+using ProjectPath = Bitbucket.Net.Models.Core.Projects.Path;
 
 namespace Bitbucket.Net.Tests.UnitTests;
 
@@ -239,8 +237,8 @@ public class DiffStreamingExtensionsTests
     {
         return new Diff
         {
-            Source = new Path { Name = "test.cs" },
-            Destination = new Path { Name = "test.cs" },
+            Source = new ProjectPath { Name = "test.cs" },
+            Destination = new ProjectPath { Name = "test.cs" },
             Hunks = [CreateHunkWithLines(lineCount)]
         };
     }

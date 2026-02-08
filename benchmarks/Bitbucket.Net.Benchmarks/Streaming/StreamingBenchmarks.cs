@@ -1,10 +1,10 @@
-using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BenchmarkDotNet.Attributes;
 using Bitbucket.Net.Benchmarks.Config;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Benchmarks.Streaming;
 
@@ -33,9 +33,7 @@ public class StreamingBenchmarks
     [GlobalSetup]
     public void Setup()
     {
-        _pagedResponses = Enumerable.Range(0, PageCount)
-            .Select(pageIndex => CreatePagedRepositoriesJson(ItemsPerPage, pageIndex, pageIndex < PageCount - 1))
-            .ToList();
+        _pagedResponses = [.. Enumerable.Range(0, PageCount).Select(pageIndex => CreatePagedRepositoriesJson(ItemsPerPage, pageIndex, pageIndex < PageCount - 1))];
     }
 
     /// <summary>
@@ -129,7 +127,7 @@ public class StreamingBenchmarks
     public async Task<List<Repository>> BufferedEarlyTermination()
     {
         var allResults = await BufferedApproach().ConfigureAwait(false);
-        return allResults.Take(10).ToList();
+        return [.. allResults.Take(10)];
     }
 
     private async IAsyncEnumerable<Repository> StreamItemsAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)

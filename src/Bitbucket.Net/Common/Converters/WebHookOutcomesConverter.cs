@@ -1,17 +1,21 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Common.Converters
-{
-    public class WebHookOutcomesConverter : JsonEnumConverter<WebHookOutcomes>
-    {
-        protected override string ConvertToString(WebHookOutcomes value)
-        {
-            return BitbucketHelpers.WebHookOutcomeToString(value);
-        }
+namespace Bitbucket.Net.Common.Converters;
 
-        protected override WebHookOutcomes ConvertFromString(string s)
-        {
-            return BitbucketHelpers.StringToWebHookOutcome(s);
-        }
+/// <summary>
+/// JSON converter for webhook outcome values.
+/// </summary>
+public class WebHookOutcomesConverter : JsonEnumConverter<WebHookOutcomes>
+{
+    /// <inheritdoc />
+    protected override string ConvertToString(WebHookOutcomes value)
+    {
+        return BitbucketHelpers.WebHookOutcomeToString(value);
+    }
+
+    /// <inheritdoc />
+    protected override WebHookOutcomes ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToWebHookOutcome(s);
     }
 }

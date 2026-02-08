@@ -1,112 +1,104 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class ChangesAndFilesMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class ChangesAndFilesMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetChangesAsync_ReturnsChanges()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetChanges(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-        public ChangesAndFilesMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var changes = await client.GetChangesAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            until: "HEAD");
 
-        [Fact]
-        public async Task GetChangesAsync_ReturnsChanges()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetChanges(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(changes);
+        var changeList = changes.ToList();
+        Assert.Single(changeList);
+        Assert.Equal("MODIFY", changeList[0].Type);
+    }
 
-            var changes = await client.GetChangesAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                until: "HEAD");
+    [Fact]
+    public async Task GetCommitChangesAsync_ReturnsChanges()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetCommitChanges(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(changes);
-            var changeList = changes.ToList();
-            Assert.Single(changeList);
-            Assert.Equal("MODIFY", changeList[0].Type);
-        }
+        var changes = await client.GetCommitChangesAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
 
-        [Fact]
-        public async Task GetCommitChangesAsync_ReturnsChanges()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCommitChanges(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(changes);
+        var changeList = changes.ToList();
+        Assert.Single(changeList);
+    }
 
-            var changes = await client.GetCommitChangesAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
+    [Fact]
+    public async Task GetRepositoryFilesAsync_ReturnsFiles()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetFiles(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(changes);
-            var changeList = changes.ToList();
-            Assert.Single(changeList);
-        }
+        var files = await client.GetRepositoryFilesAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
 
-        [Fact]
-        public async Task GetRepositoryFilesAsync_ReturnsFiles()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetFiles(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(files);
+        var fileList = files.ToList();
+        Assert.Equal(3, fileList.Count);
+        Assert.Contains("README.md", fileList);
+    }
 
-            var files = await client.GetRepositoryFilesAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
+    [Fact]
+    public async Task GetPullRequestChangesAsync_ReturnsChanges()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetPullRequestChanges(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(files);
-            var fileList = files.ToList();
-            Assert.Equal(3, fileList.Count);
-            Assert.Contains("README.md", fileList);
-        }
+        var changes = await client.GetPullRequestChangesAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task GetPullRequestChangesAsync_ReturnsChanges()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetPullRequestChanges(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(changes);
+        var changeList = changes.ToList();
+        Assert.Single(changeList);
+    }
 
-            var changes = await client.GetPullRequestChangesAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
+    [Fact]
+    public async Task GetPullRequestCommitsAsync_ReturnsCommits()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetPullRequestCommits(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(changes);
-            var changeList = changes.ToList();
-            Assert.Single(changeList);
-        }
+        var commits = await client.GetPullRequestCommitsAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
 
-        [Fact]
-        public async Task GetPullRequestCommitsAsync_ReturnsCommits()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetPullRequestCommits(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
-
-            var commits = await client.GetPullRequestCommitsAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-
-            Assert.NotNull(commits);
-            var commitList = commits.ToList();
-            Assert.Equal(2, commitList.Count);
-        }
+        Assert.NotNull(commits);
+        var commitList = commits.ToList();
+        Assert.Equal(2, commitList.Count);
     }
 }

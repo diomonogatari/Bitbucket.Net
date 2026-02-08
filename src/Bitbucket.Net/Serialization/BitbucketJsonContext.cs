@@ -1,52 +1,34 @@
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 using Bitbucket.Net.Common.Models;
-
 // Audit
 using Bitbucket.Net.Models.Audit;
-
 // Branches
 using Bitbucket.Net.Models.Branches;
-
 // Builds
 using Bitbucket.Net.Models.Builds;
-
 // Core - Admin
 using Bitbucket.Net.Models.Core.Admin;
-
 // Core - Logs
-using Bitbucket.Net.Models.Core.Logs;
-
 // Core - Projects
 using Bitbucket.Net.Models.Core.Projects;
-
 // Core - Tasks
 using Bitbucket.Net.Models.Core.Tasks;
-
 // Core - Users
 using Bitbucket.Net.Models.Core.Users;
-
 // DefaultReviewers
 using Bitbucket.Net.Models.DefaultReviewers;
-
 // Git
 using Bitbucket.Net.Models.Git;
-
 // Jira
 using Bitbucket.Net.Models.Jira;
-
 // PersonalAccessTokens
 using Bitbucket.Net.Models.PersonalAccessTokens;
-
 // RefRestrictions
 using Bitbucket.Net.Models.RefRestrictions;
-
 // RefSync
 using Bitbucket.Net.Models.RefSync;
-
 // Ssh
 using Bitbucket.Net.Models.Ssh;
+using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Serialization;
 
@@ -148,7 +130,7 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(MergeStrategy))]
 [JsonSerializable(typeof(Node))]
 [JsonSerializable(typeof(PasswordBasic))]
-[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Admin.PasswordChange))]
+[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Admin.PasswordChange), TypeInfoPropertyName = "AdminPasswordChange")]
 [JsonSerializable(typeof(UserGroups))]
 [JsonSerializable(typeof(UserInfo))]
 [JsonSerializable(typeof(UserPermission))]
@@ -198,7 +180,7 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(MergeCommits))]
 [JsonSerializable(typeof(MergeHookRequiredApprovers))]
 [JsonSerializable(typeof(Participant))]
-[JsonSerializable(typeof(Path))]
+[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Projects.Path))]
 [JsonSerializable(typeof(Permittedoperations))]
 [JsonSerializable(typeof(Project))]
 [JsonSerializable(typeof(ProjectDefinition))]
@@ -223,7 +205,7 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(Tag))]
 [JsonSerializable(typeof(TimeWindow))]
 [JsonSerializable(typeof(VersionInfo))]
-[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Projects.Veto))]
+[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Projects.Veto), TypeInfoPropertyName = "ProjectVeto")]
 [JsonSerializable(typeof(WebHook))]
 [JsonSerializable(typeof(WebHookInvocation))]
 [JsonSerializable(typeof(WebHookRequest))]
@@ -251,7 +233,7 @@ namespace Bitbucket.Net.Serialization;
 // ============================================================================
 [JsonSerializable(typeof(Identity))]
 [JsonSerializable(typeof(Named))]
-[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Users.PasswordChange))]
+[JsonSerializable(typeof(Bitbucket.Net.Models.Core.Users.PasswordChange), TypeInfoPropertyName = "UserPasswordChange")]
 [JsonSerializable(typeof(User))]
 
 // ============================================================================
@@ -265,7 +247,7 @@ namespace Bitbucket.Net.Serialization;
 // Git Models
 // ============================================================================
 [JsonSerializable(typeof(RebasePullRequestCondition))]
-[JsonSerializable(typeof(Bitbucket.Net.Models.Git.Veto))]
+[JsonSerializable(typeof(Bitbucket.Net.Models.Git.Veto), TypeInfoPropertyName = "GitVeto")]
 
 // ============================================================================
 // Jira Models
@@ -320,6 +302,8 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(List<Comment>))]
 [JsonSerializable(typeof(List<Commit>))]
 [JsonSerializable(typeof(List<CommitParent>))]
+[JsonSerializable(typeof(List<Bitbucket.Net.Models.Core.Projects.Veto>), TypeInfoPropertyName = "ProjectVetoList")]
+[JsonSerializable(typeof(List<Bitbucket.Net.Models.Git.Veto>), TypeInfoPropertyName = "GitVetoList")]
 [JsonSerializable(typeof(List<Line>))]
 [JsonSerializable(typeof(List<Segment>))]
 [JsonSerializable(typeof(List<DiffHunk>))]
@@ -327,19 +311,6 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(List<ContentItem>))]
 [JsonSerializable(typeof(Dictionary<string, object>))]
 
-/// <summary>
-/// Provides the source-generated JSON serialization context for Bitbucket.Net.
-/// This context enables AOT compilation, trimming support, and improved serialization performance.
-/// </summary>
-/// <remarks>
-/// Consumers can use this context directly for advanced scenarios:
-/// <code>
-/// var options = new JsonSerializerOptions
-/// {
-///     TypeInfoResolver = BitbucketJsonContext.Default
-/// };
-/// </code>
-/// </remarks>
 public partial class BitbucketJsonContext : JsonSerializerContext
 {
 }

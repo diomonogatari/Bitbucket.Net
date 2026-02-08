@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.RefRestrictions
+﻿namespace Bitbucket.Net.Models.RefRestrictions;
+
+public enum RefMatcherTypes
 {
-    public enum RefMatcherTypes
-    {
-        Branch,
-        Pattern,
-        ModelCategory,
-        ModelBranch
-    }
+    Branch,
+    Pattern,
+    ModelCategory,
+    ModelBranch,
 }

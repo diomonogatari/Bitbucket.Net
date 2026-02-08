@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.RefSync
+﻿namespace Bitbucket.Net.Models.RefSync;
+
+public class SynchronizeContext
 {
-    public class SynchronizeContext
-    {
-        public string CommitMessage { get; set; }
-    }
+    public string? CommitMessage { get; set; }
 }

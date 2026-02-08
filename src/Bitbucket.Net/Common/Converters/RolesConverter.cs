@@ -1,17 +1,21 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Common.Converters
-{
-    public class RolesConverter : JsonEnumConverter<Roles>
-    {
-        protected override string ConvertToString(Roles value)
-        {
-            return BitbucketHelpers.RoleToString(value);
-        }
+namespace Bitbucket.Net.Common.Converters;
 
-        protected override Roles ConvertFromString(string s)
-        {
-            return BitbucketHelpers.StringToRole(s);
-        }
+/// <summary>
+/// JSON converter for pull request role values.
+/// </summary>
+public class RolesConverter : JsonEnumConverter<Roles>
+{
+    /// <inheritdoc />
+    protected override string ConvertToString(Roles value)
+    {
+        return BitbucketHelpers.RoleToString(value);
+    }
+
+    /// <inheritdoc />
+    protected override Roles ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToRole(s);
     }
 }

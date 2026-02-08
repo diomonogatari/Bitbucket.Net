@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Builds
+﻿namespace Bitbucket.Net.Models.Builds;
+
+public class BuildStats
 {
-    public class BuildStats
-    {
-        public int Successful { get; set; }
-        public int InProgress { get; set; }
-        public int Failed { get; set; }
-    }
+    public int Successful { get; set; }
+    public int InProgress { get; set; }
+    public int Failed { get; set; }
 }

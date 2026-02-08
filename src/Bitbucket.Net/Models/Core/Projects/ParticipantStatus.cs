@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum ParticipantStatus
 {
-    public enum ParticipantStatus
-    {
-        Unapproved,
-        NeedsWork,
-        Approved
-    }
+    Unapproved,
+    NeedsWork,
+    Approved,
 }

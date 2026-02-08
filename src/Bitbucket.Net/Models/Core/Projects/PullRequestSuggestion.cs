@@ -1,16 +1,14 @@
-using System;
 using Bitbucket.Net.Common.Converters;
 using System.Text.Json.Serialization;
 
-namespace Bitbucket.Net.Models.Core.Projects
+namespace Bitbucket.Net.Models.Core.Projects;
+
+public class PullRequestSuggestion
 {
-    public class PullRequestSuggestion
-    {
-        [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-        public DateTimeOffset ChangeTime { get; set; }
-        public RefChange RefChange { get; set; }
-        public Repository Repository { get; set; }
-        public Ref FromRef { get; set; }
-        public Ref ToRef { get; set; }
-    }
+    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    public DateTimeOffset ChangeTime { get; set; }
+    public RefChange? RefChange { get; set; }
+    public Repository? Repository { get; set; }
+    public Ref? FromRef { get; set; }
+    public Ref? ToRef { get; set; }
 }

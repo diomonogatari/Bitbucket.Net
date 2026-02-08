@@ -1,112 +1,206 @@
-using System.Net;
-using System.Threading.Tasks;
+using Bitbucket.Net.Common.Exceptions;
+using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Tests.Infrastructure;
-using Flurl.Http;
+using System.Net;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+/// <summary>
+/// Tests that the typed exception hierarchy fires correctly for HTTP
+/// error responses.
+/// </summary>
+public class ErrorHandlingMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    /// <summary>
-    /// Unit tests for error handling using WireMock.
-    /// Verifies that appropriate exceptions are thrown for HTTP error responses.
-    /// </summary>
-    /// <remarks>
-    /// NOTE: The current library implementation throws FlurlHttpException directly
-    /// rather than the documented BitbucketApiException types. This is because
-    /// Flurl throws before the custom error handling can intercept the response.
-    /// These tests verify the actual current behavior.
-    /// </remarks>
-    public class ErrorHandlingMockTests : IClassFixture<BitbucketMockFixture>
+    private const string ApiBasePath = "/rest/api/1.0";
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetProjectAsync_WhenNotFound_ThrowsException()
     {
-        private const string ApiBasePath = "/rest/api/1.0";
-        private readonly BitbucketMockFixture _fixture;
+        // Arrange
+        _fixture.Reset();
+        var projectKey = "NONEXISTENT";
+        _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
 
-        public ErrorHandlingMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BitbucketNotFoundException>(
+            () => client.GetProjectAsync(projectKey));
 
-        [Fact]
-        public async Task GetProjectAsync_WhenNotFound_ThrowsException()
-        {
-            // Arrange
-            _fixture.Reset();
-            var projectKey = "NONEXISTENT";
-            _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}");
-            var client = _fixture.CreateClient();
+        Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+        Assert.Contains(projectKey, exception.RequestUrl ?? string.Empty);
+    }
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<FlurlHttpException>(
-                () => client.GetProjectAsync(projectKey));
+    [Fact]
+    public async Task GetProjectAsync_WhenUnauthorized_ThrowsException()
+    {
+        // Arrange
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupUnauthorized($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal((int)HttpStatusCode.NotFound, exception.StatusCode);
-        }
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BitbucketAuthenticationException>(
+            () => client.GetProjectAsync(projectKey));
 
-        [Fact]
-        public async Task GetProjectAsync_WhenUnauthorized_ThrowsException()
-        {
-            // Arrange
-            _fixture.Reset();
-            var projectKey = "TEST";
-            _fixture.Server.SetupUnauthorized($"{ApiBasePath}/projects/{projectKey}");
-            var client = _fixture.CreateClient();
+        Assert.Equal(HttpStatusCode.Unauthorized, exception.StatusCode);
+    }
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<FlurlHttpException>(
-                () => client.GetProjectAsync(projectKey));
+    [Fact]
+    public async Task GetProjectAsync_WhenServerError_ThrowsException()
+    {
+        // Arrange
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupInternalServerError($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal((int)HttpStatusCode.Unauthorized, exception.StatusCode);
-        }
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BitbucketServerException>(
+            () => client.GetProjectAsync(projectKey));
 
-        [Fact]
-        public async Task GetProjectAsync_WhenServerError_ThrowsException()
-        {
-            // Arrange
-            _fixture.Reset();
-            var projectKey = "TEST";
-            _fixture.Server.SetupInternalServerError($"{ApiBasePath}/projects/{projectKey}");
-            var client = _fixture.CreateClient();
+        Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
+    }
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<FlurlHttpException>(
-                () => client.GetProjectAsync(projectKey));
+    [Fact]
+    public async Task GetProjectRepositoryAsync_WhenNotFound_ThrowsException()
+    {
+        // Arrange
+        _fixture.Reset();
+        var projectKey = "TEST";
+        var repoSlug = "nonexistent-repo";
+        _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}/repos/{repoSlug}");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal((int)HttpStatusCode.InternalServerError, exception.StatusCode);
-        }
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BitbucketNotFoundException>(
+            () => client.GetProjectRepositoryAsync(projectKey, repoSlug));
 
-        [Fact]
-        public async Task GetProjectRepositoryAsync_WhenNotFound_ThrowsException()
-        {
-            // Arrange
-            _fixture.Reset();
-            var projectKey = "TEST";
-            var repoSlug = "nonexistent-repo";
-            _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}/repos/{repoSlug}");
-            var client = _fixture.CreateClient();
+        Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+    }
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<FlurlHttpException>(
-                () => client.GetProjectRepositoryAsync(projectKey, repoSlug));
+    [Fact]
+    public async Task GetPullRequestAsync_WhenNotFound_ThrowsException()
+    {
+        // Arrange
+        _fixture.Reset();
+        var projectKey = "TEST";
+        var repoSlug = "test-repo";
+        var pullRequestId = 99999L;
+        _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}/repos/{repoSlug}/pull-requests/{pullRequestId}");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal((int)HttpStatusCode.NotFound, exception.StatusCode);
-        }
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BitbucketNotFoundException>(
+            () => client.GetPullRequestAsync(projectKey, repoSlug, pullRequestId));
 
-        [Fact]
-        public async Task GetPullRequestAsync_WhenNotFound_ThrowsException()
-        {
-            // Arrange
-            _fixture.Reset();
-            var projectKey = "TEST";
-            var repoSlug = "test-repo";
-            var pullRequestId = 99999L;
-            _fixture.Server.SetupNotFound($"{ApiBasePath}/projects/{projectKey}/repos/{repoSlug}/pull-requests/{pullRequestId}");
-            var client = _fixture.CreateClient();
+        Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+    }
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<FlurlHttpException>(
-                () => client.GetPullRequestAsync(projectKey, repoSlug, pullRequestId));
+    [Fact]
+    public async Task GetProjectAsync_WhenForbidden_ThrowsException()
+    {
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupForbidden($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal((int)HttpStatusCode.NotFound, exception.StatusCode);
-        }
+        var exception = await Assert.ThrowsAsync<BitbucketForbiddenException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.Forbidden, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenBadRequest_ThrowsException()
+    {
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupBadRequest($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketBadRequestException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenConflict_ThrowsException()
+    {
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupConflict($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketConflictException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.Conflict, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenRateLimited_ThrowsException()
+    {
+        _fixture.Reset();
+        var projectKey = "TEST";
+        _fixture.Server.SetupRateLimited($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketRateLimitException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenErrorHasJsonBody_PopulatesErrorsAndContext()
+    {
+        _fixture.Reset();
+        var projectKey = "CTX";
+        var error = new Error { Context = "projectKey", Message = "Invalid project key", ExceptionName = "TestException" };
+        _fixture.Server.SetupErrorWithJsonBody($"{ApiBasePath}/projects/{projectKey}", HttpStatusCode.NotFound, error);
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketNotFoundException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+        Assert.NotEmpty(exception.Errors);
+        Assert.Equal("projectKey", exception.Context);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenErrorHasHtmlBody_PreservesMessage()
+    {
+        _fixture.Reset();
+        var projectKey = "HTML";
+        var htmlBody = "<html><body>Bad Gateway</body></html>";
+        _fixture.Server.SetupErrorWithHtmlBody($"{ApiBasePath}/projects/{projectKey}", HttpStatusCode.BadGateway, htmlBody);
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketServerException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.BadGateway, exception.StatusCode);
+        Assert.Single(exception.Errors);
+        Assert.Contains("Bad Gateway", exception.Errors[0].Message);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenErrorHasEmptyBody_UsesEmptyErrors()
+    {
+        _fixture.Reset();
+        var projectKey = "EMPTY";
+        _fixture.Server.SetupErrorWithEmptyBody($"{ApiBasePath}/projects/{projectKey}", HttpStatusCode.InternalServerError);
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketServerException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
+        Assert.Empty(exception.Errors);
     }
 }

@@ -1,19 +1,43 @@
-using System;
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Users;
 using System.Text.Json.Serialization;
 
-namespace Bitbucket.Net.Models.Core.Tasks
+namespace Bitbucket.Net.Models.Core.Tasks;
+
+/// <summary>
+/// Abstract base class for Bitbucket tasks with identity, text, author, and creation date.
+/// </summary>
+public abstract class TaskRef
 {
-    public abstract class TaskRef
-    {
-        public Properties Properties { get; set; }
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public User Author { get; set; }
-        [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-        public DateTimeOffset? CreatedDate { get; set; }
-        public Permittedoperations PermittedOperations { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the additional properties bag.
+    /// </summary>
+    public Properties? Properties { get; set; }
+
+    /// <summary>
+    /// Gets or sets the server-assigned task identifier.
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the task description text.
+    /// </summary>
+    public string? Text { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user who created the task.
+    /// </summary>
+    public User? Author { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date and time when the task was created.
+    /// </summary>
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
+    public DateTimeOffset? CreatedDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the operations the current user is permitted to perform on this task.
+    /// </summary>
+    public Permittedoperations? PermittedOperations { get; set; }
 }

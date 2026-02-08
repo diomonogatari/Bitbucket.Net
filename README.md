@@ -1,21 +1,27 @@
-![Icon](https://i.imgur.com/OsDAzyV.png)
 # Bitbucket.Net
 
 [![NuGet](https://img.shields.io/nuget/v/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/BitbucketServer.Net.svg)](https://www.nuget.org/packages/BitbucketServer.Net)
 [![CI](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml/badge.svg)](https://github.com/diomonogatari/Bitbucket.Net/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/diomonogatari/Bitbucket.Net/branch/main/graph/badge.svg)](https://codecov.io/gh/diomonogatari/Bitbucket.Net)
 [![license](https://img.shields.io/github/license/diomonogatari/Bitbucket.Net.svg?maxAge=2592000)](https://github.com/diomonogatari/Bitbucket.Net/blob/main/LICENSE)
 ![](https://img.shields.io/badge/.net-10.0-yellowgreen.svg)
-![](https://img.shields.io/badge/status-beta-orange.svg)
+![](https://img.shields.io/badge/status-0.x_(pre--stable)-orange.svg)
 
 Modernized C# client for **Bitbucket Server** (Stash) REST API.
+
+## Contributing
+
+Development setup (including the pre-commit formatting hook) is documented in
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 > **Fork notice** &mdash; This is an actively maintained fork of
 > [lvermeulen/Bitbucket.Net](https://github.com/lvermeulen/Bitbucket.Net),
 > which appears to be abandoned (last release 2020).
-> The fork is **not production-ready** yet &mdash; it works well for the
-> author's own use case (an MCP Server for on-prem Bitbucket Server) but
-> not every endpoint has been fully tested.
+> The library is at **0.x** &mdash; the API surface may still change
+> between minor versions. It is used in production by the author (as the
+> backend for an MCP Server talking to on-prem Bitbucket Server), but
+> not every endpoint has been verified against a live instance.
 > Contributions, bug reports, and feedback are very welcome.
 
 ### What changed from the original
@@ -35,7 +41,7 @@ If you're looking for Bitbucket Cloud API, try [this repository](https://github.
 ## Installation
 
 ```bash
-dotnet add package BitbucketServer.Net --prerelease
+dotnet add package BitbucketServer.Net
 ```
 
 ## Usage
@@ -111,6 +117,19 @@ var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
 await foreach (var pr in client.GetPullRequestsStreamAsync("PROJ", "repo", cancellationToken: cts.Token))
 {
     await ProcessPullRequestAsync(pr);
+}
+
+// Stream PR activities
+await foreach (var activity in client.GetPullRequestActivitiesStreamAsync(
+    "PROJ", "repo", pullRequestId: 42))
+{
+    ProcessActivity(activity);
+}
+
+// Stream dashboard PRs
+await foreach (var pr in client.GetDashboardPullRequestsStreamAsync())
+{
+    Console.WriteLine($"#{pr.Id}: {pr.Title}");
 }
 ```
 

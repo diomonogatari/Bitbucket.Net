@@ -1,72 +1,64 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Builds;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class BuildMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class BuildMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetBuildStatsForCommitAsync_ReturnsStats()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetBuildStatsForCommit(TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-        public BuildMockTests(BitbucketMockFixture fixture)
+        var stats = await client.GetBuildStatsForCommitAsync(TestConstants.TestCommitId);
+
+        Assert.NotNull(stats);
+        Assert.Equal(3, stats.Successful);
+        Assert.Equal(1, stats.InProgress);
+        Assert.Equal(0, stats.Failed);
+    }
+
+    [Fact]
+    public async Task GetBuildStatusForCommitAsync_ReturnsStatuses()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetBuildStatusForCommit(TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
+
+        var statuses = await client.GetBuildStatusForCommitAsync(TestConstants.TestCommitId);
+
+        Assert.NotNull(statuses);
+        var statusList = statuses.ToList();
+        Assert.Equal(2, statusList.Count);
+        Assert.Equal("build-123", statusList[0].Key);
+        Assert.Equal("SUCCESSFUL", statusList[0].State);
+    }
+
+    [Fact]
+    public async Task AssociateBuildStatusWithCommitAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupAssociateBuildStatus(TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
+
+        var buildStatus = new BuildStatus
         {
-            _fixture = fixture;
-        }
+            Key = "build-125",
+            State = "SUCCESSFUL",
+            Name = "Test Build",
+            Description = "Build completed",
+            Url = "https://build-server/builds/125"
+        };
 
-        [Fact]
-        public async Task GetBuildStatsForCommitAsync_ReturnsStats()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetBuildStatsForCommit(TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        var result = await client.AssociateBuildStatusWithCommitAsync(
+            TestConstants.TestCommitId,
+            buildStatus);
 
-            var stats = await client.GetBuildStatsForCommitAsync(TestConstants.TestCommitId);
-
-            Assert.NotNull(stats);
-            Assert.Equal(3, stats.Successful);
-            Assert.Equal(1, stats.InProgress);
-            Assert.Equal(0, stats.Failed);
-        }
-
-        [Fact]
-        public async Task GetBuildStatusForCommitAsync_ReturnsStatuses()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetBuildStatusForCommit(TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
-
-            var statuses = await client.GetBuildStatusForCommitAsync(TestConstants.TestCommitId);
-
-            Assert.NotNull(statuses);
-            var statusList = statuses.ToList();
-            Assert.Equal(2, statusList.Count);
-            Assert.Equal("build-123", statusList[0].Key);
-            Assert.Equal("SUCCESSFUL", statusList[0].State);
-        }
-
-        [Fact]
-        public async Task AssociateBuildStatusWithCommitAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupAssociateBuildStatus(TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
-
-            var buildStatus = new BuildStatus
-            {
-                Key = "build-125",
-                State = "SUCCESSFUL",
-                Name = "Test Build",
-                Description = "Build completed",
-                Url = "https://build-server/builds/125"
-            };
-
-            var result = await client.AssociateBuildStatusWithCommitAsync(
-                TestConstants.TestCommitId,
-                buildStatus);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

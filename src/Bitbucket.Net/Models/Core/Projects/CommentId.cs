@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class CommentId
 {
-    public class CommentId
-    {
-        public int? Id { get; set; }
-    }
+    public int? Id { get; set; }
 }

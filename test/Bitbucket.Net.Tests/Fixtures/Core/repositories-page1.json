@@ -1,0 +1,47 @@
+{
+    "size": 2,
+    "limit": 2,
+    "isLastPage": false,
+    "nextPageStart": 2,
+    "start": 0,
+    "values": [
+        {
+            "slug": "repo-alpha",
+            "id": 1,
+            "name": "Repo Alpha",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "forkable": true,
+            "public": false,
+            "project": {
+                "key": "TEST"
+            },
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/TEST/repos/repo-alpha"
+                    }
+                ]
+            }
+        },
+        {
+            "slug": "repo-beta",
+            "id": 2,
+            "name": "Repo Beta",
+            "scmId": "git",
+            "state": "AVAILABLE",
+            "forkable": true,
+            "public": false,
+            "project": {
+                "key": "TEST"
+            },
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/TEST/repos/repo-beta"
+                    }
+                ]
+            }
+        }
+    ]
+}

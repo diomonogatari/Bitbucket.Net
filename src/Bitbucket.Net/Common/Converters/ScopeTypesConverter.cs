@@ -1,17 +1,21 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Common.Converters
-{
-    public class ScopeTypesConverter : JsonEnumConverter<ScopeTypes>
-    {
-        protected override string ConvertToString(ScopeTypes value)
-        {
-            return BitbucketHelpers.ScopeTypeToString(value);
-        }
+namespace Bitbucket.Net.Common.Converters;
 
-        protected override ScopeTypes ConvertFromString(string s)
-        {
-            return BitbucketHelpers.StringToScopeType(s);
-        }
+/// <summary>
+/// JSON converter for Bitbucket permission scope types.
+/// </summary>
+public class ScopeTypesConverter : JsonEnumConverter<ScopeTypes>
+{
+    /// <inheritdoc />
+    protected override string ConvertToString(ScopeTypes value)
+    {
+        return BitbucketHelpers.ScopeTypeToString(value);
+    }
+
+    /// <inheritdoc />
+    protected override ScopeTypes ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToScopeType(s);
     }
 }

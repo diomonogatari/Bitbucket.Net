@@ -1,0 +1,39 @@
+{
+    "size": 2,
+    "limit": 2,
+    "isLastPage": false,
+    "nextPageStart": 2,
+    "start": 0,
+    "values": [
+        {
+            "key": "PROJ1",
+            "id": 1,
+            "name": "Project One",
+            "description": "First project",
+            "public": false,
+            "type": "NORMAL",
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/PROJ1"
+                    }
+                ]
+            }
+        },
+        {
+            "key": "PROJ2",
+            "id": 2,
+            "name": "Project Two",
+            "description": "Second project",
+            "public": true,
+            "type": "NORMAL",
+            "links": {
+                "self": [
+                    {
+                        "href": "http://localhost/projects/PROJ2"
+                    }
+                ]
+            }
+        }
+    ]
+}

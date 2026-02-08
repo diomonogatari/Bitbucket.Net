@@ -1,17 +1,21 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Common.Converters
-{
-    public class FileTypesConverter : JsonEnumConverter<FileTypes>
-    {
-        protected override string ConvertToString(FileTypes value)
-        {
-            return BitbucketHelpers.FileTypeToString(value);
-        }
+namespace Bitbucket.Net.Common.Converters;
 
-        protected override FileTypes ConvertFromString(string s)
-        {
-            return BitbucketHelpers.StringToFileType(s);
-        }
+/// <summary>
+/// JSON converter for Bitbucket <see cref="FileTypes"/> values.
+/// </summary>
+public class FileTypesConverter : JsonEnumConverter<FileTypes>
+{
+    /// <inheritdoc />
+    protected override string ConvertToString(FileTypes value)
+    {
+        return BitbucketHelpers.FileTypeToString(value);
+    }
+
+    /// <inheritdoc />
+    protected override FileTypes ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToFileType(s);
     }
 }

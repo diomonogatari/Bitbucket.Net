@@ -1,65 +1,58 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Logs;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class LogsMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class LogsMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetLogLevelAsync_ReturnsLogLevel()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetLogLevel("com.atlassian.bitbucket");
+        var client = _fixture.CreateClient();
 
-        public LogsMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var logLevel = await client.GetLogLevelAsync("com.atlassian.bitbucket");
 
-        [Fact]
-        public async Task GetLogLevelAsync_ReturnsLogLevel()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetLogLevel("com.atlassian.bitbucket");
-            var client = _fixture.CreateClient();
+        Assert.Equal(LogLevels.Debug, logLevel);
+    }
 
-            var logLevel = await client.GetLogLevelAsync("com.atlassian.bitbucket");
+    [Fact]
+    public async Task SetLogLevelAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupSetLogLevel("com.atlassian.bitbucket", "INFO");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal(LogLevels.Debug, logLevel);
-        }
+        var result = await client.SetLogLevelAsync("com.atlassian.bitbucket", LogLevels.Info);
 
-        [Fact]
-        public async Task SetLogLevelAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupSetLogLevel("com.atlassian.bitbucket", "INFO");
-            var client = _fixture.CreateClient();
+        Assert.True(result);
+    }
 
-            var result = await client.SetLogLevelAsync("com.atlassian.bitbucket", LogLevels.Info);
+    [Fact]
+    public async Task GetRootLogLevelAsync_ReturnsLogLevel()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetRootLogLevel();
+        var client = _fixture.CreateClient();
 
-            Assert.True(result);
-        }
+        var logLevel = await client.GetRootLogLevelAsync();
 
-        [Fact]
-        public async Task GetRootLogLevelAsync_ReturnsLogLevel()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetRootLogLevel();
-            var client = _fixture.CreateClient();
+        Assert.Equal(LogLevels.Debug, logLevel);
+    }
 
-            var logLevel = await client.GetRootLogLevelAsync();
+    [Fact]
+    public async Task SetRootLogLevelAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupSetRootLogLevel("WARN");
+        var client = _fixture.CreateClient();
 
-            Assert.Equal(LogLevels.Debug, logLevel);
-        }
+        var result = await client.SetRootLogLevelAsync(LogLevels.Warn);
 
-        [Fact]
-        public async Task SetRootLogLevelAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupSetRootLogLevel("WARN");
-            var client = _fixture.CreateClient();
-
-            var result = await client.SetRootLogLevelAsync(LogLevels.Warn);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

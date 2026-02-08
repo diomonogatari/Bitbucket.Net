@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Git
+﻿namespace Bitbucket.Net.Models.Git;
+
+public enum TagTypes
 {
-    public enum TagTypes
-    {
-        LightWeight,
-        Annotated
-    }
+    LightWeight,
+    Annotated,
 }

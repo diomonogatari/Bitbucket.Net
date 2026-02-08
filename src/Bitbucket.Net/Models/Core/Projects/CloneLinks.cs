@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Models.Core.Projects
+public class CloneLinks : Links
 {
-    public class CloneLinks : Links
-    {
-        public List<CloneLink> Clone { get; set; }
-    }
+    public List<CloneLink>? Clone { get; set; }
 }

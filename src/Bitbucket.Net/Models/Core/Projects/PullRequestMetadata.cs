@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class PullRequestMetadata
 {
-    public class PullRequestMetadata
-    {
-        public PullRequest PullRequest { get; set; }
-    }
+    public PullRequest? PullRequest { get; set; }
 }

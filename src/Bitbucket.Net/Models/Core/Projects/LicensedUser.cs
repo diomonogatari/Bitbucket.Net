@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class LicensedUser
 {
-    public class LicensedUser
-    {
-        public string Name { get; set; }
-        public bool Deletable { get; set; }
-    }
+    public string? Name { get; set; }
+    public bool Deletable { get; set; }
 }

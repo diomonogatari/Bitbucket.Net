@@ -1,7 +1,6 @@
-﻿namespace Bitbucket.Net.Models.PersonalAccessTokens
+﻿namespace Bitbucket.Net.Models.PersonalAccessTokens;
+
+public class FullAccessToken : AccessToken
 {
-    public class FullAccessToken : AccessToken
-    {
-        public string Token { get; set; }
-    }
+    public string? Token { get; set; }
 }

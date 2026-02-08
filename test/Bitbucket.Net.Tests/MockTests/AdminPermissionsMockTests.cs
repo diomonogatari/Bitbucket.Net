@@ -1,70 +1,62 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class AdminPermissionsMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class AdminPermissionsMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetAdminGroupPermissionsNoneAsync_ReturnsGroups()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminGroupPermissionsNone();
+        var client = _fixture.CreateClient();
 
-        public AdminPermissionsMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var groups = await client.GetAdminGroupPermissionsNoneAsync();
 
-        [Fact]
-        public async Task GetAdminGroupPermissionsNoneAsync_ReturnsGroups()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminGroupPermissionsNone();
-            var client = _fixture.CreateClient();
+        Assert.NotNull(groups);
+        var groupList = groups.ToList();
+        Assert.NotEmpty(groupList);
+    }
 
-            var groups = await client.GetAdminGroupPermissionsNoneAsync();
+    [Fact]
+    public async Task GetAdminUserPermissionsNoneAsync_ReturnsUsers()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminUserPermissionsNone();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(groups);
-            var groupList = groups.ToList();
-            Assert.NotEmpty(groupList);
-        }
+        var users = await client.GetAdminUserPermissionsNoneAsync();
 
-        [Fact]
-        public async Task GetAdminUserPermissionsNoneAsync_ReturnsUsers()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminUserPermissionsNone();
-            var client = _fixture.CreateClient();
+        Assert.NotNull(users);
+        var userList = users.ToList();
+        Assert.NotEmpty(userList);
+    }
 
-            var users = await client.GetAdminUserPermissionsNoneAsync();
+    [Fact]
+    public async Task GetAdminClusterAsync_ReturnsClusterInfo()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminCluster();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(users);
-            var userList = users.ToList();
-            Assert.NotEmpty(userList);
-        }
+        var cluster = await client.GetAdminClusterAsync();
 
-        [Fact]
-        public async Task GetAdminClusterAsync_ReturnsClusterInfo()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminCluster();
-            var client = _fixture.CreateClient();
+        Assert.NotNull(cluster);
+        Assert.True(cluster.Running);
+    }
 
-            var cluster = await client.GetAdminClusterAsync();
+    [Fact]
+    public async Task GetAdminLicenseAsync_ReturnsLicenseDetails()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetAdminLicense();
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(cluster);
-            Assert.True(cluster.Running);
-        }
+        var license = await client.GetAdminLicenseAsync();
 
-        [Fact]
-        public async Task GetAdminLicenseAsync_ReturnsLicenseDetails()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetAdminLicense();
-            var client = _fixture.CreateClient();
-
-            var license = await client.GetAdminLicenseAsync();
-
-            Assert.NotNull(license);
-        }
+        Assert.NotNull(license);
     }
 }

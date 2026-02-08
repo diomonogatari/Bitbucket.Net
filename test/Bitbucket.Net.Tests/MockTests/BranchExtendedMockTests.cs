@@ -1,89 +1,81 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class BranchExtendedMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class BranchExtendedMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task GetCommitBranchInfoAsync_ReturnsBranches()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupGetCommitBranchInfo(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
+        var client = _fixture.CreateClient();
 
-        public BranchExtendedMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var branches = await client.GetCommitBranchInfoAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestCommitId);
 
-        [Fact]
-        public async Task GetCommitBranchInfoAsync_ReturnsBranches()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetCommitBranchInfo(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(branches);
+        var branchList = branches.ToList();
+        Assert.Equal(2, branchList.Count);
+    }
 
-            var branches = await client.GetCommitBranchInfoAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestCommitId);
+    [Fact]
+    public async Task GetRepoBranchModelAsync_ReturnsBranchModel()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetBranchModel(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(branches);
-            var branchList = branches.ToList();
-            Assert.Equal(2, branchList.Count);
-        }
+        var model = await client.GetRepoBranchModelAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
 
-        [Fact]
-        public async Task GetRepoBranchModelAsync_ReturnsBranchModel()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetBranchModel(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(model);
+    }
 
-            var model = await client.GetRepoBranchModelAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
+    [Fact]
+    public async Task CreateRepoBranchAsync_ReturnsBranch()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupCreateRepoBranch(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(model);
-        }
+        var branch = await client.CreateRepoBranchAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            "feature/new-branch",
+            "refs/heads/master");
 
-        [Fact]
-        public async Task CreateRepoBranchAsync_ReturnsBranch()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateRepoBranch(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(branch);
+    }
 
-            var branch = await client.CreateRepoBranchAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                "feature/new-branch",
-                "refs/heads/master");
+    [Fact]
+    public async Task DeleteRepoBranchAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteRepoBranch(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(branch);
-        }
+        var result = await client.DeleteRepoBranchAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            "feature/old-branch",
+            dryRun: false);
 
-        [Fact]
-        public async Task DeleteRepoBranchAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteRepoBranch(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug);
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeleteRepoBranchAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                "feature/old-branch",
-                dryRun: false);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

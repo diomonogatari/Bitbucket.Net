@@ -1,69 +1,62 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class ProjectCrudMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class ProjectCrudMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task CreateProjectAsync_ReturnsCreatedProject()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupCreateProject();
+        var client = _fixture.CreateClient();
 
-        public ProjectCrudMockTests(BitbucketMockFixture fixture)
+        var projectDef = new ProjectDefinition
         {
-            _fixture = fixture;
-        }
+            Key = TestConstants.TestProjectKey,
+            Name = TestConstants.TestProjectName,
+            Description = "Created by unit test"
+        };
 
-        [Fact]
-        public async Task CreateProjectAsync_ReturnsCreatedProject()
+        var project = await client.CreateProjectAsync(projectDef);
+
+        Assert.NotNull(project);
+        Assert.Equal(TestConstants.TestProjectKey, project.Key);
+        Assert.Equal(TestConstants.TestProjectName, project.Name);
+    }
+
+    [Fact]
+    public async Task UpdateProjectAsync_ReturnsUpdatedProject()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupUpdateProject(TestConstants.TestProjectKey);
+        var client = _fixture.CreateClient();
+
+        var projectDef = new ProjectDefinition
         {
-            _fixture.Reset();
-            _fixture.Server.SetupCreateProject();
-            var client = _fixture.CreateClient();
+            Name = "Updated Name",
+            Description = "Updated by unit test"
+        };
 
-            var projectDef = new ProjectDefinition
-            {
-                Key = TestConstants.TestProjectKey,
-                Name = TestConstants.TestProjectName,
-                Description = "Created by unit test"
-            };
+        var project = await client.UpdateProjectAsync(TestConstants.TestProjectKey, projectDef);
 
-            var project = await client.CreateProjectAsync(projectDef);
+        Assert.NotNull(project);
+        Assert.Equal(TestConstants.TestProjectKey, project.Key);
+    }
 
-            Assert.NotNull(project);
-            Assert.Equal(TestConstants.TestProjectKey, project.Key);
-            Assert.Equal(TestConstants.TestProjectName, project.Name);
-        }
+    [Fact]
+    public async Task DeleteProjectAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeleteProject(TestConstants.TestProjectKey);
+        var client = _fixture.CreateClient();
 
-        [Fact]
-        public async Task UpdateProjectAsync_ReturnsUpdatedProject()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupUpdateProject(TestConstants.TestProjectKey);
-            var client = _fixture.CreateClient();
+        var result = await client.DeleteProjectAsync(TestConstants.TestProjectKey);
 
-            var projectDef = new ProjectDefinition
-            {
-                Name = "Updated Name",
-                Description = "Updated by unit test"
-            };
-
-            var project = await client.UpdateProjectAsync(TestConstants.TestProjectKey, projectDef);
-
-            Assert.NotNull(project);
-            Assert.Equal(TestConstants.TestProjectKey, project.Key);
-        }
-
-        [Fact]
-        public async Task DeleteProjectAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeleteProject(TestConstants.TestProjectKey);
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeleteProjectAsync(TestConstants.TestProjectKey);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

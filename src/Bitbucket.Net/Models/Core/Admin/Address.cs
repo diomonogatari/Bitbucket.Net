@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Admin
+﻿namespace Bitbucket.Net.Models.Core.Admin;
+
+public class Address
 {
-    public class Address
-    {
-        public string HostName { get; set; }
-        public int Port { get; set; }
-    }
+    public string? HostName { get; set; }
+    public int Port { get; set; }
 }

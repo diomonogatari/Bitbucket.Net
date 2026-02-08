@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum PullRequestStates
 {
-    public enum PullRequestStates
-    {
-        Open,
-        Declined,
-        Merged,
-        All
-    }
+    Open,
+    Declined,
+    Merged,
+    All,
 }

@@ -1,0 +1,8 @@
+{
+    "diffs": [],
+    "truncated": false,
+    "contextLines": "10",
+    "fromHash": "abc123",
+    "toHash": "def456",
+    "whitespace": "IGNORE_ALL"
+}

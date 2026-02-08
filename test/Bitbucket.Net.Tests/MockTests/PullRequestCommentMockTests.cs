@@ -1,102 +1,95 @@
-using System.Threading.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
-namespace Bitbucket.Net.Tests.MockTests
+namespace Bitbucket.Net.Tests.MockTests;
+
+public class PullRequestCommentMockTests(BitbucketMockFixture fixture) : IClassFixture<BitbucketMockFixture>
 {
-    public class PullRequestCommentMockTests : IClassFixture<BitbucketMockFixture>
+    private readonly BitbucketMockFixture _fixture = fixture;
+
+    [Fact]
+    public async Task CreatePullRequestCommentAsync_ReturnsComment()
     {
-        private readonly BitbucketMockFixture _fixture;
+        _fixture.Reset();
+        _fixture.Server.SetupCreatePullRequestComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId);
+        var client = _fixture.CreateClient();
 
-        public PullRequestCommentMockTests(BitbucketMockFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        var result = await client.CreatePullRequestCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            "This is a new comment");
 
-        [Fact]
-        public async Task CreatePullRequestCommentAsync_ReturnsComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupCreatePullRequestComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.Equal(101, result.Id);
+        Assert.Equal("This is a new comment", result.Text);
+    }
 
-            var result = await client.CreatePullRequestCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                "This is a new comment");
+    [Fact]
+    public async Task GetPullRequestCommentAsync_ReturnsComment()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupGetPullRequestComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.Equal(101, result.Id);
-            Assert.Equal("This is a new comment", result.Text);
-        }
+        var result = await client.GetPullRequestCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101);
 
-        [Fact]
-        public async Task GetPullRequestCommentAsync_ReturnsComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupGetPullRequestComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.Equal(101, result.Id);
+    }
 
-            var result = await client.GetPullRequestCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101);
+    [Fact]
+    public async Task UpdatePullRequestCommentAsync_ReturnsUpdatedComment()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupUpdatePullRequestComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.Equal(101, result.Id);
-        }
+        var result = await client.UpdatePullRequestCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101,
+            0,
+            "Updated comment text");
 
-        [Fact]
-        public async Task UpdatePullRequestCommentAsync_ReturnsUpdatedComment()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupUpdatePullRequestComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101);
-            var client = _fixture.CreateClient();
+        Assert.NotNull(result);
+        Assert.Equal(101, result.Id);
+    }
 
-            var result = await client.UpdatePullRequestCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101,
-                0,
-                "Updated comment text");
+    [Fact]
+    public async Task DeletePullRequestCommentAsync_ReturnsTrue()
+    {
+        _fixture.Reset();
+        _fixture.Server.SetupDeletePullRequestComment(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101);
+        var client = _fixture.CreateClient();
 
-            Assert.NotNull(result);
-            Assert.Equal(101, result.Id);
-        }
+        var result = await client.DeletePullRequestCommentAsync(
+            TestConstants.TestProjectKey,
+            TestConstants.TestRepositorySlug,
+            TestConstants.TestPullRequestId,
+            101,
+            0);
 
-        [Fact]
-        public async Task DeletePullRequestCommentAsync_ReturnsTrue()
-        {
-            _fixture.Reset();
-            _fixture.Server.SetupDeletePullRequestComment(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101);
-            var client = _fixture.CreateClient();
-
-            var result = await client.DeletePullRequestCommentAsync(
-                TestConstants.TestProjectKey,
-                TestConstants.TestRepositorySlug,
-                TestConstants.TestPullRequestId,
-                101,
-                0);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum LineTypes
 {
-    public enum LineTypes
-    {
-        Added,
-        Removed,
-        Context
-    }
+    Added,
+    Removed,
+    Context,
 }

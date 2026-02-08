@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Git pre-commit hook.
+#
+# To enable for this repo:
+#   bash scripts/setup-githooks.sh
+#   (or) ./scripts/setup-githooks.ps1
+#
+# To bypass once:
+#   git commit --no-verify
+
+if [[ "${SKIP_DOTNET_FORMAT:-}" == "1" ]]; then
+  exit 0
+fi
+
+ROOT_DIR="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [[ -z "$ROOT_DIR" ]]; then
+  echo "pre-commit: not inside a git repository" >&2
+  exit 1
+fi
+
+bash "$ROOT_DIR/scripts/verify-format.sh" --verify || {
+  echo "" >&2
+  echo "Commit aborted: formatting verification failed." >&2
+  echo "Fix by running: bash scripts/verify-format.sh --fix" >&2
+  exit 1
+}

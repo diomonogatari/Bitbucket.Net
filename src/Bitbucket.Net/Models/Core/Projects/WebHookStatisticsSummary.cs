@@ -1,10 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public class WebHookStatisticsSummary
 {
-    public class WebHookStatisticsSummary
-    {
-        public WebHookInvocation LastSuccess { get; set; }
-        public WebHookInvocation LastFailure { get; set; }
-        public WebHookInvocation LastError { get; set; }
-        public int Counts { get; set; }
-    }
+    public WebHookInvocation? LastSuccess { get; set; }
+    public WebHookInvocation? LastFailure { get; set; }
+    public WebHookInvocation? LastError { get; set; }
+    public int Counts { get; set; }
 }

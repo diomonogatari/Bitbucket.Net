@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum BranchOrderBy
 {
-    public enum BranchOrderBy
-    {
-        Alphabetical,
-        Modification
-    }
+    Alphabetical,
+    Modification,
 }

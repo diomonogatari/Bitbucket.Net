@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Tasks
+﻿namespace Bitbucket.Net.Models.Core.Tasks;
+
+public class TaskInfo
 {
-    public class TaskInfo
-    {
-        public TaskBasicAnchor Anchor { get; set; }
-        public string Text { get; set; }
-    }
+    public TaskBasicAnchor? Anchor { get; set; }
+    public string? Text { get; set; }
 }

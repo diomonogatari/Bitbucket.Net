@@ -1,8 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects
+﻿namespace Bitbucket.Net.Models.Core.Projects;
+
+public enum ScopeTypes
 {
-    public enum ScopeTypes
-    {
-        Project,
-        Repository
-    }
+    Project,
+    Repository,
 }

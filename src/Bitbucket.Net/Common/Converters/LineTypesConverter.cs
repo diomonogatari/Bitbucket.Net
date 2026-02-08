@@ -1,17 +1,21 @@
 ﻿using Bitbucket.Net.Models.Core.Projects;
 
-namespace Bitbucket.Net.Common.Converters
-{
-    public class LineTypesConverter : JsonEnumConverter<LineTypes>
-    {
-        protected override string ConvertToString(LineTypes value)
-        {
-            return BitbucketHelpers.LineTypeToString(value);
-        }
+namespace Bitbucket.Net.Common.Converters;
 
-        protected override LineTypes ConvertFromString(string s)
-        {
-            return BitbucketHelpers.StringToLineType(s);
-        }
+/// <summary>
+/// JSON converter for Bitbucket line classification values.
+/// </summary>
+public class LineTypesConverter : JsonEnumConverter<LineTypes>
+{
+    /// <inheritdoc />
+    protected override string ConvertToString(LineTypes value)
+    {
+        return BitbucketHelpers.LineTypeToString(value);
+    }
+
+    /// <inheritdoc />
+    protected override LineTypes ConvertFromString(string s)
+    {
+        return BitbucketHelpers.StringToLineType(s);
     }
 }
