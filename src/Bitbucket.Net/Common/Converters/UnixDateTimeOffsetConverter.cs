@@ -4,7 +4,8 @@ using System.Text.Json.Serialization;
 namespace Bitbucket.Net.Common.Converters;
 
 /// <summary>
-/// Converts Unix timestamps (seconds since epoch) to/from DateTimeOffset.
+/// Converts Unix timestamps (milliseconds since epoch) to/from DateTimeOffset.
+/// Bitbucket Server returns all timestamps as epoch milliseconds.
 /// </summary>
 public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
 {
@@ -13,20 +14,21 @@ public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
         return reader.TokenType switch
         {
             JsonTokenType.Null => default,
-            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeSeconds(),
-            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeSeconds(),
+            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
+            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
             _ => throw new JsonException($"Cannot convert {reader.TokenType} to {nameof(DateTimeOffset)}."),
         };
     }
 
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
     {
-        writer.WriteNumberValue(value.ToUnixTimeSeconds());
+        writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
     }
 }
 
 /// <summary>
-/// Converts Unix timestamps (seconds since epoch) to/from nullable DateTimeOffset.
+/// Converts Unix timestamps (milliseconds since epoch) to/from nullable DateTimeOffset.
+/// Bitbucket Server returns all timestamps as epoch milliseconds.
 /// </summary>
 public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset?>
 {
@@ -35,9 +37,9 @@ public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTime
         return reader.TokenType switch
         {
             JsonTokenType.Null => null,
-            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeSeconds(),
+            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
             JsonTokenType.String when string.IsNullOrEmpty(reader.GetString()) => null,
-            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeSeconds(),
+            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
             _ => throw new JsonException($"Cannot convert {reader.TokenType} to nullable {nameof(DateTimeOffset)}."),
         };
     }
@@ -46,7 +48,7 @@ public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTime
     {
         if (value.HasValue)
         {
-            writer.WriteNumberValue(value.Value.ToUnixTimeSeconds());
+            writer.WriteNumberValue(value.Value.ToUnixTimeMilliseconds());
         }
         else
         {

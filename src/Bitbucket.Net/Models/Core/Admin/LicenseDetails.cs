@@ -5,17 +5,17 @@ namespace Bitbucket.Net.Models.Core.Admin;
 
 public class LicenseDetails : LicenseInfo
 {
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreationDate { get; set; }
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? PurchaseDate { get; set; }
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? ExpiryDate { get; set; }
     public int NumberOfDaysBeforeExpiry { get; set; }
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? MaintenanceExpiryDate { get; set; }
     public int NumberOfDaysBeforeMaintenanceExpiry { get; set; }
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? GracePeriodEndDate { get; set; }
     public int NumberOfDaysBeforeGracePeriodExpiry { get; set; }
     public int MaximumNumberOfUsers { get; set; }

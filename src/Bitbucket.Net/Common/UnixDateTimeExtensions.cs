@@ -2,14 +2,14 @@
 
 public static class UnixDateTimeExtensions
 {
-    public static DateTimeOffset FromUnixTimeSeconds(this long value)
+    public static DateTimeOffset FromUnixTimeMilliseconds(this long value)
     {
-        return DateTimeOffset.UnixEpoch.AddMilliseconds(value)
+        return DateTimeOffset.FromUnixTimeMilliseconds(value)
             .ToLocalTime();
     }
 
-    public static long ToUnixTimeSeconds(this DateTimeOffset dateTimeOffset)
+    public static long ToUnixTimeMilliseconds(this DateTimeOffset dateTimeOffset)
     {
-        return dateTimeOffset.Subtract(DateTimeOffset.UnixEpoch).Ticks;
+        return dateTimeOffset.ToUnixTimeMilliseconds();
     }
 }

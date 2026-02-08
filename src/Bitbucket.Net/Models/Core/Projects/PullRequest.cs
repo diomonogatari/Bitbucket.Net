@@ -21,13 +21,13 @@ public class PullRequest : PullRequestInfo
     /// <summary>
     /// Gets or sets the date and time when the pull request was created.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the pull request was last updated.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? UpdatedDate { get; set; }
 
     /// <summary>

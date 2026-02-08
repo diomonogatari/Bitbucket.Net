@@ -4,7 +4,7 @@ namespace Bitbucket.Net.Common;
 
 public class DynamicMultipartFormDataContent : IEnumerable<HttpContent>
 {
-    private readonly MultipartFormDataContent _multipartFormDataContent = [];
+    private readonly MultipartFormDataContent _multipartFormDataContent = new MultipartFormDataContent();
 
     public void Add(HttpContent value, string key)
     {

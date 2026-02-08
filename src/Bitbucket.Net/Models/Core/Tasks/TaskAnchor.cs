@@ -17,7 +17,7 @@ public class TaskAnchor : TaskRef
     /// <summary>
     /// Gets or sets the date and time when the anchor was last updated.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? UpdatedDate { get; set; }
 
     /// <summary>

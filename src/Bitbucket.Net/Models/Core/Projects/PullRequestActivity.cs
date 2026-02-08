@@ -17,7 +17,7 @@ public class PullRequestActivity
     /// <summary>
     /// Gets or sets the date and time when the activity occurred.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
 
     /// <summary>

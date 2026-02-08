@@ -33,7 +33,7 @@ public abstract class TaskRef
     /// <summary>
     /// Gets or sets the date and time when the task was created.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
 
     /// <summary>

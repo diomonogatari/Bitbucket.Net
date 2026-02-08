@@ -45,13 +45,13 @@ public class BlockerComment
     /// <summary>
     /// When the blocker comment was created.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
 
     /// <summary>
     /// When the blocker comment was last updated.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? UpdatedDate { get; set; }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class BlockerComment
     /// <summary>
     /// When the blocker comment was resolved.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? ResolvedDate { get; set; }
 
     /// <summary>

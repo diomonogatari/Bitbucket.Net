@@ -45,19 +45,19 @@ public class Comment
     /// <summary>
     /// When the comment thread was resolved (when resolved).
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? ResolvedDate { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the comment was created.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? CreatedDate { get; set; }
 
     /// <summary>
     /// Gets or sets the date and time when the comment was last updated.
     /// </summary>
-    [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
+    [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
     public DateTimeOffset? UpdatedDate { get; set; }
 
     /// <summary>

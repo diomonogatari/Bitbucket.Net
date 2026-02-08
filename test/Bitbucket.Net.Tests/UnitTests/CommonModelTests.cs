@@ -253,45 +253,52 @@ public class CommonModelTests
     #region UnixDateTimeExtensions Tests
 
     [Fact]
-    public void FromUnixTimeSeconds_ZeroReturnsEpoch()
+    public void FromUnixTimeMilliseconds_ZeroReturnsEpoch()
     {
         long timestamp = 0;
-        var result = timestamp.FromUnixTimeSeconds();
+        var result = timestamp.FromUnixTimeMilliseconds();
 
-        // The method uses AddMilliseconds, so 0 should give us the epoch converted to local time
         var expected = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime();
         Assert.Equal(expected, result);
     }
 
     [Fact]
-    public void FromUnixTimeSeconds_KnownTimestamp_ReturnsCorrectDate()
+    public void FromUnixTimeMilliseconds_KnownTimestamp_ReturnsCorrectDate()
     {
         // 1609459200000 milliseconds = Jan 1, 2021 00:00:00 UTC
         long timestamp = 1609459200000;
-        var result = timestamp.FromUnixTimeSeconds();
+        var result = timestamp.FromUnixTimeMilliseconds();
 
         var expected = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero).ToLocalTime();
         Assert.Equal(expected, result);
     }
 
     [Fact]
-    public void ToUnixTimeSeconds_Epoch_ReturnsZero()
+    public void ToUnixTimeMilliseconds_Epoch_ReturnsZero()
     {
         var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var result = epoch.ToUnixTimeSeconds();
+        var result = epoch.ToUnixTimeMilliseconds();
 
         Assert.Equal(0, result);
     }
 
     [Fact]
-    public void ToUnixTimeSeconds_KnownDate_ReturnsCorrectValue()
+    public void ToUnixTimeMilliseconds_KnownDate_ReturnsCorrectValue()
     {
         var dateTime = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var result = dateTime.ToUnixTimeSeconds();
+        var result = dateTime.ToUnixTimeMilliseconds();
 
-        // Note: The method name says "Seconds" but implementation returns Ticks
-        // This test verifies the actual behavior
-        Assert.True(result > 0);
+        Assert.Equal(1609459200000, result);
+    }
+
+    [Fact]
+    public void UnixTimeMilliseconds_RoundTrip()
+    {
+        var original = new DateTimeOffset(2025, 6, 15, 12, 30, 45, 123, TimeSpan.Zero);
+        var milliseconds = original.ToUnixTimeMilliseconds();
+        var restored = milliseconds.FromUnixTimeMilliseconds();
+
+        Assert.Equal(original.ToLocalTime(), restored);
     }
 
     #endregion
