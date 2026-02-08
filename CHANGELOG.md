@@ -34,6 +34,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GetChangesStreamAsync` — stream repository changes between refs as `IAsyncEnumerable<Change>`
 - `GetCommitChangesStreamAsync` — stream commit changes as `IAsyncEnumerable<Change>`
 
+### Testing
+
+- Added streaming endpoint mock tests covering all 20 streaming methods (single-page, multi-page, empty result scenarios)
+- Added diff streaming tests for commit, repository, compare, and PR diffs (single, multiple, empty)
+- Added MCP extension method tests for `StreamDiffsWithLimitsAsync` and `TakeDiffsWithLimitsAsync`
+- Added cancellation token propagation tests (pre-cancelled tokens for buffered, streaming, and diff methods; mid-stream cancellation)
+- Added DI constructor integration tests for `HttpClient` and `IFlurlClient` injection paths (CRUD, error handling, streaming, auth header verification)
+- Introduced paginated fixture data (`projects-page1.json`, `projects-page2.json`, etc.) and `SetupPagedEndpoint` helper for multi-page mock tests
+- Total test count increased from 633 to 696 (+63 new tests)
+
 ## [0.1.0-beta.1] - 2026-02-06 (pre-release)
 
 ### Notes
