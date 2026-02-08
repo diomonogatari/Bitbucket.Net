@@ -13,6 +13,78 @@ public static class MockSetupExtensions
     private const string ApiBasePath = "/rest/api/1.0";
     private const string FixturesBasePath = "Fixtures";
 
+    public static WireMockServer SetupPagedEndpoint(this WireMockServer server, string path, string fixtureCategory, string page1File, string page2File)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "0")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page1File)));
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "2")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page2File)));
+
+        return server;
+    }
+
+    public static WireMockServer SetupPagedEndpointNoStartParam(this WireMockServer server, string path, string fixtureCategory, string page1File, string page2File)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", false)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page1File)));
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .WithParam("start", "2")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath(fixtureCategory, page2File)));
+
+        return server;
+    }
+
+    public static WireMockServer SetupEmptyPagedEndpoint(this WireMockServer server, string path)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath("Core", "empty-paged.json")));
+
+        return server;
+    }
+
+    public static WireMockServer SetupDiffEndpoint(this WireMockServer server, string path, string fixtureFile)
+    {
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath("Core", fixtureFile)));
+
+        return server;
+    }
+
     public static WireMockServer SetupGetProjects(this WireMockServer server, int? start = null)
     {
         var request = Request.Create()
