@@ -1,4 +1,6 @@
 using Bitbucket.Net.Common.Models;
+// Search
+using Bitbucket.Net.Common.Models.Search;
 // Audit
 using Bitbucket.Net.Models.Audit;
 // Branches
@@ -96,6 +98,25 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(PagedResults<UserInfo>))]
 [JsonSerializable(typeof(PagedResults<UserPermission>))]
 [JsonSerializable(typeof(PagedResults<WebHook>))]
+
+// ============================================================================
+// Search Models
+// ============================================================================
+[JsonSerializable(typeof(CodeSearchRequest))]
+[JsonSerializable(typeof(CodeSearchResponse))]
+[JsonSerializable(typeof(CodeSearchCategory))]
+[JsonSerializable(typeof(CodeSearchResult))]
+[JsonSerializable(typeof(CodeSearchHitLine))]
+[JsonSerializable(typeof(SearchEntities))]
+[JsonSerializable(typeof(SearchEntityFilter))]
+[JsonSerializable(typeof(SearchLimits))]
+[JsonSerializable(typeof(SearchPathMatch))]
+[JsonSerializable(typeof(SearchQuery))]
+[JsonSerializable(typeof(SearchScope))]
+[JsonSerializable(typeof(List<CodeSearchResult>))]
+[JsonSerializable(typeof(List<List<CodeSearchHitLine>>))]
+[JsonSerializable(typeof(List<CodeSearchHitLine>))]
+[JsonSerializable(typeof(List<SearchPathMatch>))]
 
 // ============================================================================
 // Audit Models
