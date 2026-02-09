@@ -1,0 +1,94 @@
+{
+    "scope": {
+        "type": "GLOBAL"
+    },
+    "code": {
+        "category": "primary",
+        "isLastPage": false,
+        "count": 61,
+        "start": 0,
+        "nextStart": 25,
+        "values": [
+            {
+                "repository": {
+                    "slug": "test-repo",
+                    "id": 1,
+                    "name": "Test Repository",
+                    "project": {
+                        "key": "TEST"
+                    }
+                },
+                "file": "src/Middleware/RequestHandler.cs",
+                "hitContexts": [
+                    [
+                        {
+                            "line": 14,
+                            "text": "using System.Net.Http;"
+                        },
+                        {
+                            "line": 15,
+                            "text": ""
+                        },
+                        {
+                            "line": 16,
+                            "text": "public class RequestHandler"
+                        }
+                    ],
+                    [
+                        {
+                            "line": 42,
+                            "text": "    var client = new <em>HttpClient</em>();"
+                        },
+                        {
+                            "line": 43,
+                            "text": "    var response = await client.GetAsync(url);"
+                        },
+                        {
+                            "line": 44,
+                            "text": "    return response;"
+                        }
+                    ]
+                ],
+                "pathMatches": [],
+                "hitCount": 2
+            },
+            {
+                "repository": {
+                    "slug": "test-repo",
+                    "id": 1,
+                    "name": "Test Repository",
+                    "project": {
+                        "key": "TEST"
+                    }
+                },
+                "file": "tests/HandlerTests.cs",
+                "hitContexts": [
+                    [
+                        {
+                            "line": 8,
+                            "text": "    private readonly <em>HttpClient</em> _client;"
+                        },
+                        {
+                            "line": 9,
+                            "text": ""
+                        },
+                        {
+                            "line": 10,
+                            "text": "    public HandlerTests()"
+                        }
+                    ]
+                ],
+                "pathMatches": [
+                    {
+                        "start": 6,
+                        "length": 7
+                    }
+                ],
+                "hitCount": 1
+            }
+        ]
+    },
+    "query": {
+        "substituted": false
+    }
+}
