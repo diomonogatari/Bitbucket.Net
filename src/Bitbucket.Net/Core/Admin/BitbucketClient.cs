@@ -71,7 +71,7 @@ public partial class BitbucketClient
     {
         var response = await GetAdminUrl("/groups")
             .SetQueryParam("name", name)
-            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<DeletableGroupOrUser>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -249,7 +249,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/users")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -632,7 +632,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/permissions/groups")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -742,7 +742,7 @@ public partial class BitbucketClient
 
         var response = await GetAdminUrl("/permissions/users")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

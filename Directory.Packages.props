@@ -1,0 +1,8 @@
+<Project>
+  <!-- Opt out of Central Package Management.
+       This prevents parent repos (e.g., stash-mcp) from imposing CPM
+       when Bitbucket.Net is included as a git submodule. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

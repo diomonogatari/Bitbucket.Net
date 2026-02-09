@@ -451,7 +451,7 @@ public partial class BitbucketClient
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks/test")
             .SetQueryParam("url", url)
-            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHookTestRequestResponse>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

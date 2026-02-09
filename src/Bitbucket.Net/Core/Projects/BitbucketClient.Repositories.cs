@@ -226,7 +226,7 @@ public partial class BitbucketClient
     public async Task<Repository> RecreateProjectRepositoryAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/recreate")
-            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -360,7 +360,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -480,7 +480,7 @@ public partial class BitbucketClient
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Put, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

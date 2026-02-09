@@ -480,7 +480,7 @@ public partial class BitbucketClient
     {
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/watch")
-            .SendAsync(HttpMethod.Post, new StringContent(string.Empty), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

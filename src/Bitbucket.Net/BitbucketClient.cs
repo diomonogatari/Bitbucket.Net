@@ -199,6 +199,11 @@ public partial class BitbucketClient
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
 
+    private static StringContent CreateEmptyJsonContent()
+    {
+        return new StringContent(string.Empty, Encoding.UTF8, "application/json");
+    }
+
     private static async Task<byte[]> ReadResponseBytesAsync(IFlurlResponse response, CancellationToken cancellationToken)
     {
         if (response.ResponseMessage?.Content is null)
