@@ -1,0 +1,37 @@
+{
+    "scope": {
+        "type": "GLOBAL"
+    },
+    "code": {
+        "category": "primary",
+        "isLastPage": true,
+        "count": 1,
+        "start": 0,
+        "values": [
+            {
+                "repository": {
+                    "slug": "test-repo",
+                    "id": 1,
+                    "name": "Test Repository",
+                    "project": {
+                        "key": "TEST"
+                    }
+                },
+                "file": "README.md",
+                "hitContexts": [
+                    [
+                        {
+                            "line": 1,
+                            "text": "# <em>Test</em> Repository"
+                        }
+                    ]
+                ],
+                "pathMatches": [],
+                "hitCount": 1
+            }
+        ]
+    },
+    "query": {
+        "substituted": true
+    }
+}

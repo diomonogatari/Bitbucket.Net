@@ -1,0 +1,15 @@
+{
+    "scope": {
+        "type": "GLOBAL"
+    },
+    "code": {
+        "category": "primary",
+        "isLastPage": true,
+        "count": 0,
+        "start": 0,
+        "values": []
+    },
+    "query": {
+        "substituted": false
+    }
+}

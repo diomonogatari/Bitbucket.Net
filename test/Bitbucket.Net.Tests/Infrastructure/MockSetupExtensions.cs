@@ -3355,6 +3355,38 @@ public static class MockSetupExtensions
 
     #endregion
 
+    #region Code Search
+
+    private const string SearchBasePath = "/rest/search/latest";
+
+    public static WireMockServer SetupSearchCode(this WireMockServer server, string fixtureFile)
+    {
+        server.Given(Request.Create()
+                .WithPath($"{SearchBasePath}/search")
+                .UsingPost())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBodyFromFile(GetFixturePath("Search", fixtureFile)));
+
+        return server;
+    }
+
+    public static WireMockServer SetupSearchCodeError(this WireMockServer server, HttpStatusCode statusCode)
+    {
+        server.Given(Request.Create()
+                .WithPath($"{SearchBasePath}/search")
+                .UsingPost())
+            .RespondWith(Response.Create()
+                .WithStatusCode(statusCode)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("""{"errors":[{"context":null,"message":"Search is not available","exceptionName":"com.atlassian.bitbucket.search.SearchUnavailableException"}]}"""));
+
+        return server;
+    }
+
+    #endregion
+
     private static string GetFixturePath(string category, string fileName)
     {
         return Path.Combine(FixturesBasePath, category, fileName);
