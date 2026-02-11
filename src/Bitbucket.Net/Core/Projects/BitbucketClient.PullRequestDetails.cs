@@ -368,6 +368,8 @@ public partial class BitbucketClient
         bool withComments = true,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var queryParamValues = CreatePullRequestDiffQueryParams(contextLines, diffType, sinceId, srcPath, untilId, whitespace, withComments);
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)

@@ -29,8 +29,11 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the project.</returns>
-    private IFlurlRequest GetProjectUrl(string projectKey) => GetProjectsUrl()
-        .AppendPathSegment($"/{projectKey}");
+    private IFlurlRequest GetProjectUrl(string projectKey)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        return GetProjectsUrl().AppendPathSegment($"/{projectKey}");
+    }
 
     /// <summary>
     /// Gets the URL for a repository within a project.
@@ -38,7 +41,12 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the repository.</returns>
-    private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug) => GetProjectsUrl($"/{projectKey}/repos/{repositorySlug}");
+    private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        return GetProjectsUrl($"/{projectKey}/repos/{repositorySlug}");
+    }
 
     /// <summary>
     /// Gets the URL for a specific path within a project repository.
@@ -148,6 +156,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectAsync(string projectKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetProjectsUrl($"/{projectKey}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -164,6 +174,8 @@ public partial class BitbucketClient
     /// <returns>The updated project.</returns>
     public async Task<Project> UpdateProjectAsync(string projectKey, ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetProjectsUrl($"/{projectKey}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(projectDefinition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -179,6 +191,8 @@ public partial class BitbucketClient
     /// <returns>The requested project.</returns>
     public async Task<Project> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetProjectsUrl($"/{projectKey}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -204,6 +218,8 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -233,6 +249,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if removal succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectUserPermissionsAsync(string projectKey, string userName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = userName,
@@ -256,6 +275,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectUserPermissionsAsync(string projectKey, string userName, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = userName,
@@ -286,6 +308,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -321,6 +345,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -349,6 +375,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the group permissions were removed; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectGroupPermissionsAsync(string projectKey, string groupName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(groupName);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = groupName,
@@ -372,6 +401,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateProjectGroupPermissionsAsync(string projectKey, string groupName, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(groupName);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["name"] = groupName,
@@ -402,6 +434,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -430,6 +464,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the permission is granted to all; otherwise, <c>false</c>.</returns>
     public async Task<bool> IsProjectDefaultPermissionAsync(string projectKey, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetProjectsUrl($"/{projectKey}/permissions/{BitbucketHelpers.PermissionToString(permission)}/all")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -444,6 +480,8 @@ public partial class BitbucketClient
 
     private async Task<bool> SetProjectDefaultPermissionAsync(string projectKey, Permissions permission, bool allow, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["allow"] = BitbucketHelpers.BoolToString(allow),

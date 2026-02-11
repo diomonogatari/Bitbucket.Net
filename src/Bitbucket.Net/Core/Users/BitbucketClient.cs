@@ -121,6 +121,8 @@ public partial class BitbucketClient
     /// <returns>The requested user.</returns>
     public async Task<User> GetUserAsync(string userSlug, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -137,6 +139,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the avatar was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteUserAvatarAsync(string userSlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/avatar.png")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -152,6 +156,8 @@ public partial class BitbucketClient
     /// <returns>A dictionary of user settings.</returns>
     public async Task<IDictionary<string, object?>> GetUserSettingsAsync(string userSlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/settings")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -168,6 +174,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the settings were updated; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateUserSettingsAsync(string userSlug, IDictionary<string, object?> userSettings, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/settings")
             .SendAsync(HttpMethod.Post, CreateJsonContent(userSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

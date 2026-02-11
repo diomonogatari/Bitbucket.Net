@@ -34,6 +34,9 @@ public partial class BitbucketClient
     /// <returns>The rebase eligibility details.</returns>
     public async Task<RebasePullRequestCondition> GetCanRebasePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetGitUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/rebase")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -52,6 +55,9 @@ public partial class BitbucketClient
     /// <returns>The updated pull request.</returns>
     public async Task<PullRequest> RebasePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, int version, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var data = new { version };
         var response = await GetGitUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/rebase")
             .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
@@ -72,6 +78,11 @@ public partial class BitbucketClient
     /// <returns>The created tag.</returns>
     public async Task<Tag> CreateTagAsync(string projectKey, string repositorySlug, TagTypes tagType, string tagName, string startPoint, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(startPoint);
+
         var data = new
         {
             type = BitbucketHelpers.TagTypeToString(tagType),
@@ -96,6 +107,10 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the tag was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteTagAsync(string projectKey, string repositorySlug, string tagName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagName);
+
         var response = await GetGitUrl($"/projects/{projectKey}/repos/{repositorySlug}/tags/{tagName}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);

@@ -33,6 +33,8 @@ public partial class BitbucketClient
     /// <returns>Build statistics for the commit.</returns>
     public async Task<BuildStats> GetBuildStatsForCommitAsync(string commitId, bool includeUnique = false, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetBuildsUrl($"/commits/stats/{commitId}")
             .SetQueryParam("includeUnique", BitbucketHelpers.BoolToString(includeUnique))
             .GetAsync(cancellationToken)
@@ -81,6 +83,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -107,6 +111,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the association was successful; otherwise, <c>false</c>.</returns>
     public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, BuildStatus buildStatus, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetBuildsUrl($"/commits/{commitId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(buildStatus), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

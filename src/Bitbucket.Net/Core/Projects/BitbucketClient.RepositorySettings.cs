@@ -27,6 +27,8 @@ public partial class BitbucketClient
         bool htmlEscape = true,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
@@ -126,6 +128,8 @@ public partial class BitbucketClient
     /// <returns>The hook configuration.</returns>
     public async Task<Hook> GetProjectRepositoryHookSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -143,6 +147,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectRepositoryHookSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -161,6 +167,8 @@ public partial class BitbucketClient
     /// <returns>The enabled hook.</returns>
     public async Task<Hook> EnableProjectRepositoryHookAsync(string projectKey, string repositorySlug, string hookKey, object? hookSettings = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/enabled")
             .SendAsync(HttpMethod.Put, CreateJsonContent(hookSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -178,6 +186,8 @@ public partial class BitbucketClient
     /// <returns>The disabled hook.</returns>
     public async Task<Hook> DisableProjectRepositoryHookAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/enabled")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -195,6 +205,8 @@ public partial class BitbucketClient
     /// <returns>A dictionary of hook settings.</returns>
     public async Task<Dictionary<string, object?>> GetProjectRepositoryHookAllSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -214,6 +226,8 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, object?>> UpdateProjectRepositoryHookAllSettingsAsync(string projectKey, string repositorySlug, string hookKey,
         Dictionary<string, object?> allSettings, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
             .SendAsync(HttpMethod.Put, CreateJsonContent(allSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -230,6 +244,8 @@ public partial class BitbucketClient
     /// <returns>The pull request settings.</returns>
     public async Task<PullRequestSettings> GetProjectPullRequestsMergeStrategiesAsync(string projectKey, string scmId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
             .GetAsync(cancellationToken)
@@ -248,6 +264,8 @@ public partial class BitbucketClient
     /// <returns>The updated merge strategies.</returns>
     public async Task<MergeStrategies> UpdateProjectPullRequestsMergeStrategiesAsync(string projectKey, string scmId, MergeStrategies mergeStrategies, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(mergeStrategies), cancellationToken: cancellationToken)
@@ -375,6 +393,8 @@ public partial class BitbucketClient
     /// <returns>The requested tag.</returns>
     public async Task<Tag> GetProjectRepositoryTagAsync(string projectKey, string repositorySlug, string tagName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagName);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/tags/{tagName}")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -471,6 +491,8 @@ public partial class BitbucketClient
         bool statistics = false,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
@@ -496,6 +518,8 @@ public partial class BitbucketClient
     public async Task<WebHook> UpdateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug,
         string webHookId, WebHook webHook, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(webHook), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -514,6 +538,8 @@ public partial class BitbucketClient
     public async Task<bool> DeleteProjectRepositoryWebHookAsync(string projectKey, string repositorySlug,
         string webHookId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -538,6 +564,8 @@ public partial class BitbucketClient
         WebHookOutcomes? outcome = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["event"] = @event,
@@ -567,6 +595,8 @@ public partial class BitbucketClient
         string? @event = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics")
             .SetQueryParam("event", @event)
             .GetAsync(cancellationToken)
@@ -586,6 +616,8 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, WebHookStatisticsCounts>> GetProjectRepositoryWebHookStatisticsSummaryAsync(string projectKey, string repositorySlug,
         string webHookId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics/summary")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);

@@ -123,6 +123,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -153,6 +155,9 @@ public partial class BitbucketClient
     /// <returns>The created project key.</returns>
     public async Task<ProjectKey> CreateProjectKeyAsync(string projectKey, string keyText, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var data = new
         {
             key = new { text = keyText },
@@ -175,6 +180,8 @@ public partial class BitbucketClient
     /// <returns>The requested project key.</returns>
     public async Task<ProjectKey> GetProjectKeyAsync(string projectKey, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -191,6 +198,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the key was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectKeyAsync(string projectKey, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -208,6 +217,8 @@ public partial class BitbucketClient
     /// <returns>The updated project key.</returns>
     public async Task<ProjectKey> UpdateProjectKeyPermissionAsync(string projectKey, int keyId, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}/permissions/{BitbucketHelpers.PermissionToString(permission)}")
             .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -270,6 +281,9 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -302,6 +316,10 @@ public partial class BitbucketClient
     /// <returns>The created repository key.</returns>
     public async Task<RepositoryKey> CreateRepoKeyAsync(string projectKey, string repositorySlug, string keyText, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var data = new
         {
             key = new { text = keyText },
@@ -325,6 +343,9 @@ public partial class BitbucketClient
     /// <returns>The requested repository key.</returns>
     public async Task<RepositoryKey> GetRepoKeyAsync(string projectKey, string repositorySlug, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -342,6 +363,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the key was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteRepoKeyAsync(string projectKey, string repositorySlug, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -360,6 +384,9 @@ public partial class BitbucketClient
     /// <returns>The updated repository key.</returns>
     public async Task<RepositoryKey> UpdateRepoKeyPermissionAsync(string projectKey, string repositorySlug, int keyId, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}/permissions/{BitbucketHelpers.PermissionToString(permission)}")
             .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -410,6 +437,8 @@ public partial class BitbucketClient
     /// <returns>The created SSH key.</returns>
     public async Task<Key> CreateUserKeyAsync(string keyText, string? userSlug = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var response = await GetSshUrl("/keys")
             .SetQueryParam("user", userSlug)
             .SendAsync(HttpMethod.Post, CreateJsonContent(new { text = keyText }), cancellationToken: cancellationToken)

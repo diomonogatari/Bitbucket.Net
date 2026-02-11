@@ -809,6 +809,8 @@ public partial class BitbucketClient
     /// <returns>The merge strategies configuration.</returns>
     public async Task<MergeStrategies> GetAdminPullRequestsMergeStrategiesAsync(string scmId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetAdminUrl($"/pull-requests/{scmId}")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -825,6 +827,8 @@ public partial class BitbucketClient
     /// <returns>The updated merge strategies.</returns>
     public async Task<MergeStrategies> UpdateAdminPullRequestsMergeStrategiesAsync(string scmId, MergeStrategies mergeStrategies, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetAdminUrl($"/pull-requests/{scmId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(mergeStrategies), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

@@ -189,6 +189,8 @@ public partial class BitbucketClient
     /// <returns>The requested commit.</returns>
     public async Task<Commit> GetCommitAsync(string projectKey, string repositorySlug, string commitId, string? path = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["path"] = path,
@@ -223,6 +225,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -264,6 +268,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -304,6 +310,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -337,6 +345,8 @@ public partial class BitbucketClient
     public async Task<CommentRef> CreateCommitCommentAsync(string projectKey, string repositorySlug, string commitId,
         CommentInfo commentInfo, string? since = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["since"] = since,
@@ -364,6 +374,8 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments/{commentId}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -385,6 +397,8 @@ public partial class BitbucketClient
     public async Task<CommentRef> UpdateCommitCommentAsync(string projectKey, string repositorySlug, string commitId, long commentId,
         CommentText commentText, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments/{commentId}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(commentText), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -406,6 +420,8 @@ public partial class BitbucketClient
         int version = -1,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["version"] = version,
@@ -442,6 +458,8 @@ public partial class BitbucketClient
         bool withComments = true,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["autoSrcPath"] = BitbucketHelpers.BoolToString(autoSrcPath),
@@ -484,6 +502,8 @@ public partial class BitbucketClient
         bool withComments = true,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["autoSrcPath"] = BitbucketHelpers.BoolToString(autoSrcPath),
@@ -521,6 +541,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if watch was created; otherwise, <c>false</c>.</returns>
     public async Task<bool> CreateCommitWatchAsync(string projectKey, string repositorySlug, string commitId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/watch")
             .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -538,6 +560,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the watch was removed; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteCommitWatchAsync(string projectKey, string repositorySlug, string commitId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/watch")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);

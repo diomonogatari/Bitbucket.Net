@@ -41,6 +41,8 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -69,6 +71,8 @@ public partial class BitbucketClient
     /// <returns>The created access token including secret.</returns>
     public async Task<FullAccessToken> CreateAccessTokenAsync(string userSlug, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetPatUrl($"/users/{userSlug}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -86,6 +90,9 @@ public partial class BitbucketClient
     /// <returns>The access token details.</returns>
     public async Task<AccessToken> GetUserAccessTokenAsync(string userSlug, string tokenId, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -104,6 +111,9 @@ public partial class BitbucketClient
     /// <returns>The updated access token details.</returns>
     public async Task<AccessToken> ChangeUserAccessTokenAsync(string userSlug, string tokenId, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -120,6 +130,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the token was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteUserAccessTokenAsync(string userSlug, string tokenId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);

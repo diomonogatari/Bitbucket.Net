@@ -41,6 +41,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(issueKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -71,6 +73,11 @@ public partial class BitbucketClient
     /// <returns>The created Jira issue.</returns>
     public async Task<JiraIssue> CreateJiraIssueAsync(string pullRequestCommentId, string applicationId, string title, string type, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pullRequestCommentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(applicationId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+        ArgumentException.ThrowIfNullOrWhiteSpace(type);
+
         var data = new
         {
             id = "https://docs.atlassian.com/jira/REST/schema/string#",
@@ -96,6 +103,9 @@ public partial class BitbucketClient
     /// <returns>A collection of Jira issue links.</returns>
     public async Task<IReadOnlyList<KeyedUrl>> GetJiraIssuesAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetJiraUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/issues")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);

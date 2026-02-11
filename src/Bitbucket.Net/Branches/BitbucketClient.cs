@@ -44,6 +44,10 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fullSha);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -71,6 +75,9 @@ public partial class BitbucketClient
     /// <returns>The branch model configuration.</returns>
     public async Task<BranchModel> GetRepoBranchModelAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetBranchUrl($"/projects/{projectKey}/repos/{repositorySlug}/branchmodel")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -89,6 +96,11 @@ public partial class BitbucketClient
     /// <returns>The created branch.</returns>
     public async Task<Branch> CreateRepoBranchAsync(string projectKey, string repositorySlug, string branchName, string startPoint, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(branchName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(startPoint);
+
         var data = new
         {
             name = branchName,
@@ -114,6 +126,10 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the branch was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteRepoBranchAsync(string projectKey, string repositorySlug, string branchName, bool dryRun, string? endPoint = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(branchName);
+
         var data = new
         {
             name = branchName,

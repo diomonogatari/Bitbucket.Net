@@ -194,6 +194,8 @@ public partial class BitbucketClient
         bool noContent = false,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
@@ -229,6 +231,8 @@ public partial class BitbucketClient
         string? at = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var request = GetProjectsReposUrl(projectKey, repositorySlug, $"/raw/{path}");
 
         if (!string.IsNullOrEmpty(at))
@@ -257,6 +261,8 @@ public partial class BitbucketClient
         string? at = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var stream = await GetRawFileContentStreamAsync(projectKey, repositorySlug, path, at, cancellationToken).ConfigureAwait(false);
 
         await using (stream.ConfigureAwait(false))
@@ -286,6 +292,8 @@ public partial class BitbucketClient
         string? sourceBranch = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         if (!File.Exists(fileName))
         {
             throw new ArgumentException($"File doesn't exist: {fileName}", nameof(fileName));

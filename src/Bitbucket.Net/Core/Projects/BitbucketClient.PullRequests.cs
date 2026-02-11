@@ -515,6 +515,8 @@ public partial class BitbucketClient
         ParticipantStatus participantStatus,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var data = new
         {
             user = named,
@@ -541,6 +543,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if removal succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> UnassignUserFromPullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, string userSlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
             .AppendPathSegment($"/pull-requests/{pullRequestId}/participants/{userSlug}")
             .DeleteAsync(cancellationToken: cancellationToken)
