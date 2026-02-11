@@ -74,6 +74,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **NuGet package metadata improvements** (Spec 016): Version bumped to
+  1.0.0. Added `PackageIcon` (128×128 placeholder in `assets/icon.png`),
+  expanded `PackageTags` (`rest-api`, `api-client`, `atlassian`, `sdk`,
+  `dotnet`), and conditional icon inclusion with `Condition="Exists(…)"`.
+  `dotnet pack` now produces `BitbucketServer.Net.1.0.0.nupkg` with
+  README, icon, and full metadata.
 - **Rate-limit headers on `BitbucketRateLimitException`** (Spec 014):
   HTTP 429 exceptions now expose `RetryAfter`, `RateLimit`,
   `RateLimitRemaining`, and `RateLimitReset` properties parsed from
