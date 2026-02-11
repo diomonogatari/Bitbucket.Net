@@ -11,39 +11,39 @@ public class PullRequest : PullRequestInfo
     /// <summary>
     /// Gets or sets the server-assigned pull request identifier.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     /// <summary>
     /// Gets or sets the version number for optimistic locking on updates.
     /// </summary>
-    public int Version { get; set; }
+    public int Version { get; init; }
 
     /// <summary>
     /// Gets or sets the date and time when the pull request was created.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? CreatedDate { get; set; }
+    public DateTimeOffset? CreatedDate { get; init; }
 
     /// <summary>
     /// Gets or sets the date and time when the pull request was last updated.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? UpdatedDate { get; set; }
+    public DateTimeOffset? UpdatedDate { get; init; }
 
     /// <summary>
     /// Gets or sets the pull request author.
     /// </summary>
-    public Participant? Author { get; set; }
+    public Participant? Author { get; init; }
 
     /// <summary>
     /// Gets or sets the list of participants (author, reviewers, and watchers).
     /// </summary>
-    public List<Participant>? Participants { get; set; }
+    public List<Participant>? Participants { get; init; }
 
     /// <summary>
     /// Gets or sets the hypermedia links for this pull request.
     /// </summary>
-    public Links? Links { get; set; }
+    public Links? Links { get; init; }
 
     /// <summary>
     /// Returns a human-readable label combining the author display name and title.

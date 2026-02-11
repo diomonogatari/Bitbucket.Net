@@ -1,10 +1,10 @@
-﻿using Bitbucket.Net.Common.Models;
+using Bitbucket.Net.Common.Models;
 
 namespace Bitbucket.Net.Models.Core.Projects;
 
 public class BrowseItem
 {
-    public Path? Path { get; set; }
-    public string? Revision { get; set; }
-    public PagedResults<ContentItem>? Children { get; set; }
+    public Path? Path { get; init; }
+    public string? Revision { get; init; }
+    public PagedResults<ContentItem>? Children { get; init; }
 }

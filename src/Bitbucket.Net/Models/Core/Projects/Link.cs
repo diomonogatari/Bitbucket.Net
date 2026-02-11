@@ -1,4 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
 /// A single hyperlink in the Bitbucket REST API response.
@@ -8,7 +8,7 @@ public class Link
     /// <summary>
     /// Gets or sets the URL of the link.
     /// </summary>
-    public string? Href { get; set; }
+    public string? Href { get; init; }
 
     /// <summary>
     /// Returns the link URL or an empty string when not set.

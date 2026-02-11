@@ -6,21 +6,21 @@ namespace Bitbucket.Net.Models.Core.Admin;
 public class LicenseDetails : LicenseInfo
 {
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? CreationDate { get; set; }
+    public DateTimeOffset? CreationDate { get; init; }
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? PurchaseDate { get; set; }
+    public DateTimeOffset? PurchaseDate { get; init; }
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? ExpiryDate { get; set; }
-    public int NumberOfDaysBeforeExpiry { get; set; }
+    public DateTimeOffset? ExpiryDate { get; init; }
+    public int NumberOfDaysBeforeExpiry { get; init; }
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? MaintenanceExpiryDate { get; set; }
-    public int NumberOfDaysBeforeMaintenanceExpiry { get; set; }
+    public DateTimeOffset? MaintenanceExpiryDate { get; init; }
+    public int NumberOfDaysBeforeMaintenanceExpiry { get; init; }
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? GracePeriodEndDate { get; set; }
-    public int NumberOfDaysBeforeGracePeriodExpiry { get; set; }
-    public int MaximumNumberOfUsers { get; set; }
-    public bool UnlimitedNumberOfUsers { get; set; }
-    public string? ServerId { get; set; }
-    public string? SupportEntitlementNumber { get; set; }
-    public LicenseStatus? Status { get; set; }
+    public DateTimeOffset? GracePeriodEndDate { get; init; }
+    public int NumberOfDaysBeforeGracePeriodExpiry { get; init; }
+    public int MaximumNumberOfUsers { get; init; }
+    public bool UnlimitedNumberOfUsers { get; init; }
+    public string? ServerId { get; init; }
+    public string? SupportEntitlementNumber { get; init; }
+    public LicenseStatus? Status { get; init; }
 }

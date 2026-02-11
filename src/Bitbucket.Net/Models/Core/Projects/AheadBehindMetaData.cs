@@ -1,7 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class AheadBehindMetaData
 {
-    public int Ahead { get; set; }
-    public int Behind { get; set; }
+    public int Ahead { get; init; }
+    public int Behind { get; init; }
 }

@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Consumers assigning results to `IEnumerable<T>` are unaffected;
   consumers assigning to `List<T>` must add `.ToList()` or change the
   variable type.
+- **Init-only model properties** (Spec 009): 377 properties across 106
+  response model classes converted from `{ get; set; }` to
+  `{ get; init; }`. Models used as request bodies (32 files, 98
+  properties) retain mutable setters to allow consumer construction.
+  Consumers that assign model properties after construction must move
+  to object-initializer syntax.
 
 ### Changed
 

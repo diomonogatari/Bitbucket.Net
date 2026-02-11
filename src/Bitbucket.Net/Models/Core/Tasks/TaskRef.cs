@@ -13,31 +13,31 @@ public abstract class TaskRef
     /// <summary>
     /// Gets or sets the additional properties bag.
     /// </summary>
-    public Properties? Properties { get; set; }
+    public Properties? Properties { get; init; }
 
     /// <summary>
     /// Gets or sets the server-assigned task identifier.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     /// <summary>
     /// Gets or sets the task description text.
     /// </summary>
-    public string? Text { get; set; }
+    public string? Text { get; init; }
 
     /// <summary>
     /// Gets or sets the user who created the task.
     /// </summary>
-    public User? Author { get; set; }
+    public User? Author { get; init; }
 
     /// <summary>
     /// Gets or sets the date and time when the task was created.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? CreatedDate { get; set; }
+    public DateTimeOffset? CreatedDate { get; init; }
 
     /// <summary>
     /// Gets or sets the operations the current user is permitted to perform on this task.
     /// </summary>
-    public Permittedoperations? PermittedOperations { get; set; }
+    public Permittedoperations? PermittedOperations { get; init; }
 }

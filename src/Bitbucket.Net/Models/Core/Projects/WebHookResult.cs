@@ -2,6 +2,6 @@ namespace Bitbucket.Net.Models.Core.Projects;
 
 public class WebHookResult
 {
-    public string? Description { get; set; }
-    public WebHookOutcomes Outcome { get; set; }
+    public string? Description { get; init; }
+    public WebHookOutcomes Outcome { get; init; }
 }

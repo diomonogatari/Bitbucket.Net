@@ -5,6 +5,6 @@ namespace Bitbucket.Net.Models.Ssh;
 
 public abstract class KeyBase
 {
-    public Key? Key { get; set; }
-    public Permissions Permission { get; set; }
+    public Key? Key { get; init; }
+    public Permissions Permission { get; init; }
 }

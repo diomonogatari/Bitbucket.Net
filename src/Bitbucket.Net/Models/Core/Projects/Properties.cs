@@ -1,6 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class Properties
 {
-    public string? Key { get; set; }
+    public string? Key { get; init; }
 }

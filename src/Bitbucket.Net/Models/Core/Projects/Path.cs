@@ -1,4 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
 /// Represents a file path in a Bitbucket repository.
@@ -8,29 +8,29 @@ public class Path
     /// <summary>
     /// The path components (directory and file name parts).
     /// </summary>
-    public List<string>? Components { get; set; }
+    public List<string>? Components { get; init; }
 
     /// <summary>
     /// The parent directory path.
     /// </summary>
-    public string? Parent { get; set; }
+    public string? Parent { get; init; }
 
     /// <summary>
     /// The file or directory name.
     /// </summary>
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
     /// <summary>
     /// The file extension (if any).
     /// </summary>
-    public string? Extension { get; set; }
+    public string? Extension { get; init; }
 
     /// <summary>
     /// The full path as a string, as returned by the Bitbucket API.
     /// Note: This property name is lowercase to match the JSON response.
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public string? toString { get; set; }
+    public string? toString { get; init; }
 
     /// <summary>
     /// Returns the full path string representation.

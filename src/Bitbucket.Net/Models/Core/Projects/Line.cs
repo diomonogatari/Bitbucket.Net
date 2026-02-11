@@ -1,6 +1,6 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class Line
 {
-    public string? Text { get; set; }
+    public string? Text { get; init; }
 }

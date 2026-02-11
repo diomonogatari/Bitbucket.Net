@@ -10,22 +10,22 @@ public class Participant
     /// <summary>
     /// Gets or sets the participant's user details.
     /// </summary>
-    public User? User { get; set; }
+    public User? User { get; init; }
 
     /// <summary>
     /// Gets or sets the participant's role (e.g. AUTHOR, REVIEWER, PARTICIPANT).
     /// </summary>
-    public Roles Role { get; set; }
+    public Roles Role { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the participant has approved the pull request.
     /// </summary>
-    public bool Approved { get; set; }
+    public bool Approved { get; init; }
 
     /// <summary>
     /// Gets or sets the participant's review status (e.g. APPROVED, UNAPPROVED, NEEDS_WORK).
     /// </summary>
-    public ParticipantStatus Status { get; set; }
+    public ParticipantStatus Status { get; init; }
 
     /// <summary>
     /// Returns the participant's display name when available.

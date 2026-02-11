@@ -5,11 +5,11 @@ namespace Bitbucket.Net.Models.RefSync;
 
 public class RepositorySynchronizationStatus
 {
-    public bool Available { get; set; }
-    public bool Enabled { get; set; }
+    public bool Available { get; init; }
+    public bool Enabled { get; init; }
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset LastSync { get; set; }
-    public List<FullRef>? AheadRefs { get; set; }
-    public List<FullRef>? DivergedRefs { get; set; }
-    public List<FullRef>? OrphanedRefs { get; set; }
+    public DateTimeOffset LastSync { get; init; }
+    public List<FullRef>? AheadRefs { get; init; }
+    public List<FullRef>? DivergedRefs { get; init; }
+    public List<FullRef>? OrphanedRefs { get; init; }
 }

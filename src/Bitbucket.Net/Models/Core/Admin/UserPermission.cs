@@ -4,8 +4,8 @@ namespace Bitbucket.Net.Models.Core.Admin;
 
 public class UserPermission
 {
-    public User? User { get; set; }
-    public Permissions Permission { get; set; }
+    public User? User { get; init; }
+    public Permissions Permission { get; init; }
 
     public override string ToString() => $"{Permission} - {User?.DisplayName}";
 }
