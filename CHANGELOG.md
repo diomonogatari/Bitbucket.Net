@@ -73,11 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `BitbucketClientDisposeTests` (6 tests) covering disposal
   semantics and ownership tracking.
 - Added `ArchitecturalTests` verifying all HTTP calls have error
-  handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`)
-  and that `JsonSerializerOptions` are explicitly frozen.
+  handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`),
+  that `JsonSerializerOptions` are explicitly frozen, and that every
+  `await` uses `ConfigureAwait(false)`.
 - Added `InputValidationTests` (17 parameterized theories) covering
   null/empty/whitespace rejection for key path-segment parameters.
-- Total test count increased from 696 to 798 (+102 new tests).
+- Total test count increased from 696 to 799 (+103 new tests).
 
 ## [0.2.0] - 2026-02-08
 

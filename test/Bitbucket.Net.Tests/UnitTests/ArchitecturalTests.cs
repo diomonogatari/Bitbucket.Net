@@ -67,4 +67,43 @@ public class ArchitecturalTests
             failures.Count == 0,
             $"Unhandled HTTP calls detected (every HTTP call must use HandleResponseAsync, HandleErrorsAsync, or ExecuteAsync):\n{string.Join('\n', failures)}");
     }
+
+    /// <summary>
+    /// Verifies that every <c>await</c> expression in the production source uses
+    /// <c>ConfigureAwait(false)</c>. This is a belt-and-suspenders safety net
+    /// alongside the Meziantou.Analyzer MA0004 build-time rule. Counts awaits
+    /// and ConfigureAwait(false) calls per file — they must be equal.
+    /// </summary>
+    [Fact]
+    public void AllAwaits_UseConfigureAwaitFalse()
+    {
+        var csFiles = Directory.GetFiles(s_sourceDir, "*.cs", SearchOption.AllDirectories);
+        Assert.NotEmpty(csFiles);
+
+        var awaitPattern = new Regex(@"\bawait\s", RegexOptions.Compiled);
+        var configureAwaitPattern = new Regex(@"\.ConfigureAwait\(false\)", RegexOptions.Compiled);
+
+        var failures = new List<string>();
+
+        foreach (var file in csFiles)
+        {
+            string content = File.ReadAllText(file);
+
+            // Strip single-line comments to avoid false positives
+            string strippedContent = Regex.Replace(content, @"//.*$", "", RegexOptions.Multiline);
+
+            int awaitCount = awaitPattern.Matches(strippedContent).Count;
+            int configureAwaitCount = configureAwaitPattern.Matches(strippedContent).Count;
+
+            if (awaitCount > configureAwaitCount)
+            {
+                string fileName = Path.GetRelativePath(s_sourceDir, file);
+                failures.Add($"{fileName}: {awaitCount} awaits but only {configureAwaitCount} ConfigureAwait(false) calls");
+            }
+        }
+
+        Assert.True(
+            failures.Count == 0,
+            $"await without ConfigureAwait(false) detected:\n{string.Join('\n', failures)}");
+    }
 }
