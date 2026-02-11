@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Dictionary<TEnum, string>` to `FrozenDictionary<TEnum, string>`.
   Added reverse `FrozenDictionary<string, TEnum>` with
   `StringComparer.OrdinalIgnoreCase` for O(1) string-to-enum lookups.
+- **Frozen `JsonSerializerOptions`** (Spec 013): Both `s_jsonOptions`
+  and `s_writeJsonOptions` are now explicitly frozen via
+  `MakeReadOnly()` at construction time, preventing accidental
+  mutation from any thread.
 - **`IReadOnlyList<T>` return types** (Spec 006): All 27 buffered
   collection methods now return `Task<IReadOnlyList<T>>` instead of
   `Task<IEnumerable<T>>`, communicating immutability and preventing
@@ -63,10 +67,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `BitbucketClientDisposeTests` (6 tests) covering disposal
   semantics and ownership tracking.
 - Added `ArchitecturalTests` verifying all HTTP calls have error
-  handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`).
+  handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`)
+  and that `JsonSerializerOptions` are explicitly frozen.
 - Added `InputValidationTests` (17 parameterized theories) covering
   null/empty/whitespace rejection for key path-segment parameters.
-- Total test count increased from 696 to 797 (+101 new tests).
+- Total test count increased from 696 to 798 (+102 new tests).
 
 ## [0.2.0] - 2026-02-08
 

@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -11,6 +13,25 @@ public class ArchitecturalTests
 {
     private static readonly string s_sourceDir = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "src", "Bitbucket.Net"));
+
+    /// <summary>
+    /// Verifies that the static JsonSerializerOptions instances are explicitly
+    /// frozen (read-only), preventing accidental mutation from any thread.
+    /// </summary>
+    [Fact]
+    public void JsonSerializerOptions_AreExplicitlyFrozen()
+    {
+        var clientType = typeof(BitbucketClient);
+        var bindingFlags = BindingFlags.NonPublic | BindingFlags.Static;
+
+        var readOptions = clientType.GetField("s_jsonOptions", bindingFlags)?.GetValue(null) as JsonSerializerOptions;
+        Assert.NotNull(readOptions);
+        Assert.True(readOptions.IsReadOnly, "s_jsonOptions should be explicitly frozen via MakeReadOnly()");
+
+        var writeOptions = clientType.GetField("s_writeJsonOptions", bindingFlags)?.GetValue(null) as JsonSerializerOptions;
+        Assert.NotNull(writeOptions);
+        Assert.True(writeOptions.IsReadOnly, "s_writeJsonOptions should be explicitly frozen via MakeReadOnly()");
+    }
 
     /// <summary>
     /// Verifies that every HTTP call in BitbucketClient partial class files

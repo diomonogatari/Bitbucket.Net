@@ -26,44 +26,57 @@ namespace Bitbucket.Net;
 /// </summary>
 public partial class BitbucketClient : IDisposable
 {
-    private static readonly JsonSerializerOptions s_jsonOptions = new()
+    private static readonly JsonSerializerOptions s_jsonOptions = CreateReadOptions();
+    private static readonly JsonSerializerOptions s_writeJsonOptions = CreateWriteOptions();
+
+    private static JsonSerializerOptions CreateReadOptions()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        // Source-generated context only — no reflection fallback.
-        // Missing [JsonSerializable] registrations in BitbucketJsonContext will throw
-        // NotSupportedException at the call site, surfacing the problem immediately.
-        TypeInfoResolver = BitbucketJsonContext.Default,
-        Converters =
+        var options = new JsonSerializerOptions
         {
-            new UnixDateTimeOffsetConverter(),
-            new NullableUnixDateTimeOffsetConverter(),
-            new PermissionsConverter(),
-            new RolesConverter(),
-            new FileTypesConverter(),
-            new LineTypesConverter(),
-            new ParticipantStatusConverter(),
-            new PullRequestStatesConverter(),
-            new HookTypesConverter(),
-            new ScopeTypesConverter(),
-            new WebHookOutcomesConverter(),
-            new RefRestrictionTypesConverter(),
-            new SynchronizeActionsConverter(),
-            new BlockerCommentStateConverter(),
-            new CommentSeverityConverter()
-        },
-    };
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            // Source-generated context only — no reflection fallback.
+            // Missing [JsonSerializable] registrations in BitbucketJsonContext will throw
+            // NotSupportedException at the call site, surfacing the problem immediately.
+            TypeInfoResolver = BitbucketJsonContext.Default,
+            Converters =
+            {
+                new UnixDateTimeOffsetConverter(),
+                new NullableUnixDateTimeOffsetConverter(),
+                new PermissionsConverter(),
+                new RolesConverter(),
+                new FileTypesConverter(),
+                new LineTypesConverter(),
+                new ParticipantStatusConverter(),
+                new PullRequestStatesConverter(),
+                new HookTypesConverter(),
+                new ScopeTypesConverter(),
+                new WebHookOutcomesConverter(),
+                new RefRestrictionTypesConverter(),
+                new SynchronizeActionsConverter(),
+                new BlockerCommentStateConverter(),
+                new CommentSeverityConverter()
+            },
+        };
+        options.MakeReadOnly();
+        return options;
+    }
 
     // Write-only options for serializing outbound request bodies.
     // Includes a reflection fallback for anonymous types used in API methods.
     // Future improvement: replace anonymous types with typed request DTOs and remove this fallback.
-    private static readonly JsonSerializerOptions s_writeJsonOptions = new(s_jsonOptions)
+    private static JsonSerializerOptions CreateWriteOptions()
     {
-        TypeInfoResolver = JsonTypeInfoResolver.Combine(
-            BitbucketJsonContext.Default,
-            new DefaultJsonTypeInfoResolver()
-        ),
-    };
+        var options = new JsonSerializerOptions(s_jsonOptions)
+        {
+            TypeInfoResolver = JsonTypeInfoResolver.Combine(
+                BitbucketJsonContext.Default,
+                new DefaultJsonTypeInfoResolver()
+            ),
+        };
+        options.MakeReadOnly();
+        return options;
+    }
 
     private static readonly ISerializer s_serializer = new DefaultJsonSerializer(s_jsonOptions);
 
