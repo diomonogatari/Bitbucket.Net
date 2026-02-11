@@ -74,6 +74,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Rate-limit headers on `BitbucketRateLimitException`** (Spec 014):
+  HTTP 429 exceptions now expose `RetryAfter`, `RateLimit`,
+  `RateLimitRemaining`, and `RateLimitReset` properties parsed from
+  standard rate-limit response headers. Gracefully returns `null` for
+  missing or unparseable headers.
 - **`PagedResultsReader` zero-allocation metadata parser** (Spec 012):
   Internal `Utf8JsonReader`-based parser that extracts pagination
   metadata (`isLastPage`, `nextPageStart`, `start`, `limit`, `size`)

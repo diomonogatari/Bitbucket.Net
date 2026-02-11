@@ -86,6 +86,69 @@ public class ExceptionTests
         Assert.Contains("429", exception.Message);
     }
 
+    [Fact]
+    public void Create_429_WithAllHeaders_ExposesRateLimitProperties()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        response.Headers.TryAddWithoutValidation("Retry-After", "30");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Limit", "100");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Remaining", "0");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Reset", "1700000000");
+
+        var exception = (BitbucketRateLimitException)BitbucketApiException.Create(
+            429, SampleErrors, response.Headers, "https://test.com/api");
+
+        Assert.Equal(TimeSpan.FromSeconds(30), exception.RetryAfter);
+        Assert.Equal(100, exception.RateLimit);
+        Assert.Equal(0, exception.RateLimitRemaining);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1700000000), exception.RateLimitReset);
+    }
+
+    [Fact]
+    public void Create_429_WithPartialHeaders_MissingValuesAreNull()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        response.Headers.TryAddWithoutValidation("Retry-After", "60");
+
+        var exception = (BitbucketRateLimitException)BitbucketApiException.Create(
+            429, SampleErrors, response.Headers);
+
+        Assert.Equal(TimeSpan.FromSeconds(60), exception.RetryAfter);
+        Assert.Null(exception.RateLimit);
+        Assert.Null(exception.RateLimitRemaining);
+        Assert.Null(exception.RateLimitReset);
+    }
+
+    [Fact]
+    public void Create_429_WithInvalidHeaders_ReturnsNullNotThrow()
+    {
+        using var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        response.Headers.TryAddWithoutValidation("Retry-After", "not-a-number");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Limit", "abc");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Remaining", "");
+        response.Headers.TryAddWithoutValidation("X-RateLimit-Reset", "xyz");
+
+        var exception = (BitbucketRateLimitException)BitbucketApiException.Create(
+            429, SampleErrors, response.Headers);
+
+        Assert.Null(exception.RetryAfter);
+        Assert.Null(exception.RateLimit);
+        Assert.Null(exception.RateLimitRemaining);
+        Assert.Null(exception.RateLimitReset);
+    }
+
+    [Fact]
+    public void Create_429_WithNullHeaders_ReturnsExceptionWithNullProperties()
+    {
+        var exception = (BitbucketRateLimitException)BitbucketApiException.Create(
+            429, SampleErrors, responseHeaders: null);
+
+        Assert.Null(exception.RetryAfter);
+        Assert.Null(exception.RateLimit);
+        Assert.Null(exception.RateLimitRemaining);
+        Assert.Null(exception.RateLimitReset);
+    }
+
     [Theory]
     [InlineData(500)]
     [InlineData(502)]

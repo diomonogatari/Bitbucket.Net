@@ -355,7 +355,8 @@ public partial class BitbucketClient : IDisposable
                 }
             }
 
-            throw BitbucketApiException.Create(response.StatusCode, errors, requestUrl);
+            var responseHeaders = response.ResponseMessage?.Headers;
+            throw BitbucketApiException.Create(response.StatusCode, errors, responseHeaders, requestUrl);
         }
     }
 

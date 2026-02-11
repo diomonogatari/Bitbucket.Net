@@ -156,6 +156,65 @@ public class ErrorHandlingMockTests(BitbucketMockFixture fixture) : IClassFixtur
     }
 
     [Fact]
+    public async Task GetProjectAsync_WhenRateLimitedWithHeaders_ExposesAllProperties()
+    {
+        _fixture.Reset();
+        var projectKey = "RATELIMIT";
+        _fixture.Server.SetupRateLimitedWithHeaders(
+            $"{ApiBasePath}/projects/{projectKey}",
+            retryAfter: "30",
+            rateLimitLimit: "100",
+            rateLimitRemaining: "0",
+            rateLimitReset: "1700000000");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketRateLimitException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
+        Assert.Equal(TimeSpan.FromSeconds(30), exception.RetryAfter);
+        Assert.Equal(100, exception.RateLimit);
+        Assert.Equal(0, exception.RateLimitRemaining);
+        Assert.Equal(DateTimeOffset.FromUnixTimeSeconds(1700000000), exception.RateLimitReset);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenRateLimitedWithPartialHeaders_MissingAreNull()
+    {
+        _fixture.Reset();
+        var projectKey = "PARTIALRL";
+        _fixture.Server.SetupRateLimitedWithHeaders(
+            $"{ApiBasePath}/projects/{projectKey}",
+            retryAfter: "60");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketRateLimitException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Equal(TimeSpan.FromSeconds(60), exception.RetryAfter);
+        Assert.Null(exception.RateLimit);
+        Assert.Null(exception.RateLimitRemaining);
+        Assert.Null(exception.RateLimitReset);
+    }
+
+    [Fact]
+    public async Task GetProjectAsync_WhenRateLimitedWithNoHeaders_PropertiesAreNull()
+    {
+        _fixture.Reset();
+        var projectKey = "NORLHDR";
+        _fixture.Server.SetupRateLimited($"{ApiBasePath}/projects/{projectKey}");
+        var client = _fixture.CreateClient();
+
+        var exception = await Assert.ThrowsAsync<BitbucketRateLimitException>(
+            () => client.GetProjectAsync(projectKey));
+
+        Assert.Null(exception.RetryAfter);
+        Assert.Null(exception.RateLimit);
+        Assert.Null(exception.RateLimitRemaining);
+        Assert.Null(exception.RateLimitReset);
+    }
+
+    [Fact]
     public async Task GetProjectAsync_WhenErrorHasJsonBody_PopulatesErrorsAndContext()
     {
         _fixture.Reset();
