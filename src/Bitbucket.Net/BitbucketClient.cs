@@ -236,27 +236,34 @@ public partial class BitbucketClient
 
     /// <summary>
     /// Reads the response content and deserializes it.
+    /// When no custom content handler is provided, deserializes directly from the response stream
+    /// to avoid intermediate string allocations (especially beneficial for large paged responses).
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="response">The HTTP response.</param>
-    /// <param name="contentHandler">Optional custom handler to parse the response content.</param>
+    /// <param name="contentHandler">Optional custom handler to parse the response content as a string.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The deserialized response content.</returns>
     private static async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
-        string content = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
-
+        // Custom handler needs the raw string (used for non-JSON responses)
         if (contentHandler is not null)
         {
+            string content = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
             return contentHandler(content);
         }
 
-        if (string.IsNullOrWhiteSpace(content))
+        // Deserialize directly from the stream — avoids intermediate string allocation
+        var stream = await ReadResponseStreamAsync(response, cancellationToken).ConfigureAwait(false);
+        await using (stream.ConfigureAwait(false))
         {
-            return default!;
-        }
+            if (stream == Stream.Null)
+            {
+                return default!;
+            }
 
-        return JsonSerializer.Deserialize<TResult>(content, s_jsonOptions)!;
+            return (await JsonSerializer.DeserializeAsync<TResult>(stream, s_jsonOptions, cancellationToken).ConfigureAwait(false))!;
+        }
     }
 
     /// <summary>
