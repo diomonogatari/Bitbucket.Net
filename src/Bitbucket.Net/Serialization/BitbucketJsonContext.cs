@@ -40,8 +40,9 @@ namespace Bitbucket.Net.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This context is combined with <see cref="System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver"/>
-/// to provide a fallback for any types not explicitly registered (edge cases, future additions).
+/// This context is the sole type-info resolver — there is no reflection fallback.
+/// Any type not registered here will throw <see cref="System.NotSupportedException"/>
+/// at the call site, ensuring missing registrations are caught immediately.
 /// </para>
 /// <para>
 /// Custom converters (UnixDateTimeOffsetConverter, etc.) continue to work with source generation.
@@ -314,7 +315,12 @@ namespace Bitbucket.Net.Serialization;
 // ============================================================================
 // Collection Types (for various API responses)
 // ============================================================================
+[JsonSerializable(typeof(Dictionary<string, BuildStats>))]
+[JsonSerializable(typeof(IEnumerable<DefaultReviewerPullRequestCondition>))]
 [JsonSerializable(typeof(IEnumerable<Error>))]
+[JsonSerializable(typeof(IEnumerable<KeyedUrl>))]
+[JsonSerializable(typeof(IEnumerable<RefRestriction>))]
+[JsonSerializable(typeof(IEnumerable<User>))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(List<CloneLink>))]
 [JsonSerializable(typeof(List<Link>))]

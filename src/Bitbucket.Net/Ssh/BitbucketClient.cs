@@ -51,7 +51,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectsReposKeysAsync(int keyId, CancellationToken cancellationToken, params string[] projectsOrRepos)
     {
-        var json = JsonSerializer.Serialize(projectsOrRepos);
+        var json = JsonSerializer.Serialize(projectsOrRepos, s_writeJsonOptions);
         var response = await GetKeysUrl($"/ssh/{keyId}")
             .WithHeader("Content-Type", "application/json")
             .SendAsync(HttpMethod.Delete, new StringContent(json, Encoding.UTF8, "application/json"), cancellationToken: cancellationToken)

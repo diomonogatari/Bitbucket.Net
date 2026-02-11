@@ -23,11 +23,10 @@ public partial class BitbucketClient
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        // Source-generated context with reflection fallback for edge cases
-        TypeInfoResolver = JsonTypeInfoResolver.Combine(
-            BitbucketJsonContext.Default,       // Source-generated (fast path)
-            new DefaultJsonTypeInfoResolver()   // Reflection fallback for unregistered types
-        ),
+        // Source-generated context only — no reflection fallback.
+        // Missing [JsonSerializable] registrations in BitbucketJsonContext will throw
+        // NotSupportedException at the call site, surfacing the problem immediately.
+        TypeInfoResolver = BitbucketJsonContext.Default,
         Converters =
         {
             new UnixDateTimeOffsetConverter(),
@@ -46,6 +45,17 @@ public partial class BitbucketClient
             new BlockerCommentStateConverter(),
             new CommentSeverityConverter()
         },
+    };
+
+    // Write-only options for serializing outbound request bodies.
+    // Includes a reflection fallback for anonymous types used in API methods.
+    // Future improvement: replace anonymous types with typed request DTOs and remove this fallback.
+    private static readonly JsonSerializerOptions s_writeJsonOptions = new(s_jsonOptions)
+    {
+        TypeInfoResolver = JsonTypeInfoResolver.Combine(
+            BitbucketJsonContext.Default,
+            new DefaultJsonTypeInfoResolver()
+        ),
     };
 
     private static readonly ISerializer s_serializer = new DefaultJsonSerializer(s_jsonOptions);
@@ -195,7 +205,7 @@ public partial class BitbucketClient
 
     private static StringContent CreateJsonContent<TValue>(TValue value)
     {
-        var json = JsonSerializer.Serialize(value, s_jsonOptions);
+        var json = JsonSerializer.Serialize(value, s_writeJsonOptions);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
 
