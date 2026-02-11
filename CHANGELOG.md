@@ -89,6 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `commitId`, `hookKey`, `userSlug`, etc.) with
   `ArgumentException.ThrowIfNullOrWhiteSpace()` at method entry.
   Prevents malformed URLs and confusing server-side errors.
+- **Fluent query builders** (Spec 011): New `PullRequestQueryBuilder`,
+  `CommitQueryBuilder`, `BranchQueryBuilder`, and `ProjectQueryBuilder`
+  classes providing a fluent API for complex queries. Entry points:
+  `client.PullRequests(...)`, `client.Commits(...)`,
+  `client.Branches(...)`, `client.Projects()`. Each builder supports
+  `GetAsync()` for buffered results and `StreamAsync()` for
+  `IAsyncEnumerable<T>` streaming. Existing flat methods are unchanged.
 
 ### Testing
 
@@ -96,6 +103,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   registered in `BitbucketJsonContext`.
 - Added `BitbucketClientDisposeTests` (6 tests) covering disposal
   semantics and ownership tracking.
+- Added `FluentQueryBuilderMockTests` (12 tests) covering all four
+  query builders with default parameters, custom options, streaming,
+  and input validation.
 - Added `ArchitecturalTests` verifying all HTTP calls have error
   handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`),
   that `JsonSerializerOptions` are explicitly frozen, and that every
