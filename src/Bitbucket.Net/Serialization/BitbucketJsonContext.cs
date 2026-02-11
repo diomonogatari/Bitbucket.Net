@@ -8,11 +8,13 @@ using Bitbucket.Net.Models.Audit;
 using Bitbucket.Net.Models.Branches;
 // Builds
 using Bitbucket.Net.Models.Builds;
+using Bitbucket.Net.Models.Builds.Requests;
 // Core - Admin
 using Bitbucket.Net.Models.Core.Admin;
 // Core - Logs
 // Core - Projects
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 // Core - Tasks
 using Bitbucket.Net.Models.Core.Tasks;
 // Core - Users
@@ -339,6 +341,23 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(List<Diff>))]
 [JsonSerializable(typeof(List<ContentItem>))]
 [JsonSerializable(typeof(Dictionary<string, object>))]
+
+// ============================================================================
+// Request DTOs
+// ============================================================================
+[JsonSerializable(typeof(AssociateBuildStatusRequest))]
+[JsonSerializable(typeof(CreateBranchRequest))]
+[JsonSerializable(typeof(CreateProjectRequest))]
+[JsonSerializable(typeof(CreatePullRequestRequest))]
+[JsonSerializable(typeof(CreateRepositoryRequest))]
+[JsonSerializable(typeof(CreateTaskRequest))]
+[JsonSerializable(typeof(CreateWebHookRequest))]
+[JsonSerializable(typeof(ForkRepositoryRequest))]
+[JsonSerializable(typeof(MergePullRequestRequest))]
+[JsonSerializable(typeof(UpdateProjectRequest))]
+[JsonSerializable(typeof(UpdatePullRequestRequest))]
+[JsonSerializable(typeof(UpdateTaskRequest))]
+[JsonSerializable(typeof(UpdateWebHookRequest))]
 
 public partial class BitbucketJsonContext : JsonSerializerContext
 {

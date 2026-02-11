@@ -1,4 +1,5 @@
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -153,7 +154,7 @@ public class PullRequestExtendedMockTests(BitbucketMockFixture fixture) : IClass
             TestConstants.TestRepositorySlug);
         var client = _fixture.CreateClient();
 
-        var prInfo = new PullRequestInfo
+        var request = new CreatePullRequestRequest
         {
             Title = "New PR",
             Description = "Description",
@@ -164,7 +165,7 @@ public class PullRequestExtendedMockTests(BitbucketMockFixture fixture) : IClass
         var result = await client.CreatePullRequestAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            prInfo);
+            request);
 
         Assert.NotNull(result);
         Assert.Equal(TestConstants.TestPullRequestId, result.Id);
@@ -180,9 +181,8 @@ public class PullRequestExtendedMockTests(BitbucketMockFixture fixture) : IClass
             TestConstants.TestPullRequestId);
         var client = _fixture.CreateClient();
 
-        var update = new PullRequestUpdate
+        var request = new UpdatePullRequestRequest
         {
-            Id = (int)TestConstants.TestPullRequestId,
             Version = 0,
             Title = "Updated Title"
         };
@@ -191,7 +191,7 @@ public class PullRequestExtendedMockTests(BitbucketMockFixture fixture) : IClass
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
             TestConstants.TestPullRequestId,
-            update);
+            request);
 
         Assert.NotNull(result);
     }

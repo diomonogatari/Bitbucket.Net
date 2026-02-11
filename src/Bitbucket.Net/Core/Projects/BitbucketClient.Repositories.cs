@@ -2,6 +2,7 @@ using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 
@@ -76,23 +77,16 @@ public partial class BitbucketClient
     /// Creates a repository within a project.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
-    /// <param name="repositoryName">The repository name.</param>
-    /// <param name="scmId">Optional SCM identifier (default is git).</param>
+    /// <param name="request">The create repository request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created repository.</returns>
-    public async Task<Repository> CreateProjectRepositoryAsync(string projectKey, string repositoryName, string scmId = "git", CancellationToken cancellationToken = default)
+    public async Task<Repository> CreateProjectRepositoryAsync(string projectKey, CreateRepositoryRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
-        ArgumentException.ThrowIfNullOrWhiteSpace(repositoryName);
-
-        var data = new
-        {
-            name = repositoryName,
-            scmId,
-        };
+        ArgumentNullException.ThrowIfNull(request);
 
         var response = await GetProjectsUrl($"/{projectKey}/repos")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -119,22 +113,13 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The source project key.</param>
     /// <param name="repositorySlug">The source repository slug.</param>
-    /// <param name="targetProjectKey">Optional target project key for the fork.</param>
-    /// <param name="targetSlug">Optional target repository slug.</param>
-    /// <param name="targetName">Optional display name for the fork.</param>
+    /// <param name="request">Optional fork repository request. When <c>null</c>, a default request is used.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created repository fork.</returns>
-    public async Task<RepositoryFork> CreateProjectRepositoryForkAsync(string projectKey, string repositorySlug, string? targetProjectKey = null, string? targetSlug = null, string? targetName = null, CancellationToken cancellationToken = default)
+    public async Task<RepositoryFork> CreateProjectRepositoryForkAsync(string projectKey, string repositorySlug, ForkRepositoryRequest? request = null, CancellationToken cancellationToken = default)
     {
-        var data = new
-        {
-            slug = targetSlug ?? repositorySlug,
-            name = targetName,
-            project = targetProjectKey == null ? null : new ProjectRef { Key = targetProjectKey },
-        };
-
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
-            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request ?? new ForkRepositoryRequest()), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<RepositoryFork>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

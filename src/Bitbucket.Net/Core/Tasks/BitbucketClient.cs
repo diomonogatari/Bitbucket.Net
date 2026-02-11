@@ -1,4 +1,5 @@
 using Bitbucket.Net.Common;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Models.Core.Tasks;
 using Flurl.Http;
 
@@ -27,13 +28,15 @@ public partial class BitbucketClient
     /// <summary>
     /// Creates a task.
     /// </summary>
-    /// <param name="taskInfo">The task information.</param>
+    /// <param name="request">The create task request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created task.</returns>
-    public async Task<BitbucketTask> CreateTaskAsync(TaskInfo taskInfo, CancellationToken cancellationToken = default)
+    public async Task<BitbucketTask> CreateTaskAsync(CreateTaskRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetTasksUrl()
-            .SendAsync(HttpMethod.Post, CreateJsonContent(taskInfo), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<BitbucketTask>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -57,18 +60,21 @@ public partial class BitbucketClient
     }
 
     /// <summary>
-    /// Updates a task's text.
+    /// Updates a task.
     /// </summary>
     /// <param name="taskId">The task identifier.</param>
-    /// <param name="text">The updated task text.</param>
+    /// <param name="request">The update task request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The updated task.</returns>
-    public async Task<BitbucketTask> UpdateTaskAsync(long taskId, string text, CancellationToken cancellationToken = default)
+    public async Task<BitbucketTask> UpdateTaskAsync(long taskId, UpdateTaskRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var obj = new
         {
             id = taskId,
-            text,
+            text = request.Text,
+            state = request.State,
         };
 
         var response = await GetTasksUrl($"/{taskId}")

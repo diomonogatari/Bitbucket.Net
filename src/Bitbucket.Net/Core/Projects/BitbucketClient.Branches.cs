@@ -1,6 +1,7 @@
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
 using System.Buffers;
 using System.Runtime.CompilerServices;
@@ -94,13 +95,15 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
-    /// <param name="branchInfo">The branch information.</param>
+    /// <param name="request">The create branch request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created branch.</returns>
-    public async Task<Branch> CreateBranchAsync(string projectKey, string repositorySlug, BranchInfo branchInfo, CancellationToken cancellationToken = default)
+    public async Task<Branch> CreateBranchAsync(string projectKey, string repositorySlug, CreateBranchRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(branchInfo), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

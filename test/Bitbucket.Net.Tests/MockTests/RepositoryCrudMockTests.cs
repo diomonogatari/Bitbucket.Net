@@ -1,3 +1,5 @@
+using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -16,8 +18,7 @@ public class RepositoryCrudMockTests(BitbucketMockFixture fixture) : IClassFixtu
 
         var result = await client.CreateProjectRepositoryAsync(
             TestConstants.TestProjectKey,
-            "new-repo",
-            "git");
+            new CreateRepositoryRequest { Name = "new-repo", ScmId = "git" });
 
         Assert.NotNull(result);
         Assert.Equal("test-repo", result.Slug);
@@ -63,8 +64,7 @@ public class RepositoryCrudMockTests(BitbucketMockFixture fixture) : IClassFixtu
         var result = await client.CreateProjectRepositoryForkAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            targetProjectKey: "FORK",
-            targetName: "forked-repo");
+            new ForkRepositoryRequest { Name = "forked-repo", Project = new ProjectRef { Key = "FORK" } });
 
         Assert.NotNull(result);
     }

@@ -2,6 +2,7 @@ using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
 
 namespace Bitbucket.Net;
@@ -447,13 +448,15 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
-    /// <param name="webHook">The webhook payload.</param>
+    /// <param name="request">The create webhook request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created webhook.</returns>
-    public async Task<WebHook> CreateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug, WebHook webHook, CancellationToken cancellationToken = default)
+    public async Task<WebHook> CreateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug, CreateWebHookRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(webHook), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -512,16 +515,17 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="webHookId">The webhook ID.</param>
-    /// <param name="webHook">The webhook payload.</param>
+    /// <param name="request">The update webhook request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The updated webhook.</returns>
     public async Task<WebHook> UpdateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug,
-        string webHookId, WebHook webHook, CancellationToken cancellationToken = default)
+        string webHookId, UpdateWebHookRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+        ArgumentNullException.ThrowIfNull(request);
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
-            .SendAsync(HttpMethod.Put, CreateJsonContent(webHook), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

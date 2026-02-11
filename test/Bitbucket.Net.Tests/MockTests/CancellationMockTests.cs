@@ -1,4 +1,4 @@
-using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Flurl.Http;
 using Xunit;
@@ -46,7 +46,7 @@ public class CancellationMockTests(BitbucketMockFixture fixture) : IClassFixture
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        var definition = new ProjectDefinition { Key = TestConstants.TestProjectKey, Name = TestConstants.TestProjectName };
+        var definition = new CreateProjectRequest { Key = TestConstants.TestProjectKey, Name = TestConstants.TestProjectName };
 
         await AssertCancellationPropagatedAsync(
             () => client.CreateProjectAsync(definition, cts.Token));

@@ -1,6 +1,7 @@
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Builds;
+using Bitbucket.Net.Models.Builds.Requests;
 using Flurl.Http;
 
 namespace Bitbucket.Net;
@@ -106,15 +107,16 @@ public partial class BitbucketClient
     /// Associates a build status with a commit.
     /// </summary>
     /// <param name="commitId">The commit identifier.</param>
-    /// <param name="buildStatus">The build status to associate.</param>
+    /// <param name="request">The build status request to associate.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns><c>true</c> if the association was successful; otherwise, <c>false</c>.</returns>
-    public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, BuildStatus buildStatus, CancellationToken cancellationToken = default)
+    public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, AssociateBuildStatusRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+        ArgumentNullException.ThrowIfNull(request);
 
         var response = await GetBuildsUrl($"/commits/{commitId}")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(buildStatus), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

@@ -1,4 +1,4 @@
-using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -32,7 +32,7 @@ public class WebhookMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitb
         _fixture.Server.SetupCreateWebhook(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
         var client = _fixture.CreateClient();
 
-        var newWebhook = new WebHook
+        var request = new CreateWebHookRequest
         {
             Name = "Test Webhook",
             Url = "https://example.com/webhook",
@@ -43,7 +43,7 @@ public class WebhookMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitb
         var webhook = await client.CreateProjectRepositoryWebHookAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            newWebhook);
+            request);
 
         Assert.NotNull(webhook);
         Assert.Equal(1, webhook.Id);

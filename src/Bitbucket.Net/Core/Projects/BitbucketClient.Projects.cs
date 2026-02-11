@@ -2,6 +2,7 @@ using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
 using System.Text.Json;
 
@@ -136,13 +137,15 @@ public partial class BitbucketClient
     /// <summary>
     /// Creates a project.
     /// </summary>
-    /// <param name="projectDefinition">The project definition.</param>
+    /// <param name="request">The create project request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created project.</returns>
-    public async Task<Project> CreateProjectAsync(ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
+    public async Task<Project> CreateProjectAsync(CreateProjectRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsUrl()
-            .SendAsync(HttpMethod.Post, CreateJsonContent(projectDefinition), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -169,15 +172,16 @@ public partial class BitbucketClient
     /// Updates a project.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
-    /// <param name="projectDefinition">The updated project definition.</param>
+    /// <param name="request">The update project request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The updated project.</returns>
-    public async Task<Project> UpdateProjectAsync(string projectKey, ProjectDefinition projectDefinition, CancellationToken cancellationToken = default)
+    public async Task<Project> UpdateProjectAsync(string projectKey, UpdateProjectRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentNullException.ThrowIfNull(request);
 
         var response = await GetProjectsUrl($"/{projectKey}")
-            .SendAsync(HttpMethod.Put, CreateJsonContent(projectDefinition), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Project>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

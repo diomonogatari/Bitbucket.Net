@@ -1,6 +1,7 @@
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 
@@ -146,13 +147,15 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
-    /// <param name="pullRequestInfo">The pull request payload.</param>
+    /// <param name="request">The create pull request payload.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created pull request.</returns>
-    public async Task<PullRequest> CreatePullRequestAsync(string projectKey, string repositorySlug, PullRequestInfo pullRequestInfo, CancellationToken cancellationToken = default)
+    public async Task<PullRequest> CreatePullRequestAsync(string projectKey, string repositorySlug, CreatePullRequestRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/pull-requests")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(pullRequestInfo), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -181,13 +184,15 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="pullRequestId">The pull request ID.</param>
-    /// <param name="pullRequestUpdate">The update payload.</param>
+    /// <param name="request">The update pull request payload.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The updated pull request.</returns>
-    public async Task<PullRequest> UpdatePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, PullRequestUpdate pullRequestUpdate, CancellationToken cancellationToken = default)
+    public async Task<PullRequest> UpdatePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, UpdatePullRequestRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}")
-            .SendAsync(HttpMethod.Put, CreateJsonContent(pullRequestUpdate), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -294,19 +299,21 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="pullRequestId">The pull request ID.</param>
-    /// <param name="version">Optional version for optimistic concurrency.</param>
+    /// <param name="request">Optional merge request. When <c>null</c>, a default request is used.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The merged pull request.</returns>
-    public async Task<PullRequest> MergePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, int version = -1, CancellationToken cancellationToken = default)
+    public async Task<PullRequest> MergePullRequestAsync(string projectKey, string repositorySlug, long pullRequestId, MergePullRequestRequest? request = null, CancellationToken cancellationToken = default)
     {
+        var mergeRequest = request ?? new MergePullRequestRequest();
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
-            ["version"] = version,
+            ["version"] = mergeRequest.Version,
         };
 
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/merge")
             .SetQueryParams(queryParamValues)
-            .SendAsync(HttpMethod.Post, CreateEmptyJsonContent(), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(mergeRequest), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<PullRequest>(response, cancellationToken: cancellationToken).ConfigureAwait(false);

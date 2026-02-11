@@ -20,6 +20,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   properties) retain mutable setters to allow consumer construction.
   Consumers that assign model properties after construction must move
   to object-initializer syntax.
+- **Dedicated request DTOs** (Spec 010): Write operations now accept
+  purpose-built request DTOs instead of reusing response models or
+  inline parameters. 13 request DTOs created:
+  `CreateProjectRequest`, `UpdateProjectRequest`,
+  `CreateRepositoryRequest`, `ForkRepositoryRequest`,
+  `CreatePullRequestRequest`, `UpdatePullRequestRequest`,
+  `CreateBranchRequest`, `CreateTaskRequest`, `UpdateTaskRequest`,
+  `CreateWebHookRequest`, `UpdateWebHookRequest`,
+  `AssociateBuildStatusRequest`, `MergePullRequestRequest`.
+  Methods affected: `CreateProjectAsync`, `UpdateProjectAsync`,
+  `CreateProjectRepositoryAsync`, `CreateProjectRepositoryForkAsync`,
+  `CreatePullRequestAsync`, `UpdatePullRequestAsync`,
+  `MergePullRequestAsync`, `CreateBranchAsync`, `CreateTaskAsync`,
+  `UpdateTaskAsync`, `CreateProjectRepositoryWebHookAsync`,
+  `UpdateProjectRepositoryWebHookAsync`,
+  `AssociateBuildStatusWithCommitAsync`.
+  Request DTOs use `required` and `init`-only properties,
+  exposing only API-relevant fields.
 
 ### Changed
 

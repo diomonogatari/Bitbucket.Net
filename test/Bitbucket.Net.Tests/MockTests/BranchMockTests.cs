@@ -1,4 +1,5 @@
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -49,7 +50,7 @@ public class BranchMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbu
         _fixture.Server.SetupCreateBranch(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
         var client = _fixture.CreateClient();
 
-        var branchInfo = new BranchInfo
+        var request = new CreateBranchRequest
         {
             Name = "feature-test",
             StartPoint = "refs/heads/master"
@@ -58,7 +59,7 @@ public class BranchMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbu
         var branch = await client.CreateBranchAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            branchInfo);
+            request);
 
         Assert.NotNull(branch);
         Assert.Equal("refs/heads/feature-test", branch.Id);

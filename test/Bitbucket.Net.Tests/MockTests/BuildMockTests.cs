@@ -1,4 +1,4 @@
-using Bitbucket.Net.Models.Builds;
+using Bitbucket.Net.Models.Builds.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -46,7 +46,7 @@ public class BuildMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         _fixture.Server.SetupAssociateBuildStatus(TestConstants.TestCommitId);
         var client = _fixture.CreateClient();
 
-        var buildStatus = new BuildStatus
+        var request = new AssociateBuildStatusRequest
         {
             Key = "build-125",
             State = "SUCCESSFUL",
@@ -57,7 +57,7 @@ public class BuildMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
 
         var result = await client.AssociateBuildStatusWithCommitAsync(
             TestConstants.TestCommitId,
-            buildStatus);
+            request);
 
         Assert.True(result);
     }
