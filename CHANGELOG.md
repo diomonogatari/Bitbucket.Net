@@ -7,6 +7,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Breaking Changes
+
+- **`IReadOnlyList<T>` return types**: All buffered collection methods
+  now return `Task<IReadOnlyList<T>>` instead of `Task<IEnumerable<T>>`.
+  Consumers assigning results to `IEnumerable<T>` are unaffected;
+  consumers assigning to `List<T>` must add `.ToList()` or change the
+  variable type.
+
+### Changed
+
+- **Source-gen-only deserialization** (Spec 001): Removed the
+  `JsonUnknownTypeHandling.JsonNode` reflection fallback from the
+  read-path `JsonSerializerOptions`. Deserialization now uses only
+  the source-generated `BitbucketJsonContext`, eliminating
+  reflection-based metadata and improving trim safety. A separate
+  `s_writeJsonOptions` retains a reflection fallback solely for
+  serializing anonymous types in request bodies.
+- **Stream-based deserialization** (Spec 002): `ReadResponseContentAsync<T>`
+  now calls `JsonSerializer.DeserializeAsync` directly on the HTTP
+  response stream instead of reading the body into a `string` first.
+  Eliminates a full UTF-16 string copy per response.
+- **FrozenDictionary enum lookups** (Spec 003): All 25 enum-to-string
+  mapping dictionaries in `BitbucketHelpers` converted from
+  `Dictionary<TEnum, string>` to `FrozenDictionary<TEnum, string>`.
+  Added reverse `FrozenDictionary<string, TEnum>` with
+  `StringComparer.OrdinalIgnoreCase` for O(1) string-to-enum lookups.
+- **`IReadOnlyList<T>` return types** (Spec 006): All 27 buffered
+  collection methods now return `Task<IReadOnlyList<T>>` instead of
+  `Task<IEnumerable<T>>`, communicating immutability and preventing
+  multiple-enumeration bugs.
+
+### Added
+
+- **`IDisposable` on `BitbucketClient`** (Spec 004): The client now
+  implements `IDisposable` with ownership tracking. Clients created
+  via the `(string url, ...)` constructors own and dispose the
+  underlying `FlurlClient`. Clients created via `(IFlurlClient, ...)`
+  or `(HttpClient, ...)` do not dispose the injected client. All public
+  methods throw `ObjectDisposedException` after disposal.
+- **`ExecuteAsync` centralised error handling** (Spec 005): New
+  `ExecuteAsync<TResult>`, `ExecuteAsync` (bool), and
+  `ExecuteWithNoContentAsync` methods that wrap HTTP call + response
+  handling in a single call, reducing boilerplate in API methods.
+- **Input validation guards** (Spec 007): ~130 public methods now
+  validate URL-path string parameters (`projectKey`, `repositorySlug`,
+  `commitId`, `hookKey`, `userSlug`, etc.) with
+  `ArgumentException.ThrowIfNullOrWhiteSpace()` at method entry.
+  Prevents malformed URLs and confusing server-side errors.
+
+### Testing
+
+- Added `SourceGenCoverageTests` validating all model types are
+  registered in `BitbucketJsonContext`.
+- Added `BitbucketClientDisposeTests` (6 tests) covering disposal
+  semantics and ownership tracking.
+- Added `ArchitecturalTests` verifying all HTTP calls have error
+  handlers (`HandleResponseAsync`, `ExecuteAsync`, or `StatusCode`).
+- Added `InputValidationTests` (17 parameterized theories) covering
+  null/empty/whitespace rejection for key path-segment parameters.
+- Total test count increased from 696 to 797 (+101 new tests).
+
 ## [0.2.0] - 2026-02-08
 
 ### Breaking Changes
