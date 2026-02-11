@@ -4,11 +4,13 @@ using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Models.RefRestrictions;
 using Bitbucket.Net.Models.RefSync;
+using System.Collections.Frozen;
 
 namespace Bitbucket.Net.Common;
 
 /// <summary>
 /// Helper methods for converting between Bitbucket enum values and their wire-format string representations.
+/// Uses <see cref="FrozenDictionary{TKey, TValue}"/> for optimal read-only lookup performance.
 /// </summary>
 public static class BitbucketHelpers
 {
@@ -43,11 +45,11 @@ public static class BitbucketHelpers
 
     #region BranchOrderBy
 
-    private static readonly Dictionary<BranchOrderBy, string> s_stringByBranchOrderBy = new()
+    private static readonly FrozenDictionary<BranchOrderBy, string> s_stringByBranchOrderBy = new Dictionary<BranchOrderBy, string>
     {
         [BranchOrderBy.Alphabetical] = "ALPHABETICAL",
         [BranchOrderBy.Modification] = "MODIFICATION",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="BranchOrderBy"/> value to the Bitbucket API string.
@@ -69,11 +71,11 @@ public static class BitbucketHelpers
 
     #region PullRequestDirections
 
-    private static readonly Dictionary<PullRequestDirections, string> s_stringByPullRequestDirection = new()
+    private static readonly FrozenDictionary<PullRequestDirections, string> s_stringByPullRequestDirection = new Dictionary<PullRequestDirections, string>
     {
         [PullRequestDirections.Incoming] = "INCOMING",
         [PullRequestDirections.Outgoing] = "OUTGOING",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="PullRequestDirections"/> value to the Bitbucket API string.
@@ -95,13 +97,16 @@ public static class BitbucketHelpers
 
     #region PullRequestStates
 
-    private static readonly Dictionary<PullRequestStates, string> s_stringByPullRequestState = new()
+    private static readonly FrozenDictionary<PullRequestStates, string> s_stringByPullRequestState = new Dictionary<PullRequestStates, string>
     {
         [PullRequestStates.Open] = "OPEN",
         [PullRequestStates.Declined] = "DECLINED",
         [PullRequestStates.Merged] = "MERGED",
         [PullRequestStates.All] = "ALL",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, PullRequestStates> s_pullRequestStateByString =
+        s_stringByPullRequestState.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="PullRequestStates"/> value to the Bitbucket API string.
@@ -136,25 +141,23 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static PullRequestStates StringToPullRequestState(string s)
     {
-        var pair = s_stringByPullRequestState.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<PullRequestStates, string>>.Default.Equals(pair))
+        if (!s_pullRequestStateByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown pull request state: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region PullRequestOrders
 
-    private static readonly Dictionary<PullRequestOrders, string> s_stringByPullRequestOrder = new()
+    private static readonly FrozenDictionary<PullRequestOrders, string> s_stringByPullRequestOrder = new Dictionary<PullRequestOrders, string>
     {
         [PullRequestOrders.Newest] = "NEWEST",
         [PullRequestOrders.Oldest] = "OLDEST",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="PullRequestOrders"/> value to the Bitbucket API string.
@@ -185,11 +188,11 @@ public static class BitbucketHelpers
 
     #region PullRequestFromTypes
 
-    private static readonly Dictionary<PullRequestFromTypes, string> s_stringByPullRequestFromType = new()
+    private static readonly FrozenDictionary<PullRequestFromTypes, string> s_stringByPullRequestFromType = new Dictionary<PullRequestFromTypes, string>
     {
         [PullRequestFromTypes.Comment] = "COMMENT",
         [PullRequestFromTypes.Activity] = "ACTIVITY",
-    };
+    }.ToFrozenDictionary();
 
     private static string PullRequestFromTypeToString(PullRequestFromTypes fromType)
     {
@@ -214,7 +217,7 @@ public static class BitbucketHelpers
 
     #region Permissions
 
-    private static readonly Dictionary<Permissions, string> s_stringByPermissions = new()
+    private static readonly FrozenDictionary<Permissions, string> s_stringByPermissions = new Dictionary<Permissions, string>
     {
         [Permissions.Admin] = "ADMIN",
         [Permissions.LicensedUser] = "LICENSED_USER",
@@ -227,7 +230,10 @@ public static class BitbucketHelpers
         [Permissions.RepoRead] = "REPO_READ",
         [Permissions.RepoWrite] = "REPO_WRITE",
         [Permissions.SysAdmin] = "SYS_ADMIN",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, Permissions> s_permissionByString =
+        s_stringByPermissions.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="Permissions"/> value to the Bitbucket API string.
@@ -262,26 +268,24 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static Permissions StringToPermission(string s)
     {
-        var pair = s_stringByPermissions.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<Permissions, string>>.Default.Equals(pair))
+        if (!s_permissionByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown permission: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region MergeCommits
 
-    private static readonly Dictionary<MergeCommits, string> s_stringByMergeCommits = new()
+    private static readonly FrozenDictionary<MergeCommits, string> s_stringByMergeCommits = new Dictionary<MergeCommits, string>
     {
         [MergeCommits.Exclude] = "exclude",
         [MergeCommits.Include] = "include",
         [MergeCommits.Only] = "only",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="MergeCommits"/> preference to the Bitbucket API string.
@@ -303,12 +307,15 @@ public static class BitbucketHelpers
 
     #region Roles
 
-    private static readonly Dictionary<Roles, string> s_stringByRoles = new()
+    private static readonly FrozenDictionary<Roles, string> s_stringByRoles = new Dictionary<Roles, string>
     {
         [Roles.Author] = "AUTHOR",
         [Roles.Reviewer] = "REVIEWER",
         [Roles.Participant] = "PARTICIPANT",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, Roles> s_roleByString =
+        s_stringByRoles.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a pull request <see cref="Roles"/> value to the Bitbucket API string.
@@ -343,26 +350,27 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static Roles StringToRole(string s)
     {
-        var pair = s_stringByRoles.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<Roles, string>>.Default.Equals(pair))
+        if (!s_roleByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown role: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region LineTypes
 
-    private static readonly Dictionary<LineTypes, string> s_stringByLineTypes = new()
+    private static readonly FrozenDictionary<LineTypes, string> s_stringByLineTypes = new Dictionary<LineTypes, string>
     {
         [LineTypes.Added] = "ADDED",
         [LineTypes.Removed] = "REMOVED",
         [LineTypes.Context] = "CONTEXT",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, LineTypes> s_lineTypeByString =
+        s_stringByLineTypes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="LineTypes"/> value to the Bitbucket API string.
@@ -400,25 +408,26 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static LineTypes StringToLineType(string s)
     {
-        var pair = s_stringByLineTypes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<LineTypes, string>>.Default.Equals(pair))
+        if (!s_lineTypeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown line type: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region FileTypes
 
-    private static readonly Dictionary<FileTypes, string> s_stringByFileTypes = new()
+    private static readonly FrozenDictionary<FileTypes, string> s_stringByFileTypes = new Dictionary<FileTypes, string>
     {
         [FileTypes.From] = "FROM",
         [FileTypes.To] = "TO",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, FileTypes> s_fileTypeByString =
+        s_stringByFileTypes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="FileTypes"/> value to the Bitbucket API string.
@@ -456,26 +465,24 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static FileTypes StringToFileType(string s)
     {
-        var pair = s_stringByFileTypes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<FileTypes, string>>.Default.Equals(pair))
+        if (!s_fileTypeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown file type: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region ChangeScopes
 
-    private static readonly Dictionary<ChangeScopes, string> s_stringByChangeScopes = new()
+    private static readonly FrozenDictionary<ChangeScopes, string> s_stringByChangeScopes = new Dictionary<ChangeScopes, string>
     {
         [ChangeScopes.All] = "ALL",
         [ChangeScopes.Unreviewed] = "UNREVIEWED",
         [ChangeScopes.Range] = "RANGE",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="ChangeScopes"/> value to the Bitbucket API string.
@@ -497,14 +504,17 @@ public static class BitbucketHelpers
 
     #region LogLevels
 
-    private static readonly Dictionary<LogLevels, string> s_stringByLogLevels = new()
+    private static readonly FrozenDictionary<LogLevels, string> s_stringByLogLevels = new Dictionary<LogLevels, string>
     {
         [LogLevels.Trace] = "TRACE",
         [LogLevels.Debug] = "DEBUG",
         [LogLevels.Info] = "INFO",
         [LogLevels.Warn] = "WARN",
         [LogLevels.Error] = "ERROR",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, LogLevels> s_logLevelByString =
+        s_stringByLogLevels.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="LogLevels"/> value to the Bitbucket API string.
@@ -530,26 +540,27 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static LogLevels StringToLogLevel(string s)
     {
-        var pair = s_stringByLogLevels.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<LogLevels, string>>.Default.Equals(pair))
+        if (!s_logLevelByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown log level: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region ParticipantStatus
 
-    private static readonly Dictionary<ParticipantStatus, string> s_stringByParticipantStatus = new()
+    private static readonly FrozenDictionary<ParticipantStatus, string> s_stringByParticipantStatus = new Dictionary<ParticipantStatus, string>
     {
         [ParticipantStatus.Approved] = "APPROVED",
         [ParticipantStatus.NeedsWork] = "NEEDS_WORK",
         [ParticipantStatus.Unapproved] = "UNAPPROVED",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, ParticipantStatus> s_participantStatusByString =
+        s_stringByParticipantStatus.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="ParticipantStatus"/> value to the Bitbucket API string.
@@ -575,26 +586,27 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static ParticipantStatus StringToParticipantStatus(string s)
     {
-        var pair = s_stringByParticipantStatus.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<ParticipantStatus, string>>.Default.Equals(pair))
+        if (!s_participantStatusByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown participant status: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region HookTypes
 
-    private static readonly Dictionary<HookTypes, string> s_stringByHookTypes = new()
+    private static readonly FrozenDictionary<HookTypes, string> s_stringByHookTypes = new Dictionary<HookTypes, string>
     {
         [HookTypes.PreReceive] = "PRE_RECEIVE",
         [HookTypes.PostReceive] = "POST_RECEIVE",
         [HookTypes.PrePullRequestMerge] = "PRE_PULL_REQUEST_MERGE",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, HookTypes> s_hookTypeByString =
+        s_stringByHookTypes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a hook <see cref="HookTypes"/> value to the Bitbucket API string.
@@ -620,25 +632,27 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static HookTypes StringToHookType(string s)
     {
-        var pair = s_stringByHookTypes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<HookTypes, string>>.Default.Equals(pair))
+        if (!s_hookTypeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown hook type: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region ScopeTypes
 
-    private static readonly Dictionary<ScopeTypes, string> s_stringByScopeTypes = new()
+    private static readonly FrozenDictionary<ScopeTypes, string> s_stringByScopeTypes = new Dictionary<ScopeTypes, string>
     {
+        [ScopeTypes.Global] = "GLOBAL",
         [ScopeTypes.Project] = "PROJECT",
         [ScopeTypes.Repository] = "REPOSITORY",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, ScopeTypes> s_scopeTypeByString =
+        s_stringByScopeTypes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="ScopeTypes"/> value to the Bitbucket API string.
@@ -664,27 +678,25 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static ScopeTypes StringToScopeType(string s)
     {
-        var pair = s_stringByScopeTypes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<ScopeTypes, string>>.Default.Equals(pair))
+        if (!s_scopeTypeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown scope type: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region ArchiveFormats
 
-    private static readonly Dictionary<ArchiveFormats, string> s_stringByArchiveFormats = new()
+    private static readonly FrozenDictionary<ArchiveFormats, string> s_stringByArchiveFormats = new Dictionary<ArchiveFormats, string>
     {
         [ArchiveFormats.Zip] = "zip",
         [ArchiveFormats.Tar] = "tar",
         [ArchiveFormats.TarGz] = "tar.gz",
         [ArchiveFormats.Tgz] = "tgz",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts an <see cref="ArchiveFormats"/> value to the Bitbucket API string.
@@ -706,12 +718,15 @@ public static class BitbucketHelpers
 
     #region WebHookOutcomes
 
-    private static readonly Dictionary<WebHookOutcomes, string> s_stringByWebHookOutcomes = new()
+    private static readonly FrozenDictionary<WebHookOutcomes, string> s_stringByWebHookOutcomes = new Dictionary<WebHookOutcomes, string>
     {
         [WebHookOutcomes.Success] = "SUCCESS",
         [WebHookOutcomes.Failure] = "FAILURE",
         [WebHookOutcomes.Error] = "ERROR",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, WebHookOutcomes> s_webHookOutcomeByString =
+        s_stringByWebHookOutcomes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="WebHookOutcomes"/> value to the Bitbucket API string.
@@ -746,26 +761,24 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static WebHookOutcomes StringToWebHookOutcome(string s)
     {
-        var pair = s_stringByWebHookOutcomes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<WebHookOutcomes, string>>.Default.Equals(pair))
+        if (!s_webHookOutcomeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown web hook outcome: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region AnchorStates
 
-    private static readonly Dictionary<AnchorStates, string> s_stringByAnchorStates = new()
+    private static readonly FrozenDictionary<AnchorStates, string> s_stringByAnchorStates = new Dictionary<AnchorStates, string>
     {
         [AnchorStates.Active] = "ACTIVE",
         [AnchorStates.Orphaned] = "ORPHANED",
         [AnchorStates.All] = "ALL",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts an <see cref="AnchorStates"/> value to the Bitbucket API string.
@@ -787,12 +800,12 @@ public static class BitbucketHelpers
 
     #region DiffTypes
 
-    private static readonly Dictionary<DiffTypes, string> s_stringByDiffTypes = new()
+    private static readonly FrozenDictionary<DiffTypes, string> s_stringByDiffTypes = new Dictionary<DiffTypes, string>
     {
         [DiffTypes.Effective] = "EFFECTIVE",
         [DiffTypes.Range] = "RANGE",
         [DiffTypes.Commit] = "COMMIT",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="DiffTypes"/> value to the Bitbucket API string.
@@ -826,11 +839,11 @@ public static class BitbucketHelpers
 
     #region TagTypes
 
-    private static readonly Dictionary<TagTypes, string> s_stringByTagTypes = new()
+    private static readonly FrozenDictionary<TagTypes, string> s_stringByTagTypes = new Dictionary<TagTypes, string>
     {
         [TagTypes.LightWeight] = "LIGHTWEIGHT",
         [TagTypes.Annotated] = "ANNOTATED",
-    };
+    }.ToFrozenDictionary();
 
     /// <summary>
     /// Converts a <see cref="TagTypes"/> value to the Bitbucket API string.
@@ -852,13 +865,16 @@ public static class BitbucketHelpers
 
     #region RefRestrictionTypes
 
-    private static readonly Dictionary<RefRestrictionTypes, string> s_stringByRefRestrictionTypes = new()
+    private static readonly FrozenDictionary<RefRestrictionTypes, string> s_stringByRefRestrictionTypes = new Dictionary<RefRestrictionTypes, string>
     {
         [RefRestrictionTypes.AllChanges] = "read-only",
         [RefRestrictionTypes.RewritingHistory] = "fast-forward-only",
         [RefRestrictionTypes.Deletion] = "no-deletes",
         [RefRestrictionTypes.ChangesWithoutPullRequest] = "pull-request-only",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, RefRestrictionTypes> s_refRestrictionTypeByString =
+        s_stringByRefRestrictionTypes.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="RefRestrictionTypes"/> value to the Bitbucket API string.
@@ -896,27 +912,25 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static RefRestrictionTypes StringToRefRestrictionType(string s)
     {
-        var pair = s_stringByRefRestrictionTypes.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<RefRestrictionTypes, string>>.Default.Equals(pair))
+        if (!s_refRestrictionTypeByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown ref restriction type: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region RefMatcherTypes
 
-    private static readonly Dictionary<RefMatcherTypes, string> s_stringByRefMatcherTypes = new()
+    private static readonly FrozenDictionary<RefMatcherTypes, string> s_stringByRefMatcherTypes = new Dictionary<RefMatcherTypes, string>
     {
         [RefMatcherTypes.Branch] = "BRANCH",
         [RefMatcherTypes.Pattern] = "PATTERN",
         [RefMatcherTypes.ModelCategory] = "MODEL_CATEGORY",
         [RefMatcherTypes.ModelBranch] = "MODEL_BRANCH",
-    };
+    }.ToFrozenDictionary();
 
     private static string RefMatcherTypeToString(RefMatcherTypes refMatcherType)
     {
@@ -944,11 +958,14 @@ public static class BitbucketHelpers
 
     #region SynchronizeActions
 
-    private static readonly Dictionary<SynchronizeActions, string> s_stringBySynchronizeActions = new()
+    private static readonly FrozenDictionary<SynchronizeActions, string> s_stringBySynchronizeActions = new Dictionary<SynchronizeActions, string>
     {
         [SynchronizeActions.Merge] = "MERGE",
         [SynchronizeActions.Discard] = "DISCARD",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, SynchronizeActions> s_synchronizeActionByString =
+        s_stringBySynchronizeActions.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="SynchronizeActions"/> value to the Bitbucket API string.
@@ -974,25 +991,26 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static SynchronizeActions StringToSynchronizeAction(string s)
     {
-        var pair = s_stringBySynchronizeActions.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<SynchronizeActions, string>>.Default.Equals(pair))
+        if (!s_synchronizeActionByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown synchronize action: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region BlockerCommentState
 
-    private static readonly Dictionary<BlockerCommentState, string> s_stringByBlockerCommentState = new()
+    private static readonly FrozenDictionary<BlockerCommentState, string> s_stringByBlockerCommentState = new Dictionary<BlockerCommentState, string>
     {
         [BlockerCommentState.Open] = "OPEN",
         [BlockerCommentState.Resolved] = "RESOLVED",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, BlockerCommentState> s_blockerCommentStateByString =
+        s_stringByBlockerCommentState.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="BlockerCommentState"/> value to the Bitbucket API string.
@@ -1027,25 +1045,26 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static BlockerCommentState StringToBlockerCommentState(string s)
     {
-        var pair = s_stringByBlockerCommentState.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<BlockerCommentState, string>>.Default.Equals(pair))
+        if (!s_blockerCommentStateByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown blocker comment state: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
 
     #region CommentSeverity
 
-    private static readonly Dictionary<CommentSeverity, string> s_stringByCommentSeverity = new()
+    private static readonly FrozenDictionary<CommentSeverity, string> s_stringByCommentSeverity = new Dictionary<CommentSeverity, string>
     {
         [CommentSeverity.Normal] = "NORMAL",
         [CommentSeverity.Blocker] = "BLOCKER",
-    };
+    }.ToFrozenDictionary();
+
+    private static readonly FrozenDictionary<string, CommentSeverity> s_commentSeverityByString =
+        s_stringByCommentSeverity.ToFrozenDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Converts a <see cref="CommentSeverity"/> value to the Bitbucket API string.
@@ -1080,14 +1099,12 @@ public static class BitbucketHelpers
     /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
     public static CommentSeverity StringToCommentSeverity(string s)
     {
-        var pair = s_stringByCommentSeverity.FirstOrDefault(kvp => kvp.Value.Equals(s, StringComparison.OrdinalIgnoreCase));
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        if (EqualityComparer<KeyValuePair<CommentSeverity, string>>.Default.Equals(pair))
+        if (!s_commentSeverityByString.TryGetValue(s, out var result))
         {
             throw new ArgumentException($"Unknown comment severity: {s}");
         }
 
-        return pair.Key;
+        return result;
     }
 
     #endregion
