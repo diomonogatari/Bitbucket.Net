@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Dictionary<TEnum, string>` to `FrozenDictionary<TEnum, string>`.
   Added reverse `FrozenDictionary<string, TEnum>` with
   `StringComparer.OrdinalIgnoreCase` for O(1) string-to-enum lookups.
+- **Consolidated enum mappings** (Spec 008): Introduced generic
+  `EnumMap<TEnum>` as the single source of truth for all 25
+  enum-to-string mappings. Replaced 13 individual converter
+  subclasses with a unified `BitbucketEnumConverterFactory`.
+  Slimmed `BitbucketHelpers.cs` from ~1,100 to ~490 lines.
+  Added public `ToApiString()` extension methods on all enum types.
 - **Frozen `JsonSerializerOptions`** (Spec 013): Both `s_jsonOptions`
   and `s_writeJsonOptions` are now explicitly frozen via
   `MakeReadOnly()` at construction time, preventing accidental

@@ -43,19 +43,7 @@ public partial class BitbucketClient : IDisposable
             {
                 new UnixDateTimeOffsetConverter(),
                 new NullableUnixDateTimeOffsetConverter(),
-                new PermissionsConverter(),
-                new RolesConverter(),
-                new FileTypesConverter(),
-                new LineTypesConverter(),
-                new ParticipantStatusConverter(),
-                new PullRequestStatesConverter(),
-                new HookTypesConverter(),
-                new ScopeTypesConverter(),
-                new WebHookOutcomesConverter(),
-                new RefRestrictionTypesConverter(),
-                new SynchronizeActionsConverter(),
-                new BlockerCommentStateConverter(),
-                new CommentSeverityConverter()
+                new BitbucketEnumConverterFactory(),
             },
         };
         options.MakeReadOnly();

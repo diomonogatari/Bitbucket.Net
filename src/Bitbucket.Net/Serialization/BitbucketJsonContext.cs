@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Common.Models;
 // Search
 using Bitbucket.Net.Common.Models.Search;
@@ -51,7 +52,8 @@ namespace Bitbucket.Net.Serialization;
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    GenerationMode = JsonSourceGenerationMode.Metadata | JsonSourceGenerationMode.Serialization)]
+    GenerationMode = JsonSourceGenerationMode.Metadata | JsonSourceGenerationMode.Serialization,
+    Converters = [typeof(UnixDateTimeOffsetConverter), typeof(NullableUnixDateTimeOffsetConverter), typeof(BitbucketEnumConverterFactory)])]
 
 // ============================================================================
 // Common Models

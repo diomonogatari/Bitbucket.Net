@@ -57,13 +57,11 @@ public class BlockerComment
     /// <summary>
     /// The severity level of the comment. For blocker comments, this is always <see cref="CommentSeverity.Blocker"/>.
     /// </summary>
-    [JsonConverter(typeof(CommentSeverityConverter))]
     public CommentSeverity Severity { get; set; } = CommentSeverity.Blocker;
 
     /// <summary>
     /// The state of the blocker comment.
     /// </summary>
-    [JsonConverter(typeof(BlockerCommentStateConverter))]
     public BlockerCommentState State { get; set; } = BlockerCommentState.Open;
 
     /// <summary>

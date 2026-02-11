@@ -4,22 +4,11 @@ using System.Text.Json.Serialization;
 namespace Bitbucket.Net.Common.Converters;
 
 /// <summary>
-/// Abstract base class for custom enum converters that convert between enum values and their string representations.
+/// JSON converter for enums that use a <see cref="EnumMap{TEnum}"/> for bidirectional mapping.
 /// </summary>
-/// <typeparam name="TEnum">The enum type to convert.</typeparam>
-public abstract class JsonEnumConverter<TEnum> : JsonConverter<TEnum>
+public sealed class JsonEnumConverter<TEnum>(EnumMap<TEnum> map) : JsonConverter<TEnum>
     where TEnum : struct, Enum
 {
-    /// <summary>
-    /// Converts an enum value to its string representation.
-    /// </summary>
-    protected abstract string ConvertToString(TEnum value);
-
-    /// <summary>
-    /// Converts a string representation to its enum value.
-    /// </summary>
-    protected abstract TEnum ConvertFromString(string s);
-
     /// <inheritdoc />
     public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -30,8 +19,7 @@ public abstract class JsonEnumConverter<TEnum> : JsonConverter<TEnum>
 
         if (reader.TokenType == JsonTokenType.String)
         {
-            string value = reader.GetString()!;
-            return ConvertFromString(value);
+            return map.FromApiString(reader.GetString()!);
         }
 
         throw new JsonException($"Unexpected token {reader.TokenType} when parsing enum {typeof(TEnum).Name}.");
@@ -40,27 +28,16 @@ public abstract class JsonEnumConverter<TEnum> : JsonConverter<TEnum>
     /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
     {
-        writer.WriteStringValue(ConvertToString(value));
+        writer.WriteStringValue(map.ToApiString(value));
     }
 }
 
 /// <summary>
-/// Abstract base class for custom enum list converters that convert between lists of enum values and their JSON array representations.
+/// JSON converter for lists of enums using a <see cref="EnumMap{TEnum}"/> for bidirectional mapping.
 /// </summary>
-/// <typeparam name="TEnum">The enum type to convert.</typeparam>
-public abstract class JsonEnumListConverter<TEnum> : JsonConverter<List<TEnum>?>
+public sealed class JsonEnumListConverter<TEnum>(EnumMap<TEnum> map) : JsonConverter<List<TEnum>?>
     where TEnum : struct, Enum
 {
-    /// <summary>
-    /// Converts an enum value to its string representation.
-    /// </summary>
-    protected abstract string ConvertToString(TEnum value);
-
-    /// <summary>
-    /// Converts a string representation to its enum value.
-    /// </summary>
-    protected abstract TEnum ConvertFromString(string s);
-
     /// <inheritdoc />
     public override List<TEnum>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
@@ -84,7 +61,7 @@ public abstract class JsonEnumListConverter<TEnum> : JsonConverter<List<TEnum>?>
 
             if (reader.TokenType == JsonTokenType.String)
             {
-                items.Add(ConvertFromString(reader.GetString()!));
+                items.Add(map.FromApiString(reader.GetString()!));
             }
         }
 
@@ -103,7 +80,7 @@ public abstract class JsonEnumListConverter<TEnum> : JsonConverter<List<TEnum>?>
         writer.WriteStartArray();
         foreach (var item in value)
         {
-            writer.WriteStringValue(ConvertToString(item));
+            writer.WriteStringValue(map.ToApiString(item));
         }
         writer.WriteEndArray();
     }

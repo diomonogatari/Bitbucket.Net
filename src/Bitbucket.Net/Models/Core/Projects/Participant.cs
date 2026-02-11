@@ -1,6 +1,4 @@
-using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Users;
-using System.Text.Json.Serialization;
 
 namespace Bitbucket.Net.Models.Core.Projects;
 
@@ -17,7 +15,6 @@ public class Participant
     /// <summary>
     /// Gets or sets the participant's role (e.g. AUTHOR, REVIEWER, PARTICIPANT).
     /// </summary>
-    [JsonConverter(typeof(RolesConverter))]
     public Roles Role { get; set; }
 
     /// <summary>
@@ -28,7 +25,6 @@ public class Participant
     /// <summary>
     /// Gets or sets the participant's review status (e.g. APPROVED, UNAPPROVED, NEEDS_WORK).
     /// </summary>
-    [JsonConverter(typeof(ParticipantStatusConverter))]
     public ParticipantStatus Status { get; set; }
 
     /// <summary>

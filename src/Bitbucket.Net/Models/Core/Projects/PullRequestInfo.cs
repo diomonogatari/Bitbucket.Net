@@ -1,6 +1,3 @@
-using Bitbucket.Net.Common.Converters;
-using System.Text.Json.Serialization;
-
 namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
@@ -21,7 +18,6 @@ public class PullRequestInfo
     /// <summary>
     /// Gets or sets the pull request state (e.g. OPEN, MERGED, DECLINED).
     /// </summary>
-    [JsonConverter(typeof(PullRequestStatesConverter))]
     public PullRequestStates State { get; set; }
 
     /// <summary>
