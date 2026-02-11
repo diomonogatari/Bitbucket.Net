@@ -38,7 +38,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull requests.</returns>
-    public async Task<IEnumerable<PullRequest>> GetDashboardPullRequestsAsync(PullRequestStates? state = null,
+    public async Task<IReadOnlyList<PullRequest>> GetDashboardPullRequestsAsync(PullRequestStates? state = null,
         Roles? role = null,
         List<ParticipantStatus>? status = null,
         PullRequestOrders? order = PullRequestOrders.Newest,
@@ -125,7 +125,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull request suggestions.</returns>
-    public async Task<IEnumerable<PullRequestSuggestion>> GetDashboardPullRequestSuggestionsAsync(int changesSinceSeconds = 172800,
+    public async Task<IReadOnlyList<PullRequestSuggestion>> GetDashboardPullRequestSuggestionsAsync(int changesSinceSeconds = 172800,
         int? maxPages = null,
         int? limit = 3,
         int? start = null,

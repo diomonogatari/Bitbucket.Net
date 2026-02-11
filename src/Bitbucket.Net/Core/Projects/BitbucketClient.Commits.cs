@@ -20,7 +20,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes.</returns>
-    public async Task<IEnumerable<Change>> GetChangesAsync(string projectKey, string repositorySlug, string until, string? since = null,
+    public async Task<IReadOnlyList<Change>> GetChangesAsync(string projectKey, string repositorySlug, string until, string? since = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -100,7 +100,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of commits.</returns>
-    public async Task<IEnumerable<Commit>> GetCommitsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<Commit>> GetCommitsAsync(string projectKey, string repositorySlug,
         string until,
         bool followRenames = false,
         bool ignoreMissing = false,
@@ -215,7 +215,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes.</returns>
-    public async Task<IEnumerable<Change>> GetCommitChangesAsync(string projectKey, string repositorySlug, string commitId,
+    public async Task<IReadOnlyList<Change>> GetCommitChangesAsync(string projectKey, string repositorySlug, string commitId,
         string? since = null,
         bool withComments = true,
         int? maxPages = null,
@@ -296,7 +296,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of comments.</returns>
-    public async Task<IEnumerable<Comment>> GetCommitCommentsAsync(string projectKey, string repositorySlug, string commitId,
+    public async Task<IReadOnlyList<Comment>> GetCommitCommentsAsync(string projectKey, string repositorySlug, string commitId,
         string path,
         string? since = null,
         int? maxPages = null,

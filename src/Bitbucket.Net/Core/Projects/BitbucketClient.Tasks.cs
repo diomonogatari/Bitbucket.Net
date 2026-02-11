@@ -31,7 +31,7 @@ public partial class BitbucketClient
     /// </para>
     /// </remarks>
     [Obsolete("This endpoint is deprecated in Bitbucket Server 9.0+. Use GetPullRequestBlockerCommentsAsync for 9.0+ or GetPullRequestTasksWithFallbackAsync for cross-version compatibility.")]
-    public async Task<IEnumerable<BitbucketTask>> GetPullRequestTasksAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<BitbucketTask>> GetPullRequestTasksAsync(string projectKey, string repositorySlug, long pullRequestId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -154,7 +154,7 @@ public partial class BitbucketClient
     /// For servers prior to 9.0, use <see cref="GetPullRequestTasksAsync"/> instead.
     /// </para>
     /// </remarks>
-    public async Task<IEnumerable<BlockerComment>> GetPullRequestBlockerCommentsAsync(
+    public async Task<IReadOnlyList<BlockerComment>> GetPullRequestBlockerCommentsAsync(
         string projectKey,
         string repositorySlug,
         long pullRequestId,
@@ -433,7 +433,7 @@ public partial class BitbucketClient
     /// A collection of blocker comments (<see cref="BlockerComment"/>) on Bitbucket 9.0+,
     /// or legacy tasks (<see cref="BitbucketTask"/>) on older versions.
     /// </returns>
-    public async Task<IEnumerable<object>> GetPullRequestTasksWithFallbackAsync(
+    public async Task<IReadOnlyList<object>> GetPullRequestTasksWithFallbackAsync(
         string projectKey,
         string repositorySlug,
         long pullRequestId,
@@ -450,7 +450,7 @@ public partial class BitbucketClient
                 maxPages: maxPages, limit: limit, start: start,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return blockerComments.Cast<object>();
+            return blockerComments.Cast<object>().ToList();
         }
         catch (BitbucketNotFoundException)
         {
@@ -462,7 +462,7 @@ public partial class BitbucketClient
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 #pragma warning restore CS0618
 
-            return tasks.Cast<object>();
+            return tasks.Cast<object>().ToList();
         }
     }
 

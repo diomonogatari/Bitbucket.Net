@@ -23,7 +23,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of pull request activities.</returns>
-    public async Task<IEnumerable<PullRequestActivity>> GetPullRequestActivitiesAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<PullRequestActivity>> GetPullRequestActivitiesAsync(string projectKey, string repositorySlug, long pullRequestId,
         long? fromId = null,
         PullRequestFromTypes? fromType = null,
         int? maxPages = null,
@@ -112,7 +112,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes.</returns>
-    public async Task<IEnumerable<Change>> GetPullRequestChangesAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<Change>> GetPullRequestChangesAsync(string projectKey, string repositorySlug, long pullRequestId,
         ChangeScopes changeScope = ChangeScopes.All,
         string? sinceId = null,
         string? untilId = null,
@@ -203,7 +203,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of commits.</returns>
-    public async Task<IEnumerable<Commit>> GetPullRequestCommitsAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<Commit>> GetPullRequestCommitsAsync(string projectKey, string repositorySlug, long pullRequestId,
         bool withCounts = false,
         int? maxPages = null,
         int? limit = null,

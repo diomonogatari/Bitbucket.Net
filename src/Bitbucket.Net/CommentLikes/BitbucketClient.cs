@@ -37,7 +37,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of users who liked the comment.</returns>
-    public async Task<IEnumerable<User>> GetCommitCommentLikesAsync(string projectKey, string repositorySlug, string commitId, string commentId,
+    public async Task<IReadOnlyList<User>> GetCommitCommentLikesAsync(string projectKey, string repositorySlug, string commitId, string commentId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -111,7 +111,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of users who liked the pull request comment.</returns>
-    public async Task<IEnumerable<User>> GetPullRequestCommentLikesAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId,
+    public async Task<IReadOnlyList<User>> GetPullRequestCommentLikesAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

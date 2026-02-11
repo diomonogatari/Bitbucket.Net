@@ -446,7 +446,7 @@ public partial class BitbucketClient : IDisposable
     /// <param name="selector">A delegate that retrieves a page of results.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>All retrieved items.</returns>
-    private static async Task<IEnumerable<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
+    private static async Task<IReadOnlyList<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
     {
         var results = new List<T>();
         bool isLastPage = false;

@@ -37,7 +37,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
+    public async Task<IReadOnlyList<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -76,14 +76,15 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
     {
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions")
             .WithHeader("Accept", "application/vnd.atl.bitbucket.bulk+json")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestrictions), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -92,7 +93,7 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, params RefRestrictionCreate[] refRestrictions)
     {
         return await CreateProjectRefRestrictionsAsync(projectKey, default, refRestrictions).ConfigureAwait(false);
     }
@@ -161,7 +162,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -201,14 +202,15 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
     {
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions")
             .WithHeader("Accept", "application/vnd.atl.bitbucket.bulk+json")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestrictions), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -218,7 +220,7 @@ public partial class BitbucketClient
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, params RefRestrictionCreate[] refRestrictions)
     {
         return await CreateRepositoryRefRestrictionsAsync(projectKey, repositorySlug, default, refRestrictions).ConfigureAwait(false);
     }

@@ -25,7 +25,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of group names.</returns>
-    public async Task<IEnumerable<string>> GetGroupNamesAsync(string? filter = null,
+    public async Task<IReadOnlyList<string>> GetGroupNamesAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

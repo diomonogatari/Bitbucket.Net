@@ -35,7 +35,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of changesets.</returns>
-    public async Task<IEnumerable<ChangeSet>> GetChangeSetsAsync(string issueKey, int maxChanges = 10,
+    public async Task<IReadOnlyList<ChangeSet>> GetChangeSetsAsync(string issueKey, int maxChanges = 10,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -94,12 +94,13 @@ public partial class BitbucketClient
     /// <param name="pullRequestId">The pull request identifier.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of Jira issue links.</returns>
-    public async Task<IEnumerable<KeyedUrl>> GetJiraIssuesAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<KeyedUrl>> GetJiraIssuesAsync(string projectKey, string repositorySlug, long pullRequestId, CancellationToken cancellationToken = default)
     {
         var response = await GetJiraUrl($"/projects/{projectKey}/repos/{repositorySlug}/pull-requests/{pullRequestId}/issues")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<KeyedUrl>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<KeyedUrl>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 }

@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes between the refs.</returns>
-    public async Task<IEnumerable<Change>> GetRepositoryCompareChangesAsync(string projectKey, string repositorySlug, string from, string to,
+    public async Task<IReadOnlyList<Change>> GetRepositoryCompareChangesAsync(string projectKey, string repositorySlug, string from, string to,
         string? fromRepo = null,
         int? maxPages = null,
         int? limit = null,
@@ -148,7 +148,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of commits between the refs.</returns>
-    public async Task<IEnumerable<Commit>> GetRepositoryCompareCommitsAsync(string projectKey, string repositorySlug, string from, string to,
+    public async Task<IReadOnlyList<Commit>> GetRepositoryCompareCommitsAsync(string projectKey, string repositorySlug, string from, string to,
         string? fromRepo = null,
         int? maxPages = null,
         int? limit = null,
@@ -269,7 +269,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of file paths.</returns>
-    public async Task<IEnumerable<string>> GetRepositoryFilesAsync(string projectKey, string repositorySlug, string? at = null,
+    public async Task<IReadOnlyList<string>> GetRepositoryFilesAsync(string projectKey, string repositorySlug, string? at = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

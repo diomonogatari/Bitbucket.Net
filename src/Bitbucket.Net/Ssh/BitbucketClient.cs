@@ -80,7 +80,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of project keys.</returns>
-    public async Task<IEnumerable<ProjectKey>> GetProjectKeysAsync(int keyId,
+    public async Task<IReadOnlyList<ProjectKey>> GetProjectKeysAsync(int keyId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -115,7 +115,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of project keys.</returns>
-    public async Task<IEnumerable<ProjectKey>> GetProjectKeysAsync(string projectKey,
+    public async Task<IReadOnlyList<ProjectKey>> GetProjectKeysAsync(string projectKey,
         string? filter = null,
         Permissions? permission = null,
         int? maxPages = null,
@@ -224,7 +224,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository keys.</returns>
-    public async Task<IEnumerable<RepositoryKey>> GetRepoKeysAsync(int keyId,
+    public async Task<IReadOnlyList<RepositoryKey>> GetRepoKeysAsync(int keyId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -261,7 +261,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository keys.</returns>
-    public async Task<IEnumerable<RepositoryKey>> GetRepoKeysAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<RepositoryKey>> GetRepoKeysAsync(string projectKey, string repositorySlug,
         string? filter = null,
         bool? effective = null,
         Permissions? permission = null,
@@ -376,7 +376,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of SSH keys.</returns>
-    public async Task<IEnumerable<Key>> GetUserKeysAsync(string? userSlug = null,
+    public async Task<IReadOnlyList<Key>> GetUserKeysAsync(string? userSlug = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

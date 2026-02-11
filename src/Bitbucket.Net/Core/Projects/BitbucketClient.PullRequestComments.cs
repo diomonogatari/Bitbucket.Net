@@ -103,7 +103,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of pull request comments.</returns>
-    public async Task<IEnumerable<CommentRef>> GetPullRequestCommentsAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<CommentRef>> GetPullRequestCommentsAsync(string projectKey, string repositorySlug, long pullRequestId,
         string path,
         AnchorStates anchorState = AnchorStates.Active,
         DiffTypes diffType = DiffTypes.Effective,

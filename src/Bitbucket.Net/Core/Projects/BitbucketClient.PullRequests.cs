@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of identities.</returns>
-    public async Task<IEnumerable<Identity>> GetRepositoryParticipantsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<Identity>> GetRepositoryParticipantsAsync(string projectKey, string repositorySlug,
         PullRequestDirections direction = PullRequestDirections.Incoming,
         string? filter = null,
         Roles? role = null,
@@ -67,7 +67,7 @@ public partial class BitbucketClient
     /// <param name="withProperties">Whether to include properties.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of pull requests.</returns>
-    public async Task<IEnumerable<PullRequest>> GetPullRequestsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<PullRequest>> GetPullRequestsAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -382,7 +382,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of participants.</returns>
-    public async Task<IEnumerable<Participant>> GetPullRequestParticipantsAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public async Task<IReadOnlyList<Participant>> GetPullRequestParticipantsAsync(string projectKey, string repositorySlug, long pullRequestId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

@@ -38,7 +38,7 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="permissionN">Additional permission filters.</param>
     /// <returns>A collection of users.</returns>
-    public async Task<IEnumerable<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
+    public async Task<IReadOnlyList<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

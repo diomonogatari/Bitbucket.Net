@@ -75,7 +75,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of build status entries.</returns>
-    public async Task<IEnumerable<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
+    public async Task<IReadOnlyList<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

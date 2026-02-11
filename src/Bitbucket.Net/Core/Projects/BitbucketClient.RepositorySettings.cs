@@ -90,7 +90,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of hooks.</returns>
-    public async Task<IEnumerable<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
         HookTypes? hookType = null,
         int? maxPages = null,
         int? limit = null,
@@ -268,7 +268,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of tags.</returns>
-    public async Task<IEnumerable<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
         string filterText,
         BranchOrderBy orderBy,
         int? maxPages = null,
@@ -394,7 +394,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of webhooks.</returns>
-    public async Task<IEnumerable<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
         string? @event = null,
         bool statistics = false,
         int? maxPages = null,

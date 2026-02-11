@@ -31,7 +31,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">The size of user avatars to include in the response.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="AuditEvent"/> objects.</returns>
-    public async Task<IEnumerable<AuditEvent>> GetProjectAuditEventsAsync(string projectKey,
+    public async Task<IReadOnlyList<AuditEvent>> GetProjectAuditEventsAsync(string projectKey,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -68,7 +68,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">The size of user avatars to include in the response.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="AuditEvent"/> objects.</returns>
-    public async Task<IEnumerable<AuditEvent>> GetProjectRepoAuditEventsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<AuditEvent>> GetProjectRepoAuditEventsAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

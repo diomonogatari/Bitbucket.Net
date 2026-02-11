@@ -36,7 +36,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of groups.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminGroupsAsync(string? filter = null,
+    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -119,7 +119,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group members.</returns>
-    public async Task<IEnumerable<UserInfo>> GetAdminGroupMoreMembersAsync(string context, string? filter = null,
+    public async Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -158,7 +158,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of non-members.</returns>
-    public async Task<IEnumerable<UserInfo>> GetAdminGroupMoreNonMembersAsync(string context, string? filter = null,
+    public async Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -196,7 +196,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of users.</returns>
-    public async Task<IEnumerable<UserInfo>> GetAdminUsersAsync(string? filter = null,
+    public async Task<IReadOnlyList<UserInfo>> GetAdminUsersAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -351,7 +351,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group memberships.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminUserMoreMembersAsync(string context, string? filter = null,
+    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -387,7 +387,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of non-member groups.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminUserMoreNonMembersAsync(string context, string? filter = null,
+    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -590,7 +590,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IEnumerable<GroupPermission>> GetAdminGroupPermissionsAsync(string? filter = null,
+    public async Task<IReadOnlyList<GroupPermission>> GetAdminGroupPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -663,7 +663,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of groups without permissions.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetAdminGroupPermissionsNoneAsync(string? filter = null,
+    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -698,7 +698,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IEnumerable<UserPermission>> GetAdminUserPermissionsAsync(string? filter = null,
+    public async Task<IReadOnlyList<UserPermission>> GetAdminUserPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -774,7 +774,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of users without permissions.</returns>
-    public async Task<IEnumerable<User>> GetAdminUserPermissionsNoneAsync(string? filter = null,
+    public async Task<IReadOnlyList<User>> GetAdminUserPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

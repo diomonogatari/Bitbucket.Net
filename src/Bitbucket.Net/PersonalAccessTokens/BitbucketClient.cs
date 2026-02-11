@@ -34,7 +34,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of access tokens.</returns>
-    public async Task<IEnumerable<AccessToken>> GetUserAccessTokensAsync(string userSlug,
+    public async Task<IReadOnlyList<AccessToken>> GetUserAccessTokensAsync(string userSlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

@@ -23,7 +23,7 @@ public partial class BitbucketClient
     /// <param name="orderBy">Optional branch ordering.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of branches.</returns>
-    public async Task<IEnumerable<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

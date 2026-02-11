@@ -60,7 +60,7 @@ public partial class BitbucketClient
     /// <param name="permission">Optional permission filter.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of projects.</returns>
-    public async Task<IEnumerable<Project>> GetProjectsAsync(
+    public async Task<IReadOnlyList<Project>> GetProjectsAsync(
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -197,7 +197,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IEnumerable<UserPermission>> GetProjectUserPermissionsAsync(string projectKey, string? filter = null,
+    public async Task<IReadOnlyList<UserPermission>> GetProjectUserPermissionsAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -280,7 +280,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of licensed users without project permissions.</returns>
-    public async Task<IEnumerable<LicensedUser>> GetProjectUserPermissionsNoneAsync(string projectKey, string? filter = null,
+    public async Task<IReadOnlyList<LicensedUser>> GetProjectUserPermissionsNoneAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -315,7 +315,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IEnumerable<GroupPermission>> GetProjectGroupPermissionsAsync(string projectKey, string? filter = null,
+    public async Task<IReadOnlyList<GroupPermission>> GetProjectGroupPermissionsAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -396,7 +396,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of licensed users representing groups without permissions.</returns>
-    public async Task<IEnumerable<LicensedUser>> GetProjectGroupPermissionsNoneAsync(string projectKey, string? filter = null,
+    public async Task<IReadOnlyList<LicensedUser>> GetProjectGroupPermissionsNoneAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

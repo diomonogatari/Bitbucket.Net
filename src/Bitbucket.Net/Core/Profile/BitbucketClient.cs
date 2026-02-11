@@ -35,7 +35,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of recent repositories.</returns>
-    public async Task<IEnumerable<Repository>> GetRecentReposAsync(Permissions? permission = null,
+    public async Task<IReadOnlyList<Repository>> GetRecentReposAsync(Permissions? permission = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,

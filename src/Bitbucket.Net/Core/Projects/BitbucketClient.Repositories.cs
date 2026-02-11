@@ -18,7 +18,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repositories.</returns>
-    public async Task<IEnumerable<Repository>> GetProjectRepositoriesAsync(string projectKey,
+    public async Task<IReadOnlyList<Repository>> GetProjectRepositoriesAsync(string projectKey,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -192,7 +192,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository forks.</returns>
-    public async Task<IEnumerable<RepositoryFork>> GetProjectRepositoryForksAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<RepositoryFork>> GetProjectRepositoryForksAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -242,7 +242,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of related repository forks.</returns>
-    public async Task<IEnumerable<RepositoryFork>> GetRelatedProjectRepositoriesAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<RepositoryFork>> GetRelatedProjectRepositoriesAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -315,7 +315,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IEnumerable<GroupPermission>> GetProjectRepositoryGroupPermissionsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<GroupPermission>> GetProjectRepositoryGroupPermissionsAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -395,7 +395,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of removable group or user entries.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetProjectRepositoryGroupPermissionsNoneAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetProjectRepositoryGroupPermissionsNoneAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -433,7 +433,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IEnumerable<UserPermission>> GetProjectRepositoryUserPermissionsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<UserPermission>> GetProjectRepositoryUserPermissionsAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -519,7 +519,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of users without repository permissions.</returns>
-    public async Task<IEnumerable<User>> GetProjectRepositoryUserPermissionsNoneAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<User>> GetProjectRepositoryUserPermissionsNoneAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,

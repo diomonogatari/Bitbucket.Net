@@ -35,7 +35,7 @@ public partial class BitbucketClient
     /// <param name="role">The participant role filter (default reviewer).</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull requests.</returns>
-    public async Task<IEnumerable<PullRequest>> GetInboxPullRequestsAsync(
+    public async Task<IReadOnlyList<PullRequest>> GetInboxPullRequestsAsync(
         int? maxPages = null,
         int? limit = 25,
         int? start = 0,

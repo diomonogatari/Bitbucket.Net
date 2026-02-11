@@ -30,7 +30,7 @@ public partial class BitbucketClient
     /// <param name="isPublic">Whether to include only public repositories.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repositories.</returns>
-    public async Task<IEnumerable<Repository>> GetRepositoriesAsync(
+    public async Task<IReadOnlyList<Repository>> GetRepositoriesAsync(
         int? maxPages = null,
         int? limit = null,
         int? start = null,
