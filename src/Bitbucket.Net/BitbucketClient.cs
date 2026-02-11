@@ -16,8 +16,15 @@ namespace Bitbucket.Net;
 
 /// <summary>
 /// Client for interacting with Bitbucket Server REST APIs.
+/// <para>
+/// The client implements <see cref="IDisposable"/>. When created via the
+/// <see cref="BitbucketClient(HttpClient, string, Func{string}?)"/> constructor,
+/// the client owns the internal <see cref="IFlurlClient"/> wrapper and disposes it.
+/// When created via the <see cref="BitbucketClient(IFlurlClient, Func{string}?)"/> constructor,
+/// the caller retains ownership of the <see cref="IFlurlClient"/> and is responsible for its disposal.
+/// </para>
 /// </summary>
-public partial class BitbucketClient
+public partial class BitbucketClient : IDisposable
 {
     private static readonly JsonSerializerOptions s_jsonOptions = new()
     {
@@ -65,6 +72,8 @@ public partial class BitbucketClient
     private readonly string? _userName;
     private readonly string? _password;
     private readonly IFlurlClient? _injectedClient;
+    private readonly bool _ownsClient;
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BitbucketClient"/> class with the specified base URL.
@@ -137,6 +146,7 @@ public partial class BitbucketClient
         _getToken = getToken;
         _injectedClient = new FlurlClient(httpClient, baseUrl)
             .WithSettings(settings => settings.JsonSerializer = s_serializer);
+        _ownsClient = true;
     }
 
     /// <summary>
@@ -157,13 +167,38 @@ public partial class BitbucketClient
     }
 
     /// <summary>
+    /// Releases the resources used by the <see cref="BitbucketClient"/>.
+    /// When the client was created via the <see cref="HttpClient"/> constructor,
+    /// the internal <see cref="IFlurlClient"/> wrapper is disposed.
+    /// When created via the <see cref="IFlurlClient"/> constructor, disposal is a no-op
+    /// since the caller retains ownership.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
+        if (_ownsClient)
+        {
+            _injectedClient?.Dispose();
+        }
+    }
+
+    /// <summary>
     /// Builds a Flurl request rooted at the Bitbucket REST API.
     /// </summary>
     /// <param name="root">The API root segment (default is <c>/api</c>).</param>
     /// <param name="version">The API version segment (default is <c>1.0</c>).</param>
     /// <returns>An <see cref="IFlurlRequest"/> configured with authentication and serialization.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the client has been disposed.</exception>
     private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         IFlurlRequest request;
 
         // If using injected client, use it directly
