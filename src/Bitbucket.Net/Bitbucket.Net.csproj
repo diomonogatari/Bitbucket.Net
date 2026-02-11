@@ -20,6 +20,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Bitbucket.Net.Tests" />
+    <InternalsVisibleTo Include="Bitbucket.Net.Benchmarks" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Flurl.Http" Version="4.0.2" />
     <!-- Analyzer to enforce ConfigureAwait(false) and other library best practices -->
     <PackageReference Include="Meziantou.Analyzer" Version="2.0.182">

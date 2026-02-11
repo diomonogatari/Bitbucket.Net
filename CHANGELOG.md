@@ -74,6 +74,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`PagedResultsReader` zero-allocation metadata parser** (Spec 012):
+  Internal `Utf8JsonReader`-based parser that extracts pagination
+  metadata (`isLastPage`, `nextPageStart`, `start`, `limit`, `size`)
+  directly from UTF-8 bytes without deserializing the full payload.
+  Opt-in for hot-path streaming scenarios.
 - **`IDisposable` on `BitbucketClient`** (Spec 004): The client now
   implements `IDisposable` with ownership tracking. Clients created
   via the `(string url, ...)` constructors own and dispose the

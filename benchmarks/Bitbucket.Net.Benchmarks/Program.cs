@@ -63,6 +63,10 @@ public static class Program
         BenchmarkRunner.Run<ZeroCopyBenchmarks>(config);
 
         Console.WriteLine();
+        Console.WriteLine("=== PagedResultsReader Benchmarks ===");
+        BenchmarkRunner.Run<PagedResultsReaderBenchmarks>(config);
+
+        Console.WriteLine();
         Console.WriteLine("All benchmarks completed!");
         Console.WriteLine("Results are available in the BenchmarkDotNet.Artifacts folder.");
     }
