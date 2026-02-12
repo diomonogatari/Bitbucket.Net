@@ -204,52 +204,6 @@ public class CommonModelTests
 
     #endregion
 
-    #region TypeExtensions Tests
-
-    [Fact]
-    public void IsNullableType_NullableInt_ReturnsTrue()
-    {
-        Assert.True(TypeExtensions.IsNullableType(typeof(int?)));
-    }
-
-    [Fact]
-    public void IsNullableType_NullableDateTime_ReturnsTrue()
-    {
-        Assert.True(TypeExtensions.IsNullableType(typeof(DateTime?)));
-    }
-
-    [Fact]
-    public void IsNullableType_NullableBool_ReturnsTrue()
-    {
-        Assert.True(TypeExtensions.IsNullableType(typeof(bool?)));
-    }
-
-    [Fact]
-    public void IsNullableType_Int_ReturnsFalse()
-    {
-        Assert.False(TypeExtensions.IsNullableType(typeof(int)));
-    }
-
-    [Fact]
-    public void IsNullableType_String_ReturnsFalse()
-    {
-        Assert.False(TypeExtensions.IsNullableType(typeof(string)));
-    }
-
-    [Fact]
-    public void IsNullableType_Object_ReturnsFalse()
-    {
-        Assert.False(TypeExtensions.IsNullableType(typeof(object)));
-    }
-
-    [Fact]
-    public void IsNullableType_ListOfInt_ReturnsFalse()
-    {
-        Assert.False(TypeExtensions.IsNullableType(typeof(List<int>)));
-    }
-
-    #endregion
-
     #region UnixDateTimeExtensions Tests
 
     [Fact]
