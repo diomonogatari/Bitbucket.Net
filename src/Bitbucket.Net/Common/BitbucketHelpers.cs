@@ -3,7 +3,6 @@ using Bitbucket.Net.Models.Core.Logs;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Models.RefRestrictions;
-using Bitbucket.Net.Models.RefSync;
 
 namespace Bitbucket.Net.Common;
 
@@ -32,13 +31,6 @@ public static class BitbucketHelpers
     public static string? BoolToString(bool? value) => value.HasValue
         ? BoolToString(value.Value)
         : null;
-
-    /// <summary>
-    /// Parses a case-insensitive boolean string returned by the Bitbucket API.
-    /// </summary>
-    /// <param name="value">The string to parse.</param>
-    /// <returns><see langword="true"/> when the value is "true"; otherwise <see langword="false"/>.</returns>
-    public static bool StringToBool(string value) => value.Equals("true", StringComparison.OrdinalIgnoreCase);
 
     #endregion
 
@@ -86,15 +78,6 @@ public static class BitbucketHelpers
     /// <returns>The API string representation or <see langword="null"/> when no state is provided.</returns>
     public static string? PullRequestStateToString(PullRequestStates? state)
         => BitbucketEnumMaps.PullRequestStates.ToApiString(state);
-
-    /// <summary>
-    /// Parses a Bitbucket pull request state string into a <see cref="PullRequestStates"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed state.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static PullRequestStates StringToPullRequestState(string s)
-        => BitbucketEnumMaps.PullRequestStates.FromApiString(s);
 
     #endregion
 
@@ -159,15 +142,6 @@ public static class BitbucketHelpers
     public static string? PermissionToString(Permissions? permission)
         => BitbucketEnumMaps.Permissions.ToApiString(permission);
 
-    /// <summary>
-    /// Parses a Bitbucket permission string into a <see cref="Permissions"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed permission.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static Permissions StringToPermission(string s)
-        => BitbucketEnumMaps.Permissions.FromApiString(s);
-
     #endregion
 
     #region MergeCommits
@@ -202,15 +176,6 @@ public static class BitbucketHelpers
     public static string? RoleToString(Roles? role)
         => BitbucketEnumMaps.Roles.ToApiString(role);
 
-    /// <summary>
-    /// Parses a pull request role string into a <see cref="Roles"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed role.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static Roles StringToRole(string s)
-        => BitbucketEnumMaps.Roles.FromApiString(s);
-
     #endregion
 
     #region LineTypes
@@ -232,15 +197,6 @@ public static class BitbucketHelpers
     public static string? LineTypeToString(LineTypes? lineType)
         => BitbucketEnumMaps.LineTypes.ToApiString(lineType);
 
-    /// <summary>
-    /// Parses a line type string into a <see cref="LineTypes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed line type.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static LineTypes StringToLineType(string s)
-        => BitbucketEnumMaps.LineTypes.FromApiString(s);
-
     #endregion
 
     #region FileTypes
@@ -261,15 +217,6 @@ public static class BitbucketHelpers
     /// <returns>The API string representation or <see langword="null"/> when not supplied.</returns>
     public static string? FileTypeToString(FileTypes? fileType)
         => BitbucketEnumMaps.FileTypes.ToApiString(fileType);
-
-    /// <summary>
-    /// Parses a file type string into a <see cref="FileTypes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed file type.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static FileTypes StringToFileType(string s)
-        => BitbucketEnumMaps.FileTypes.FromApiString(s);
 
     #endregion
 
@@ -319,59 +266,6 @@ public static class BitbucketHelpers
     public static string ParticipantStatusToString(ParticipantStatus participantStatus)
         => BitbucketEnumMaps.ParticipantStatus.ToApiString(participantStatus);
 
-    /// <summary>
-    /// Parses a participant status string into a <see cref="ParticipantStatus"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed status.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static ParticipantStatus StringToParticipantStatus(string s)
-        => BitbucketEnumMaps.ParticipantStatus.FromApiString(s);
-
-    #endregion
-
-    #region HookTypes
-
-    /// <summary>
-    /// Converts a hook <see cref="HookTypes"/> value to the Bitbucket API string.
-    /// </summary>
-    /// <param name="hookType">The hook type to convert.</param>
-    /// <returns>The API string representation.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static string HookTypeToString(HookTypes hookType)
-        => BitbucketEnumMaps.HookTypes.ToApiString(hookType);
-
-    /// <summary>
-    /// Parses a hook type string into a <see cref="HookTypes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed hook type.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static HookTypes StringToHookType(string s)
-        => BitbucketEnumMaps.HookTypes.FromApiString(s);
-
-    #endregion
-
-    #region ScopeTypes
-
-    /// <summary>
-    /// Converts a <see cref="ScopeTypes"/> value to the Bitbucket API string.
-    /// </summary>
-    /// <param name="scopeType">The scope type to convert.</param>
-    /// <returns>The API string representation.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static string ScopeTypeToString(ScopeTypes scopeType)
-        => BitbucketEnumMaps.ScopeTypes.ToApiString(scopeType);
-
-    /// <summary>
-    /// Parses a scope type string into a <see cref="ScopeTypes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed scope type.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static ScopeTypes StringToScopeType(string s)
-        => BitbucketEnumMaps.ScopeTypes.FromApiString(s);
-
     #endregion
 
     #region ArchiveFormats
@@ -405,15 +299,6 @@ public static class BitbucketHelpers
     /// <returns>The API string representation or <see langword="null"/> when not supplied.</returns>
     public static string? WebHookOutcomeToString(WebHookOutcomes? webHookOutcome)
         => BitbucketEnumMaps.WebHookOutcomes.ToApiString(webHookOutcome);
-
-    /// <summary>
-    /// Parses a webhook outcome string into a <see cref="WebHookOutcomes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed outcome.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static WebHookOutcomes StringToWebHookOutcome(string s)
-        => BitbucketEnumMaps.WebHookOutcomes.FromApiString(s);
 
     #endregion
 
@@ -483,15 +368,6 @@ public static class BitbucketHelpers
     public static string? RefRestrictionTypeToString(RefRestrictionTypes? refRestrictionType)
         => BitbucketEnumMaps.RefRestrictionTypes.ToApiString(refRestrictionType);
 
-    /// <summary>
-    /// Parses a ref restriction string into a <see cref="RefRestrictionTypes"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed restriction.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static RefRestrictionTypes StringToRefRestrictionType(string s)
-        => BitbucketEnumMaps.RefRestrictionTypes.FromApiString(s);
-
     #endregion
 
     #region RefMatcherTypes
@@ -515,28 +391,6 @@ public static class BitbucketHelpers
 
     #endregion
 
-    #region SynchronizeActions
-
-    /// <summary>
-    /// Converts a <see cref="SynchronizeActions"/> value to the Bitbucket API string.
-    /// </summary>
-    /// <param name="synchronizeAction">The synchronization action to convert.</param>
-    /// <returns>The API string representation.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static string SynchronizeActionToString(SynchronizeActions synchronizeAction)
-        => BitbucketEnumMaps.SynchronizeActions.ToApiString(synchronizeAction);
-
-    /// <summary>
-    /// Parses a synchronization action string into a <see cref="SynchronizeActions"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed action.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static SynchronizeActions StringToSynchronizeAction(string s)
-        => BitbucketEnumMaps.SynchronizeActions.FromApiString(s);
-
-    #endregion
-
     #region BlockerCommentState
 
     /// <summary>
@@ -555,45 +409,6 @@ public static class BitbucketHelpers
     /// <returns>The API string representation or <see langword="null"/> when not supplied.</returns>
     public static string? BlockerCommentStateToString(BlockerCommentState? state)
         => BitbucketEnumMaps.BlockerCommentState.ToApiString(state);
-
-    /// <summary>
-    /// Parses a blocker comment state string into a <see cref="BlockerCommentState"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed state.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static BlockerCommentState StringToBlockerCommentState(string s)
-        => BitbucketEnumMaps.BlockerCommentState.FromApiString(s);
-
-    #endregion
-
-    #region CommentSeverity
-
-    /// <summary>
-    /// Converts a <see cref="CommentSeverity"/> value to the Bitbucket API string.
-    /// </summary>
-    /// <param name="severity">The comment severity to convert.</param>
-    /// <returns>The API string representation.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static string CommentSeverityToString(CommentSeverity severity)
-        => BitbucketEnumMaps.CommentSeverity.ToApiString(severity);
-
-    /// <summary>
-    /// Converts an optional <see cref="CommentSeverity"/> value to the Bitbucket API string.
-    /// </summary>
-    /// <param name="severity">The comment severity to convert.</param>
-    /// <returns>The API string representation or <see langword="null"/> when not supplied.</returns>
-    public static string? CommentSeverityToString(CommentSeverity? severity)
-        => BitbucketEnumMaps.CommentSeverity.ToApiString(severity);
-
-    /// <summary>
-    /// Parses a comment severity string into a <see cref="CommentSeverity"/> value.
-    /// </summary>
-    /// <param name="s">The string returned by the API.</param>
-    /// <returns>The parsed severity.</returns>
-    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
-    public static CommentSeverity StringToCommentSeverity(string s)
-        => BitbucketEnumMaps.CommentSeverity.FromApiString(s);
 
     #endregion
 }
