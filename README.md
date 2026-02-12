@@ -47,11 +47,13 @@ dotnet add package BitbucketServer.Net
 ## Usage
 
 ### Basic Authentication
+
 ```csharp
 var client = new BitbucketClient("https://bitbucket.example.com", "username", "password");
 ```
 
 ### Token Authentication
+
 ```csharp
 var client = new BitbucketClient("https://bitbucket.example.com", () => GetAccessToken());
 ```
@@ -214,74 +216,75 @@ dotnet run -c Release
 See [benchmarks/README.md](benchmarks/README.md) for detailed instructions.
 
 ## Features
+
 * [X] Audit
-	* [X] Project Events
-	* [X] Repository Events
-* [X] Branches
-	* [X] Create Branch
-	* [X] Delete Branch
-	* [X] Branch Info
-	* [X] Branch Model
-* [X] Builds
-	* [X] Commits Build Stats
-	* [X] Commit Build Stats
-	* [X] Commit Build Status
-	* [X] Associate Build Status
-* [X] Comment Likes
-	* [X] Repository Comment Likes
-	* [X] Pull Request Comment Likes
-* [X] Core
-	* [X] Admin
-		* [X] Groups
-		* [X] Users
-		* [X] Cluster
-		* [X] License
-		* [X] Mail Server
-		* [X] Permissions
-		* [X] Pull Requests
-	* [X] Application Properties
-	* [X] Dashboard
-	* [X] Groups
-	* [X] Hooks
-	* [X] Inbox
-	* [X] Logs
-	* [X] Markup
-	* [X] Profile
-	* [X] Projects
-		* [X] Projects
-		* [X] Permissions
-		* [X] Repos
-			* [X] Repos
-			* [X] Branches
-			* [X] Browse
-			* [X] Changes
-			* [X] Commits
-			* [X] Compare
-			* [X] Diff
-			* [X] Files
-			* [X] Last Modified
-			* [X] Participants
-			* [X] Permissions
-			* [X] Pull Requests
-			* [X] Raw
-			* [X] Settings
-			* [X] Tags
-			* [X] Webhooks
-		* [X] Settings
-	* [X] Repos
-	* [X] Tasks
-	* [X] Users
-* [X] Default Reviewers
-	* [X] Project Default Reviewers
-	* [X] Repository Default Reviewers
-* [X] Git
-* [X] JIRA
-	* [X] Create JIRA Issue
-	* [X] Get Commits For JIRA Issue
-	* [X] Get JIRA Issues For Commits
-* [X] Personal Access Tokens
-* [X] Ref Restrictions
-	* [X] Project Restrictions
-	* [X] Repository Restrictions
-* [X] Repository Ref Synchronization
-* [X] SSH
+ 	- [X] Project Events
+ 	- [X] Repository Events
+- [X] Branches
+ 	- [X] Create Branch
+ 	- [X] Delete Branch
+ 	- [X] Branch Info
+ 	- [X] Branch Model
+- [X] Builds
+ 	- [X] Commits Build Stats
+ 	- [X] Commit Build Stats
+ 	- [X] Commit Build Status
+ 	- [X] Associate Build Status
+- [X] Comment Likes
+ 	- [X] Repository Comment Likes
+ 	- [X] Pull Request Comment Likes
+- [X] Core
+ 	- [X] Admin
+  		- [X] Groups
+  		- [X] Users
+  		- [X] Cluster
+  		- [X] License
+  		- [X] Mail Server
+  		- [X] Permissions
+  		- [X] Pull Requests
+ 	- [X] Application Properties
+ 	- [X] Dashboard
+ 	- [X] Groups
+ 	- [X] Hooks
+ 	- [X] Inbox
+ 	- [X] Logs
+ 	- [X] Markup
+ 	- [X] Profile
+ 	- [X] Projects
+  		- [X] Projects
+  		- [X] Permissions
+  		- [X] Repos
+   			- [X] Repos
+   			- [X] Branches
+   			- [X] Browse
+   			- [X] Changes
+   			- [X] Commits
+   			- [X] Compare
+   			- [X] Diff
+   			- [X] Files
+   			- [X] Last Modified
+   			- [X] Participants
+   			- [X] Permissions
+   			- [X] Pull Requests
+   			- [X] Raw
+   			- [X] Settings
+   			- [X] Tags
+   			- [X] Webhooks
+  		- [X] Settings
+ 	- [X] Repos
+ 	- [X] Tasks
+ 	- [X] Users
+- [X] Default Reviewers
+ 	- [X] Project Default Reviewers
+ 	- [X] Repository Default Reviewers
+- [X] Git
+- [X] JIRA
+ 	- [X] Create JIRA Issue
+ 	- [X] Get Commits For JIRA Issue
+ 	- [X] Get JIRA Issues For Commits
+- [X] Personal Access Tokens
+- [X] Ref Restrictions
+ 	- [X] Project Restrictions
+ 	- [X] Repository Restrictions
+- [X] Repository Ref Synchronization
+- [X] SSH
