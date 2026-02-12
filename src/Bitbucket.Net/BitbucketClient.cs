@@ -24,7 +24,7 @@ namespace Bitbucket.Net;
 /// the caller retains ownership of the <see cref="IFlurlClient"/> and is responsible for its disposal.
 /// </para>
 /// </summary>
-public partial class BitbucketClient : IDisposable
+public partial class BitbucketClient : IBitbucketClient
 {
     private static readonly JsonSerializerOptions s_jsonOptions = CreateReadOptions();
     private static readonly JsonSerializerOptions s_writeJsonOptions = CreateWriteOptions();

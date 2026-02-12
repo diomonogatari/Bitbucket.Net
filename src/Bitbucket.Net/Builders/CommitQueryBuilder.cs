@@ -7,7 +7,7 @@ namespace Bitbucket.Net.Builders;
 /// </summary>
 public sealed class CommitQueryBuilder
 {
-    private readonly BitbucketClient _client;
+    private readonly IBitbucketClient _client;
     private readonly string _projectKey;
     private readonly string _repositorySlug;
     private readonly string _until;
@@ -22,7 +22,7 @@ public sealed class CommitQueryBuilder
     private int? _limit;
     private int? _start;
 
-    internal CommitQueryBuilder(BitbucketClient client, string projectKey, string repositorySlug, string until)
+    internal CommitQueryBuilder(IBitbucketClient client, string projectKey, string repositorySlug, string until)
     {
         _client = client;
         _projectKey = projectKey;

@@ -7,7 +7,7 @@ namespace Bitbucket.Net.Builders;
 /// </summary>
 public sealed class PullRequestQueryBuilder
 {
-    private readonly BitbucketClient _client;
+    private readonly IBitbucketClient _client;
     private readonly string _projectKey;
     private readonly string _repositorySlug;
 
@@ -21,7 +21,7 @@ public sealed class PullRequestQueryBuilder
     private bool _withAttributes = true;
     private bool _withProperties = true;
 
-    internal PullRequestQueryBuilder(BitbucketClient client, string projectKey, string repositorySlug)
+    internal PullRequestQueryBuilder(IBitbucketClient client, string projectKey, string repositorySlug)
     {
         _client = client;
         _projectKey = projectKey;

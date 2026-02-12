@@ -8,7 +8,7 @@ namespace Bitbucket.Net.Builders;
 /// </summary>
 public sealed class ProjectQueryBuilder
 {
-    private readonly BitbucketClient _client;
+    private readonly IBitbucketClient _client;
 
     private int? _maxPages;
     private int? _limit;
@@ -16,7 +16,7 @@ public sealed class ProjectQueryBuilder
     private string? _name;
     private Permissions? _permission;
 
-    internal ProjectQueryBuilder(BitbucketClient client)
+    internal ProjectQueryBuilder(IBitbucketClient client)
     {
         _client = client;
     }

@@ -84,8 +84,8 @@ services.AddHttpClient<BitbucketClient>(client =>
     options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(30);
 });
 
-// Register BitbucketClient
-services.AddSingleton<BitbucketClient>(sp =>
+// Register IBitbucketClient for dependency injection
+services.AddSingleton<IBitbucketClient>(sp =>
 {
     var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
     var httpClient = httpClientFactory.CreateClient(nameof(BitbucketClient));
@@ -138,7 +138,7 @@ services.AddSingleton<IFlurlClientCache>(sp => new FlurlClientCache()
         .WithSettings(s => s.Timeout = TimeSpan.FromMinutes(5))
         .WithHeader("X-Custom-Header", "value")));
 
-services.AddSingleton<BitbucketClient>(sp =>
+services.AddSingleton<IBitbucketClient>(sp =>
 {
     var flurlClient = sp.GetRequiredService<IFlurlClientCache>().Get("Bitbucket");
     return new BitbucketClient(flurlClient, () => GetToken());

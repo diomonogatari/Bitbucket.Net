@@ -7,7 +7,7 @@ namespace Bitbucket.Net.Builders;
 /// </summary>
 public sealed class BranchQueryBuilder
 {
-    private readonly BitbucketClient _client;
+    private readonly IBitbucketClient _client;
     private readonly string _projectKey;
     private readonly string _repositorySlug;
 
@@ -19,7 +19,7 @@ public sealed class BranchQueryBuilder
     private string? _filterText;
     private BranchOrderBy? _orderBy;
 
-    internal BranchQueryBuilder(BitbucketClient client, string projectKey, string repositorySlug)
+    internal BranchQueryBuilder(IBitbucketClient client, string projectKey, string repositorySlug)
     {
         _client = client;
         _projectKey = projectKey;
