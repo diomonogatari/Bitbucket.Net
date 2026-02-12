@@ -390,6 +390,50 @@ public partial class BitbucketClient : IBitbucketClient
     }
 
     /// <summary>
+    /// Convenience wrapper that builds the standard GET + deserialize lambda
+    /// and delegates to <see cref="GetPagedResultsAsync{T}"/>.
+    /// </summary>
+    private Task<IReadOnlyList<T>> GetPagedAsync<T>(
+        IFlurlRequest request,
+        IDictionary<string, object?> queryParams,
+        int? maxPages = null,
+        CancellationToken cancellationToken = default)
+    {
+        return GetPagedResultsAsync(maxPages, queryParams, async (qpv, ct) =>
+        {
+            var response = await request
+                .SetQueryParams(qpv)
+                .GetAsync(ct)
+                .ConfigureAwait(false);
+
+            return await HandleResponseAsync<PagedResults<T>>(response, cancellationToken: ct)
+                .ConfigureAwait(false);
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Convenience wrapper that builds the standard GET + deserialize lambda
+    /// and delegates to <see cref="GetPagedResultsStreamAsync{T}"/>.
+    /// </summary>
+    private IAsyncEnumerable<T> GetPagedStreamAsync<T>(
+        IFlurlRequest request,
+        IDictionary<string, object?> queryParams,
+        int? maxPages = null,
+        CancellationToken cancellationToken = default)
+    {
+        return GetPagedResultsStreamAsync(maxPages, queryParams, async (qpv, ct) =>
+        {
+            var response = await request
+                .SetQueryParams(qpv)
+                .GetAsync(ct)
+                .ConfigureAwait(false);
+
+            return await HandleResponseAsync<PagedResults<T>>(response, cancellationToken: ct)
+                .ConfigureAwait(false);
+        }, cancellationToken);
+    }
+
+    /// <summary>
     /// Retrieves paged results from a paginated endpoint.
     /// </summary>
     /// <typeparam name="T">The item type in the paged results.</typeparam>
