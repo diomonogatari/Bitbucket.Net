@@ -226,7 +226,10 @@ public partial class BitbucketClient : IBitbucketClient
 
         return request
             .AllowAnyHttpStatus()
-            .WithSettings(settings => settings.JsonSerializer = s_serializer);
+            .WithSettings(settings => settings.JsonSerializer = s_serializer)
+            .BeforeCall(OnBeforeCall)
+            .AfterCall(OnAfterCall)
+            .OnError(OnErrorCall);
     }
 
     private static async Task<string> ReadResponseStringAsync(IFlurlResponse response, CancellationToken cancellationToken)
