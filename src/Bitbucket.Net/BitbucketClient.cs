@@ -390,59 +390,6 @@ public partial class BitbucketClient : IBitbucketClient
     }
 
     /// <summary>
-    /// Executes an HTTP request with unified error handling and deserialization.
-    /// Use this method for all new API methods to ensure errors are never silently ignored.
-    /// </summary>
-    /// <typeparam name="TResult">The expected deserialized result type.</typeparam>
-    /// <param name="request">The configured Flurl request.</param>
-    /// <param name="httpMethod">A delegate that performs the HTTP verb (e.g., <c>static (r, ct) =&gt; r.GetAsync(ct)</c>).</param>
-    /// <param name="contentHandler">Optional custom handler for non-JSON response bodies.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The deserialized response content.</returns>
-    private static async Task<TResult> ExecuteAsync<TResult>(
-        IFlurlRequest request,
-        Func<IFlurlRequest, CancellationToken, Task<IFlurlResponse>> httpMethod,
-        Func<string, TResult>? contentHandler = null,
-        CancellationToken cancellationToken = default)
-    {
-        var response = await httpMethod(request, cancellationToken).ConfigureAwait(false);
-        return await HandleResponseAsync<TResult>(response, contentHandler, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Executes an HTTP request with unified error handling and returns a boolean success indicator.
-    /// Use this method for API methods that return success/failure based on an empty response body.
-    /// </summary>
-    /// <param name="request">The configured Flurl request.</param>
-    /// <param name="httpMethod">A delegate that performs the HTTP verb.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns><c>true</c> if the response body is empty (indicating success); otherwise, <c>false</c>.</returns>
-    private static async Task<bool> ExecuteAsync(
-        IFlurlRequest request,
-        Func<IFlurlRequest, CancellationToken, Task<IFlurlResponse>> httpMethod,
-        CancellationToken cancellationToken = default)
-    {
-        var response = await httpMethod(request, cancellationToken).ConfigureAwait(false);
-        return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Executes an HTTP request with unified error handling without returning content.
-    /// Use this method for API methods that only need to verify the request succeeded.
-    /// </summary>
-    /// <param name="request">The configured Flurl request.</param>
-    /// <param name="httpMethod">A delegate that performs the HTTP verb.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    private static async Task ExecuteWithNoContentAsync(
-        IFlurlRequest request,
-        Func<IFlurlRequest, CancellationToken, Task<IFlurlResponse>> httpMethod,
-        CancellationToken cancellationToken = default)
-    {
-        var response = await httpMethod(request, cancellationToken).ConfigureAwait(false);
-        await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary>
     /// Retrieves paged results from a paginated endpoint.
     /// </summary>
     /// <typeparam name="T">The item type in the paged results.</typeparam>
