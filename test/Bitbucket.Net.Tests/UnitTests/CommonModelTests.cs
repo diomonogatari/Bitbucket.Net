@@ -1,6 +1,5 @@
 #nullable enable
 
-using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Serialization;
 using System.Text.Json;
@@ -200,59 +199,6 @@ public class CommonModelTests
         Assert.Equal("field1", errorList[0].Context);
         Assert.Equal("Second error", errorList[1].Message);
         Assert.Equal("InvalidOperationException", errorList[1].ExceptionName);
-    }
-
-    #endregion
-
-    #region UnixDateTimeExtensions Tests
-
-    [Fact]
-    public void FromUnixTimeMilliseconds_ZeroReturnsEpoch()
-    {
-        long timestamp = 0;
-        var result = timestamp.FromUnixTimeMilliseconds();
-
-        var expected = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void FromUnixTimeMilliseconds_KnownTimestamp_ReturnsCorrectDate()
-    {
-        // 1609459200000 milliseconds = Jan 1, 2021 00:00:00 UTC
-        long timestamp = 1609459200000;
-        var result = timestamp.FromUnixTimeMilliseconds();
-
-        var expected = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void ToUnixTimeMilliseconds_Epoch_ReturnsZero()
-    {
-        var epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var result = epoch.ToUnixTimeMilliseconds();
-
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
-    public void ToUnixTimeMilliseconds_KnownDate_ReturnsCorrectValue()
-    {
-        var dateTime = new DateTimeOffset(2021, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        var result = dateTime.ToUnixTimeMilliseconds();
-
-        Assert.Equal(1609459200000, result);
-    }
-
-    [Fact]
-    public void UnixTimeMilliseconds_RoundTrip()
-    {
-        var original = new DateTimeOffset(2025, 6, 15, 12, 30, 45, 123, TimeSpan.Zero);
-        var milliseconds = original.ToUnixTimeMilliseconds();
-        var restored = milliseconds.FromUnixTimeMilliseconds();
-
-        Assert.Equal(original, restored);
     }
 
     #endregion

@@ -15,8 +15,8 @@ public sealed class UnixDateTimeOffsetConverter : JsonConverter<DateTimeOffset>
         return reader.TokenType switch
         {
             JsonTokenType.Null => default,
-            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
-            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
+            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => DateTimeOffset.FromUnixTimeMilliseconds(unixTime),
+            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => DateTimeOffset.FromUnixTimeMilliseconds(unixTime),
             _ => throw new JsonException($"Cannot convert {reader.TokenType} to {nameof(DateTimeOffset)}."),
         };
     }
@@ -40,9 +40,9 @@ public sealed class NullableUnixDateTimeOffsetConverter : JsonConverter<DateTime
         return reader.TokenType switch
         {
             JsonTokenType.Null => null,
-            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
+            JsonTokenType.Number when reader.TryGetInt64(out long unixTime) => DateTimeOffset.FromUnixTimeMilliseconds(unixTime),
             JsonTokenType.String when string.IsNullOrEmpty(reader.GetString()) => null,
-            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => unixTime.FromUnixTimeMilliseconds(),
+            JsonTokenType.String when long.TryParse(reader.GetString(), out long unixTime) => DateTimeOffset.FromUnixTimeMilliseconds(unixTime),
             _ => throw new JsonException($"Cannot convert {reader.TokenType} to nullable {nameof(DateTimeOffset)}."),
         };
     }
