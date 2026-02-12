@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Builds;
 using Bitbucket.Net.Models.Builds.Requests;
 using Flurl.Http;
@@ -78,7 +77,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of build status entries.</returns>
-    public async Task<IReadOnlyList<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
+    public Task<IReadOnlyList<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -92,15 +91,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetBuildsUrl($"/commits/{commitId}")
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BuildStatus>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<BuildStatus>(
+            GetBuildsUrl($"/commits/{commitId}"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

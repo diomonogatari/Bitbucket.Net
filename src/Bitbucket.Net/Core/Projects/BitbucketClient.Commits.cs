@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
 using System.Runtime.CompilerServices;
@@ -20,7 +19,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes.</returns>
-    public async Task<IReadOnlyList<Change>> GetChangesAsync(string projectKey, string repositorySlug, string until, string? since = null,
+    public Task<IReadOnlyList<Change>> GetChangesAsync(string projectKey, string repositorySlug, string until, string? since = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -34,16 +33,8 @@ public partial class BitbucketClient
             ["until"] = until,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/changes")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Change>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/changes"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -72,15 +63,8 @@ public partial class BitbucketClient
             ["until"] = until,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/changes")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Change>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/changes"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -100,7 +84,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of commits.</returns>
-    public async Task<IReadOnlyList<Commit>> GetCommitsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Commit>> GetCommitsAsync(string projectKey, string repositorySlug,
         string until,
         bool followRenames = false,
         bool ignoreMissing = false,
@@ -126,16 +110,8 @@ public partial class BitbucketClient
             ["withCounts"] = BitbucketHelpers.BoolToString(withCounts),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Commit>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/commits"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -167,15 +143,8 @@ public partial class BitbucketClient
             ["withCounts"] = BitbucketHelpers.BoolToString(withCounts),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/commits")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Commit>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Commit>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/commits"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -217,7 +186,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of changes.</returns>
-    public async Task<IReadOnlyList<Change>> GetCommitChangesAsync(string projectKey, string repositorySlug, string commitId,
+    public Task<IReadOnlyList<Change>> GetCommitChangesAsync(string projectKey, string repositorySlug, string commitId,
         string? since = null,
         bool withComments = true,
         int? maxPages = null,
@@ -235,16 +204,8 @@ public partial class BitbucketClient
             ["withComments"] = BitbucketHelpers.BoolToString(withComments),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Change>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -278,15 +239,8 @@ public partial class BitbucketClient
             ["withComments"] = BitbucketHelpers.BoolToString(withComments),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Change>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Change>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/changes"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -302,7 +256,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of comments.</returns>
-    public async Task<IReadOnlyList<Comment>> GetCommitCommentsAsync(string projectKey, string repositorySlug, string commitId,
+    public Task<IReadOnlyList<Comment>> GetCommitCommentsAsync(string projectKey, string repositorySlug, string commitId,
         string path,
         string? since = null,
         int? maxPages = null,
@@ -320,16 +274,8 @@ public partial class BitbucketClient
             ["since"] = since,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Comment>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Comment>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/commits/{commitId}/comments"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

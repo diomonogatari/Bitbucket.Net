@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 
@@ -38,7 +37,7 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="permissionN">Additional permission filters.</param>
     /// <returns>A collection of users.</returns>
-    public async Task<IReadOnlyList<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
+    public Task<IReadOnlyList<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -63,16 +62,8 @@ public partial class BitbucketClient
             queryParamValues.Add($"permission.{permissionNCounter}", perm);
         }
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetUsersUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<User>(
+            GetUsersUrl(), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

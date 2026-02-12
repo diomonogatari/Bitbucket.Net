@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.PersonalAccessTokens;
 using Flurl.Http;
 
@@ -34,7 +33,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of access tokens.</returns>
-    public async Task<IReadOnlyList<AccessToken>> GetUserAccessTokensAsync(string userSlug,
+    public Task<IReadOnlyList<AccessToken>> GetUserAccessTokensAsync(string userSlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -50,16 +49,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetPatUrl($"/users/{userSlug}")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<AccessToken>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<AccessToken>(
+            GetPatUrl($"/users/{userSlug}"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

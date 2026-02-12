@@ -1,5 +1,3 @@
-using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Audit;
 using Flurl.Http;
 
@@ -31,7 +29,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">The size of user avatars to include in the response.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="AuditEvent"/> objects.</returns>
-    public async Task<IReadOnlyList<AuditEvent>> GetProjectAuditEventsAsync(string projectKey,
+    public Task<IReadOnlyList<AuditEvent>> GetProjectAuditEventsAsync(string projectKey,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -47,16 +45,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAuditUrl($"/projects/{projectKey}/events")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<AuditEvent>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<AuditEvent>(
+            GetAuditUrl($"/projects/{projectKey}/events"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -70,7 +60,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">The size of user avatars to include in the response.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="AuditEvent"/> objects.</returns>
-    public async Task<IReadOnlyList<AuditEvent>> GetProjectRepoAuditEventsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<AuditEvent>> GetProjectRepoAuditEventsAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -87,15 +77,7 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAuditUrl($"/projects/{projectKey}/repos/{repositorySlug}/events")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<AuditEvent>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<AuditEvent>(
+            GetAuditUrl($"/projects/{projectKey}/repos/{repositorySlug}/events"), queryParamValues, maxPages, cancellationToken);
     }
 }

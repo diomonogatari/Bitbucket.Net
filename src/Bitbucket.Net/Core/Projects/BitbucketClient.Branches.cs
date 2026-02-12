@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
@@ -24,7 +23,7 @@ public partial class BitbucketClient
     /// <param name="orderBy">Optional branch ordering.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of branches.</returns>
-    public async Task<IReadOnlyList<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -44,16 +43,8 @@ public partial class BitbucketClient
             ["orderBy"] = orderBy.HasValue ? BitbucketHelpers.BranchOrderByToString(orderBy.Value) : null,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Branch>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/branches"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -79,15 +70,8 @@ public partial class BitbucketClient
             ["orderBy"] = orderBy.HasValue ? BitbucketHelpers.BranchOrderByToString(orderBy.Value) : null,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Branch>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/branches"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

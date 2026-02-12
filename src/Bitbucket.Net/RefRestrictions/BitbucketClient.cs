@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.RefRestrictions;
 using Flurl.Http;
 
@@ -37,7 +36,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IReadOnlyList<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
+    public Task<IReadOnlyList<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -59,16 +58,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RefRestriction>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RefRestriction>(
+            GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -174,7 +165,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IReadOnlyList<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -197,16 +188,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RefRestriction>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RefRestriction>(
+            GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

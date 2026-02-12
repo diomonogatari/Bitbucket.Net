@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Projects.Requests;
@@ -93,7 +92,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of hooks.</returns>
-    public async Task<IReadOnlyList<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
         HookTypes? hookType = null,
         int? maxPages = null,
         int? limit = null,
@@ -107,16 +106,8 @@ public partial class BitbucketClient
             ["type"] = hookType,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Hook>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Hook>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -287,7 +278,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of tags.</returns>
-    public async Task<IReadOnlyList<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
         string filterText,
         BranchOrderBy orderBy,
         int? maxPages = null,
@@ -303,16 +294,8 @@ public partial class BitbucketClient
             ["orderBy"] = BitbucketHelpers.BranchOrderByToString(orderBy),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Tag>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/tags"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -343,15 +326,8 @@ public partial class BitbucketClient
             ["orderBy"] = BitbucketHelpers.BranchOrderByToString(orderBy),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Tag>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/tags"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -415,7 +391,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of webhooks.</returns>
-    public async Task<IReadOnlyList<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
         string? @event = null,
         bool statistics = false,
         int? maxPages = null,
@@ -431,16 +407,8 @@ public partial class BitbucketClient
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<WebHook>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<WebHook>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

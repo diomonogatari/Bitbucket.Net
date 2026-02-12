@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
 using System.Text.Json;
@@ -35,7 +34,7 @@ public partial class BitbucketClient
     /// <param name="role">The participant role filter (default reviewer).</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull requests.</returns>
-    public async Task<IReadOnlyList<PullRequest>> GetInboxPullRequestsAsync(
+    public Task<IReadOnlyList<PullRequest>> GetInboxPullRequestsAsync(
         int? maxPages = null,
         int? limit = 25,
         int? start = 0,
@@ -49,16 +48,8 @@ public partial class BitbucketClient
             ["role"] = BitbucketHelpers.RoleToString(role),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetInboxUrl("/pull-requests")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<PullRequest>(
+            GetInboxUrl("/pull-requests"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -84,15 +75,8 @@ public partial class BitbucketClient
             ["role"] = BitbucketHelpers.RoleToString(role),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetInboxUrl("/pull-requests")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<PullRequest>(
+            GetInboxUrl("/pull-requests"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

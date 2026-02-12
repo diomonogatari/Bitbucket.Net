@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
@@ -30,7 +29,7 @@ public partial class BitbucketClient
     /// <param name="isPublic">Whether to include only public repositories.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repositories.</returns>
-    public async Task<IReadOnlyList<Repository>> GetRepositoriesAsync(
+    public Task<IReadOnlyList<Repository>> GetRepositoriesAsync(
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -50,16 +49,8 @@ public partial class BitbucketClient
             ["visibility"] = isPublic ? "public" : "private",
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetReposUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Repository>(
+            GetReposUrl(), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -94,14 +85,7 @@ public partial class BitbucketClient
             ["visibility"] = isPublic ? "public" : "private",
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetReposUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Repository>(
+            GetReposUrl(), queryParamValues, maxPages, cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
 
@@ -103,7 +102,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of pull request comments.</returns>
-    public async Task<IReadOnlyList<CommentRef>> GetPullRequestCommentsAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public Task<IReadOnlyList<CommentRef>> GetPullRequestCommentsAsync(string projectKey, string repositorySlug, long pullRequestId,
         string path,
         AnchorStates anchorState = AnchorStates.Active,
         DiffTypes diffType = DiffTypes.Effective,
@@ -127,16 +126,8 @@ public partial class BitbucketClient
             ["toHash"] = toHash,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<CommentRef>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<CommentRef>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -180,15 +171,8 @@ public partial class BitbucketClient
             ["toHash"] = toHash,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<CommentRef>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<CommentRef>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/comments"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

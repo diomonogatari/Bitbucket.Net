@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
@@ -36,7 +35,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of groups.</returns>
-    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupsAsync(string? filter = null,
+    public Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -49,16 +48,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/groups")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<DeletableGroupOrUser>(
+            GetAdminUrl("/groups"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -119,7 +110,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group members.</returns>
-    public async Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreMembersAsync(string context, string? filter = null,
+    public Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -135,16 +126,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/groups/more-members")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserInfo>(
+            GetAdminUrl("/groups/more-members"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -158,7 +141,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of non-members.</returns>
-    public async Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreNonMembersAsync(string context, string? filter = null,
+    public Task<IReadOnlyList<UserInfo>> GetAdminGroupMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -174,16 +157,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/groups/more-non-members")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserInfo>(
+            GetAdminUrl("/groups/more-non-members"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -196,7 +171,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of users.</returns>
-    public async Task<IReadOnlyList<UserInfo>> GetAdminUsersAsync(string? filter = null,
+    public Task<IReadOnlyList<UserInfo>> GetAdminUsersAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -211,16 +186,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/users")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserInfo>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserInfo>(
+            GetAdminUrl("/users"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -351,7 +318,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group memberships.</returns>
-    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreMembersAsync(string context, string? filter = null,
+    public Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -365,16 +332,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/users/more-members")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<DeletableGroupOrUser>(
+            GetAdminUrl("/users/more-members"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -387,7 +346,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of non-member groups.</returns>
-    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreNonMembersAsync(string context, string? filter = null,
+    public Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminUserMoreNonMembersAsync(string context, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -401,16 +360,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/users/more-non-members")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<DeletableGroupOrUser>(
+            GetAdminUrl("/users/more-non-members"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -590,7 +541,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IReadOnlyList<GroupPermission>> GetAdminGroupPermissionsAsync(string? filter = null,
+    public Task<IReadOnlyList<GroupPermission>> GetAdminGroupPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -603,16 +554,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/permissions/groups")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<GroupPermission>(
+            GetAdminUrl("/permissions/groups"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -663,7 +606,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of groups without permissions.</returns>
-    public async Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupPermissionsNoneAsync(string? filter = null,
+    public Task<IReadOnlyList<DeletableGroupOrUser>> GetAdminGroupPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -676,16 +619,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/permissions/groups/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<DeletableGroupOrUser>(
+            GetAdminUrl("/permissions/groups/none"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -698,7 +633,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IReadOnlyList<UserPermission>> GetAdminUserPermissionsAsync(string? filter = null,
+    public Task<IReadOnlyList<UserPermission>> GetAdminUserPermissionsAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -713,16 +648,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/permissions/users")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserPermission>(
+            GetAdminUrl("/permissions/users"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -774,7 +701,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of users without permissions.</returns>
-    public async Task<IReadOnlyList<User>> GetAdminUserPermissionsNoneAsync(string? filter = null,
+    public Task<IReadOnlyList<User>> GetAdminUserPermissionsNoneAsync(string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -789,16 +716,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetAdminUrl("/permissions/users/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<User>(
+            GetAdminUrl("/permissions/users/none"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>

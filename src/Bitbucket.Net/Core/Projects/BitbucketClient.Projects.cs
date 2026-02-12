@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Projects.Requests;
@@ -69,7 +68,7 @@ public partial class BitbucketClient
     /// <param name="permission">Optional permission filter.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of projects.</returns>
-    public async Task<IReadOnlyList<Project>> GetProjectsAsync(
+    public Task<IReadOnlyList<Project>> GetProjectsAsync(
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -85,16 +84,8 @@ public partial class BitbucketClient
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Project>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Project>(
+            GetProjectsUrl(), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -123,15 +114,8 @@ public partial class BitbucketClient
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Project>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Project>(
+            GetProjectsUrl(), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -215,7 +199,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IReadOnlyList<UserPermission>> GetProjectUserPermissionsAsync(string projectKey, string? filter = null,
+    public Task<IReadOnlyList<UserPermission>> GetProjectUserPermissionsAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -232,16 +216,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/permissions/users")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserPermission>(
+            GetProjectsUrl($"/{projectKey}/permissions/users"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -306,7 +282,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of licensed users without project permissions.</returns>
-    public async Task<IReadOnlyList<LicensedUser>> GetProjectUserPermissionsNoneAsync(string projectKey, string? filter = null,
+    public Task<IReadOnlyList<LicensedUser>> GetProjectUserPermissionsNoneAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -321,16 +297,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/permissions/users/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<LicensedUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<LicensedUser>(
+            GetProjectsUrl($"/{projectKey}/permissions/users/none"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -343,7 +311,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IReadOnlyList<GroupPermission>> GetProjectGroupPermissionsAsync(string projectKey, string? filter = null,
+    public Task<IReadOnlyList<GroupPermission>> GetProjectGroupPermissionsAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -358,16 +326,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/permissions/groups")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<GroupPermission>(
+            GetProjectsUrl($"/{projectKey}/permissions/groups"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -432,7 +392,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of licensed users representing groups without permissions.</returns>
-    public async Task<IReadOnlyList<LicensedUser>> GetProjectGroupPermissionsNoneAsync(string projectKey, string? filter = null,
+    public Task<IReadOnlyList<LicensedUser>> GetProjectGroupPermissionsNoneAsync(string projectKey, string? filter = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -447,16 +407,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/permissions/groups/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<LicensedUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<LicensedUser>(
+            GetProjectsUrl($"/{projectKey}/permissions/groups/none"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
