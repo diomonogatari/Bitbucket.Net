@@ -58,29 +58,71 @@ var client = new BitbucketClient("https://bitbucket.example.com", () => GetAcces
 
 ### Dependency Injection with IHttpClientFactory
 
-For production scenarios, you can inject an externally managed `HttpClient` to leverage `IHttpClientFactory` for connection pooling, resilience policies (via Polly), and centralized configuration:
+For production scenarios, you can inject an externally managed `HttpClient` to leverage `IHttpClientFactory` for connection pooling, resilience policies, and centralized configuration.
+
+#### Standard resilience (recommended)
+
+The simplest approach uses `Microsoft.Extensions.Http.Resilience` which provides
+retry, circuit breaker, and timeout out of the box:
 
 ```csharp
-// In Program.cs or Startup.cs
+// Requires: dotnet add package Microsoft.Extensions.Http.Resilience
+
 services.AddHttpClient<BitbucketClient>(client =>
 {
     client.Timeout = TimeSpan.FromMinutes(2);
 })
-.AddTransientHttpErrorPolicy(p => 
-    p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))))
-.AddTransientHttpErrorPolicy(p => 
-    p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+.AddStandardResilienceHandler(options =>
+{
+    options.Retry.MaxRetryAttempts = 3;
+    options.Retry.Delay = TimeSpan.FromSeconds(1);
+    options.Retry.BackoffType = DelayBackoffType.Exponential;
+    options.CircuitBreaker.FailureRatio = 0.5;
+    options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
+    options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(30);
+});
 
 // Register BitbucketClient
 services.AddSingleton<BitbucketClient>(sp =>
 {
     var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
     var httpClient = httpClientFactory.CreateClient(nameof(BitbucketClient));
-    
+
     return new BitbucketClient(
-        httpClient, 
+        httpClient,
         "https://bitbucket.example.com",
         () => sp.GetRequiredService<ITokenProvider>().GetToken());
+});
+```
+
+#### Custom resilience pipeline
+
+For fine-grained control over which responses trigger retries:
+
+```csharp
+services.AddHttpClient<BitbucketClient>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(2);
+})
+.AddResilienceHandler("bitbucket", builder =>
+{
+    builder
+        .AddRetry(new HttpRetryStrategyOptions
+        {
+            MaxRetryAttempts = 3,
+            BackoffType = DelayBackoffType.Exponential,
+            Delay = TimeSpan.FromSeconds(1),
+            ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                .HandleResult(r => r.StatusCode == HttpStatusCode.TooManyRequests
+                                || r.StatusCode >= HttpStatusCode.InternalServerError)
+        })
+        .AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+        {
+            FailureRatio = 0.5,
+            SamplingDuration = TimeSpan.FromSeconds(30),
+            BreakDuration = TimeSpan.FromSeconds(15),
+        })
+        .AddTimeout(TimeSpan.FromSeconds(30));
 });
 ```
 
