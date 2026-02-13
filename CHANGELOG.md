@@ -147,7 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   null/empty/whitespace rejection for key path-segment parameters.
 - Total test count: 749.
 
-## [0.3.0] - 2026-02-09
+## [0.3.0] - 2026-02-010
 
 ### Added
 
