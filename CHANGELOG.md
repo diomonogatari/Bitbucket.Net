@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-02-12
 
 ### Breaking Changes
 
@@ -14,13 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Consumers assigning results to `IEnumerable<T>` are unaffected;
   consumers assigning to `List<T>` must add `.ToList()` or change the
   variable type.
-- **Init-only model properties** (Spec 009): 377 properties across 106
+- **Init-only model properties**: 377 properties across 106
   response model classes converted from `{ get; set; }` to
   `{ get; init; }`. Models used as request bodies (32 files, 98
   properties) retain mutable setters to allow consumer construction.
   Consumers that assign model properties after construction must move
   to object-initializer syntax.
-- **Dedicated request DTOs** (Spec 010): Write operations now accept
+- **Dedicated request DTOs**: Write operations now accept
   purpose-built request DTOs instead of reusing response models or
   inline parameters. 13 request DTOs created:
   `CreateProjectRequest`, `UpdateProjectRequest`,
@@ -41,77 +41,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Source-gen-only deserialization** (Spec 001): Removed the
+- **Source-gen-only deserialization**: Removed the
   `JsonUnknownTypeHandling.JsonNode` reflection fallback from the
   read-path `JsonSerializerOptions`. Deserialization now uses only
   the source-generated `BitbucketJsonContext`, eliminating
   reflection-based metadata and improving trim safety. A separate
   `s_writeJsonOptions` retains a reflection fallback solely for
   serializing anonymous types in request bodies.
-- **Stream-based deserialization** (Spec 002): `ReadResponseContentAsync<T>`
+- **Stream-based deserialization**: `ReadResponseContentAsync<T>`
   now calls `JsonSerializer.DeserializeAsync` directly on the HTTP
   response stream instead of reading the body into a `string` first.
   Eliminates a full UTF-16 string copy per response.
-- **FrozenDictionary enum lookups** (Spec 003): All 25 enum-to-string
+- **FrozenDictionary enum lookups**: All 25 enum-to-string
   mapping dictionaries in `BitbucketHelpers` converted from
   `Dictionary<TEnum, string>` to `FrozenDictionary<TEnum, string>`.
   Added reverse `FrozenDictionary<string, TEnum>` with
   `StringComparer.OrdinalIgnoreCase` for O(1) string-to-enum lookups.
-- **Consolidated enum mappings** (Spec 008): Introduced generic
+- **Consolidated enum mappings**: Introduced generic
   `EnumMap<TEnum>` as the single source of truth for all 25
   enum-to-string mappings. Replaced 13 individual converter
   subclasses with a unified `BitbucketEnumConverterFactory`.
   Slimmed `BitbucketHelpers.cs` from ~1,100 to ~490 lines.
   Added public `ToApiString()` extension methods on all enum types.
-- **Frozen `JsonSerializerOptions`** (Spec 013): Both `s_jsonOptions`
+- **Frozen `JsonSerializerOptions`**: Both `s_jsonOptions`
   and `s_writeJsonOptions` are now explicitly frozen via
   `MakeReadOnly()` at construction time, preventing accidental
   mutation from any thread.
-- **`IReadOnlyList<T>` return types** (Spec 006): All 27 buffered
+- **`IReadOnlyList<T>` return types**: All 27 buffered
   collection methods now return `Task<IReadOnlyList<T>>` instead of
   `Task<IEnumerable<T>>`, communicating immutability and preventing
   multiple-enumeration bugs.
+- **Paginated endpoint helpers**: Introduced shared `GetPagedAsync<T>`
+  and `GetPagedStreamAsync<T>` methods, replacing ~300 lines of
+  duplicated pagination logic across 82 endpoints.
+- **Dead code removal**: Removed unused `UnixDateTimeExtensions`,
+  `DictionaryExtensions`, uncalled `BitbucketHelpers` conversion
+  methods, and redundant `ExecuteAsync` overloads.
 
 ### Added
 
-- **NuGet package metadata improvements** (Spec 016): Version bumped to
+- **NuGet package metadata improvements**: Version bumped to
   1.0.0. Added `PackageIcon` (128×128 placeholder in `assets/icon.png`),
   expanded `PackageTags` (`rest-api`, `api-client`, `atlassian`, `sdk`,
   `dotnet`), and conditional icon inclusion with `Condition="Exists(…)"`.
   `dotnet pack` now produces `BitbucketServer.Net.1.0.0.nupkg` with
   README, icon, and full metadata.
-- **Rate-limit headers on `BitbucketRateLimitException`** (Spec 014):
+- **Rate-limit headers on `BitbucketRateLimitException`**:
   HTTP 429 exceptions now expose `RetryAfter`, `RateLimit`,
   `RateLimitRemaining`, and `RateLimitReset` properties parsed from
   standard rate-limit response headers. Gracefully returns `null` for
   missing or unparseable headers.
-- **`PagedResultsReader` zero-allocation metadata parser** (Spec 012):
+- **`PagedResultsReader` zero-allocation metadata parser**:
   Internal `Utf8JsonReader`-based parser that extracts pagination
   metadata (`isLastPage`, `nextPageStart`, `start`, `limit`, `size`)
   directly from UTF-8 bytes without deserializing the full payload.
   Opt-in for hot-path streaming scenarios.
-- **`IDisposable` on `BitbucketClient`** (Spec 004): The client now
+- **`IDisposable` on `BitbucketClient`**: The client now
   implements `IDisposable` with ownership tracking. Clients created
   via the `(string url, ...)` constructors own and dispose the
   underlying `FlurlClient`. Clients created via `(IFlurlClient, ...)`
   or `(HttpClient, ...)` do not dispose the injected client. All public
   methods throw `ObjectDisposedException` after disposal.
-- **`ExecuteAsync` centralised error handling** (Spec 005): New
+- **`ExecuteAsync` centralised error handling**: New
   `ExecuteAsync<TResult>`, `ExecuteAsync` (bool), and
   `ExecuteWithNoContentAsync` methods that wrap HTTP call + response
   handling in a single call, reducing boilerplate in API methods.
-- **Input validation guards** (Spec 007): ~130 public methods now
+- **Input validation guards**: ~130 public methods now
   validate URL-path string parameters (`projectKey`, `repositorySlug`,
   `commitId`, `hookKey`, `userSlug`, etc.) with
   `ArgumentException.ThrowIfNullOrWhiteSpace()` at method entry.
   Prevents malformed URLs and confusing server-side errors.
-- **Fluent query builders** (Spec 011): New `PullRequestQueryBuilder`,
+- **Fluent query builders**: New `PullRequestQueryBuilder`,
   `CommitQueryBuilder`, `BranchQueryBuilder`, and `ProjectQueryBuilder`
   classes providing a fluent API for complex queries. Entry points:
   `client.PullRequests(...)`, `client.Commits(...)`,
   `client.Branches(...)`, `client.Projects()`. Each builder supports
   `GetAsync()` for buffered results and `StreamAsync()` for
   `IAsyncEnumerable<T>` streaming. Existing flat methods are unchanged.
+- **OpenTelemetry tracing**: HTTP calls are traced via an internal
+  `ActivitySource` named `"Bitbucket.Net"`. Add it to your
+  `TracerProviderBuilder` to get per-request spans with method, URL,
+  and status code attributes.
+- **`IBitbucketClient` interface**: Extracted from `BitbucketClient`
+  for dependency injection and unit testing. The interface is composed
+  of 12 domain-specific sub-interfaces (`IProjectOperations`,
+  `IRepositoryOperations`, `IPullRequestOperations`, etc.) so
+  consumers can depend on only the slice they need.
+- **Code search**: `SearchCodeAsync` and `SearchCodeStreamAsync`
+  methods wrapping the Bitbucket Server code search REST API.
 
 ### Testing
 
@@ -128,7 +145,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `await` uses `ConfigureAwait(false)`.
 - Added `InputValidationTests` (17 parameterized theories) covering
   null/empty/whitespace rejection for key path-segment parameters.
-- Total test count increased from 696 to 799 (+103 new tests).
+- Total test count: 749.
+
+## [0.3.0] - 2026-02-09
+
+### Added
+
+- **Code search**: `SearchCodeAsync` and `SearchCodeStreamAsync`
+  methods wrapping the Bitbucket Server code search REST API
+  (`/rest/search/latest/search`).
 
 ## [0.2.0] - 2026-02-08
 

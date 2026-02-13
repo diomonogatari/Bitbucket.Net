@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/diomonogatari/Bitbucket.Net/branch/main/graph/badge.svg)](https://codecov.io/gh/diomonogatari/Bitbucket.Net)
 [![license](https://img.shields.io/github/license/diomonogatari/Bitbucket.Net.svg?maxAge=2592000)](https://github.com/diomonogatari/Bitbucket.Net/blob/main/LICENSE)
 ![](https://img.shields.io/badge/.net-10.0-yellowgreen.svg)
-![](https://img.shields.io/badge/status-0.x_(pre--stable)-orange.svg)
+![](https://img.shields.io/badge/status-1.0.0_(stable)-brightgreen.svg)
 
 Modernized C# client for **Bitbucket Server** (Stash) REST API.
 
@@ -15,24 +15,30 @@ Modernized C# client for **Bitbucket Server** (Stash) REST API.
 Development setup (including the pre-commit formatting hook) is documented in
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
-> **Fork notice** &mdash; This is an actively maintained fork of
+> **Fork notice** — This is an actively maintained fork of
 > [lvermeulen/Bitbucket.Net](https://github.com/lvermeulen/Bitbucket.Net),
 > which appears to be abandoned (last release 2020).
-> The library is at **0.x** &mdash; the API surface may still change
-> between minor versions. It is used in production by the author (as the
-> backend for an MCP Server talking to on-prem Bitbucket Server), but
-> not every endpoint has been verified against a live instance.
-> Contributions, bug reports, and feedback are very welcome.
+> The 1.0.0 API surface is stable; breaking changes follow semver.
+> The library is used in production by the author (as the backend for
+> an MCP Server talking to on-prem Bitbucket Server), but not every
+> endpoint has been verified against a live instance.
+> Contributions, bug reports, and feedback are welcome.
 
 ### What changed from the original
 
 - .NET 10 target (dropped .NET Framework / .NET Standard)
-- `System.Text.Json` instead of Newtonsoft.Json (2-3x faster, no CVEs)
+- `System.Text.Json` with source generation (no runtime reflection)
 - `CancellationToken` on every async method
 - `IAsyncEnumerable` streaming for paginated endpoints
 - Streaming diffs and raw file content
 - Typed exception hierarchy (`BitbucketNotFoundException`, etc.)
 - `IHttpClientFactory` / DI-friendly constructors
+- `IDisposable` with ownership tracking
+- `IBitbucketClient` decomposed into 12 domain-specific sub-interfaces
+- Fluent query builders for pull requests, commits, branches, and projects
+- Dedicated request DTOs for write operations
+- Input validation on all public API methods
+- OpenTelemetry tracing via `ActivitySource`
 - Bitbucket Server 9.0+ blocker-comment (task) support with legacy fallback
 - Flurl.Http 4.x
 
@@ -57,6 +63,19 @@ var client = new BitbucketClient("https://bitbucket.example.com", "username", "p
 ```csharp
 var client = new BitbucketClient("https://bitbucket.example.com", () => GetAccessToken());
 ```
+
+### Resource management
+
+`BitbucketClient` implements `IDisposable`. Clients created with a URL
+own the underlying HTTP connection and dispose it:
+
+```csharp
+using var client = new BitbucketClient("https://bitbucket.example.com", "user", "pass");
+var projects = await client.GetProjectsAsync();
+```
+
+When you inject an `HttpClient` or `IFlurlClient`, the caller retains
+ownership; the client will not dispose it.
 
 ### Dependency Injection with IHttpClientFactory
 
@@ -177,9 +196,33 @@ await foreach (var pr in client.GetDashboardPullRequestsStreamAsync())
 }
 ```
 
-### Exception Handling
+### Fluent query builders
 
-The library provides typed exceptions for precise error handling:
+For endpoints with many optional filters, query builders provide a typed
+alternative to the flat method signatures:
+
+```csharp
+var openPRs = await client.PullRequests("PROJ", "repo")
+    .InState(PullRequestStates.Open)
+    .OrderBy(PullRequestOrders.Newest)
+    .PageSize(25)
+    .GetAsync();
+
+// Streaming variant
+await foreach (var pr in client.PullRequests("PROJ", "repo")
+    .InState(PullRequestStates.Open)
+    .StreamAsync())
+{
+    Console.WriteLine(pr.Title);
+}
+```
+
+Builders are available for pull requests, commits, branches, and projects.
+The original flat methods still work and are not deprecated.
+
+### Exception handling
+
+Typed exceptions give you precise control over error handling:
 
 ```csharp
 try
