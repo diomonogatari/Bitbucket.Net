@@ -1,9 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Admin;
+namespace Bitbucket.Net.Models.Core.Admin;
 
 public class Node
 {
-    public string? Id { get; set; }
-    public string? Name { get; set; }
-    public Address? Address { get; set; }
-    public bool Local { get; set; }
+    public string? Id { get; init; }
+    public string? Name { get; init; }
+    public Address? Address { get; init; }
+    public bool Local { get; init; }
 }

@@ -1,7 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Jira;
+namespace Bitbucket.Net.Models.Jira;
 
 public class JiraIssue
 {
-    public int CommentId { get; set; }
-    public string? IssueKey { get; set; }
+    public int CommentId { get; init; }
+    public string? IssueKey { get; init; }
 }

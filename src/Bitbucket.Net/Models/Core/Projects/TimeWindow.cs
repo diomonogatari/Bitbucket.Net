@@ -6,6 +6,6 @@ namespace Bitbucket.Net.Models.Core.Projects;
 public class TimeWindow
 {
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset Start { get; set; }
-    public long Duration { get; set; }
+    public DateTimeOffset Start { get; init; }
+    public long Duration { get; init; }
 }

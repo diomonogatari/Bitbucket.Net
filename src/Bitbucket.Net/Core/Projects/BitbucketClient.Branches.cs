@@ -1,6 +1,6 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
 using System.Buffers;
 using System.Runtime.CompilerServices;
@@ -23,7 +23,7 @@ public partial class BitbucketClient
     /// <param name="orderBy">Optional branch ordering.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of branches.</returns>
-    public async Task<IEnumerable<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Branch>> GetBranchesAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -43,16 +43,8 @@ public partial class BitbucketClient
             ["orderBy"] = orderBy.HasValue ? BitbucketHelpers.BranchOrderByToString(orderBy.Value) : null,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Branch>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/branches"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -78,15 +70,8 @@ public partial class BitbucketClient
             ["orderBy"] = orderBy.HasValue ? BitbucketHelpers.BranchOrderByToString(orderBy.Value) : null,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Branch>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Branch>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/branches"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -94,13 +79,15 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
-    /// <param name="branchInfo">The branch information.</param>
+    /// <param name="request">The create branch request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created branch.</returns>
-    public async Task<Branch> CreateBranchAsync(string projectKey, string repositorySlug, BranchInfo branchInfo, CancellationToken cancellationToken = default)
+    public async Task<Branch> CreateBranchAsync(string projectKey, string repositorySlug, CreateBranchRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/branches")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(branchInfo), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Branch>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -194,6 +181,8 @@ public partial class BitbucketClient
         bool noContent = false,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
@@ -229,6 +218,8 @@ public partial class BitbucketClient
         string? at = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var request = GetProjectsReposUrl(projectKey, repositorySlug, $"/raw/{path}");
 
         if (!string.IsNullOrEmpty(at))
@@ -257,6 +248,8 @@ public partial class BitbucketClient
         string? at = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var stream = await GetRawFileContentStreamAsync(projectKey, repositorySlug, path, at, cancellationToken).ConfigureAwait(false);
 
         await using (stream.ConfigureAwait(false))
@@ -286,6 +279,8 @@ public partial class BitbucketClient
         string? sourceBranch = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         if (!File.Exists(fileName))
         {
             throw new ArgumentException($"File doesn't exist: {fileName}", nameof(fileName));

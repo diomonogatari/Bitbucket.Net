@@ -1,9 +1,9 @@
-﻿namespace Bitbucket.Net.Models.DefaultReviewers;
+namespace Bitbucket.Net.Models.DefaultReviewers;
 
 public class RefMatcher
 {
-    public bool Active { get; set; }
-    public string? Id { get; set; }
-    public string? DisplayId { get; set; }
-    public DefaultReviewerPullRequestConditionType? Type { get; set; }
+    public bool Active { get; init; }
+    public string? Id { get; init; }
+    public string? DisplayId { get; init; }
+    public DefaultReviewerPullRequestConditionType? Type { get; init; }
 }

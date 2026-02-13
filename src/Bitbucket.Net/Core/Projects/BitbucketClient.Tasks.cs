@@ -1,6 +1,5 @@
 using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Exceptions;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Core.Tasks;
 using Flurl.Http;
@@ -31,7 +30,7 @@ public partial class BitbucketClient
     /// </para>
     /// </remarks>
     [Obsolete("This endpoint is deprecated in Bitbucket Server 9.0+. Use GetPullRequestBlockerCommentsAsync for 9.0+ or GetPullRequestTasksWithFallbackAsync for cross-version compatibility.")]
-    public async Task<IEnumerable<BitbucketTask>> GetPullRequestTasksAsync(string projectKey, string repositorySlug, long pullRequestId,
+    public Task<IReadOnlyList<BitbucketTask>> GetPullRequestTasksAsync(string projectKey, string repositorySlug, long pullRequestId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -45,16 +44,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BitbucketTask>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<BitbucketTask>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -92,15 +83,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BitbucketTask>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<BitbucketTask>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/tasks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -154,7 +138,7 @@ public partial class BitbucketClient
     /// For servers prior to 9.0, use <see cref="GetPullRequestTasksAsync"/> instead.
     /// </para>
     /// </remarks>
-    public async Task<IEnumerable<BlockerComment>> GetPullRequestBlockerCommentsAsync(
+    public Task<IReadOnlyList<BlockerComment>> GetPullRequestBlockerCommentsAsync(
         string projectKey,
         string repositorySlug,
         long pullRequestId,
@@ -171,16 +155,8 @@ public partial class BitbucketClient
             ["state"] = BitbucketHelpers.BlockerCommentStateToString(state),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BlockerComment>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<BlockerComment>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -213,15 +189,8 @@ public partial class BitbucketClient
             ["state"] = BitbucketHelpers.BlockerCommentStateToString(state),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BlockerComment>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<BlockerComment>(
+            GetProjectsReposUrl(projectKey, repositorySlug, $"/pull-requests/{pullRequestId}/blocker-comments"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -433,7 +402,7 @@ public partial class BitbucketClient
     /// A collection of blocker comments (<see cref="BlockerComment"/>) on Bitbucket 9.0+,
     /// or legacy tasks (<see cref="BitbucketTask"/>) on older versions.
     /// </returns>
-    public async Task<IEnumerable<object>> GetPullRequestTasksWithFallbackAsync(
+    public async Task<IReadOnlyList<object>> GetPullRequestTasksWithFallbackAsync(
         string projectKey,
         string repositorySlug,
         long pullRequestId,
@@ -450,7 +419,7 @@ public partial class BitbucketClient
                 maxPages: maxPages, limit: limit, start: start,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return blockerComments.Cast<object>();
+            return blockerComments.Cast<object>().ToList();
         }
         catch (BitbucketNotFoundException)
         {
@@ -462,7 +431,7 @@ public partial class BitbucketClient
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 #pragma warning restore CS0618
 
-            return tasks.Cast<object>();
+            return tasks.Cast<object>().ToList();
         }
     }
 

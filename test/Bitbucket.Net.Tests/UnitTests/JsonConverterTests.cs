@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common;
 using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Models.Core.Projects;
 using System.Text.Json;
@@ -13,16 +14,16 @@ public class JsonConverterTests
         {
             new UnixDateTimeOffsetConverter(),
             new NullableUnixDateTimeOffsetConverter(),
-            new PullRequestStatesConverter(),
-            new ParticipantStatusConverter(),
-            new RolesConverter(),
-            new LineTypesConverter(),
-            new FileTypesConverter(),
-            new HookTypesConverter(),
-            new ScopeTypesConverter(),
-            new WebHookOutcomesConverter(),
-            new BlockerCommentStateConverter(),
-            new CommentSeverityConverter()
+            new JsonEnumConverter<PullRequestStates>(BitbucketEnumMaps.PullRequestStates),
+            new JsonEnumConverter<ParticipantStatus>(BitbucketEnumMaps.ParticipantStatus),
+            new JsonEnumConverter<Roles>(BitbucketEnumMaps.Roles),
+            new JsonEnumConverter<LineTypes>(BitbucketEnumMaps.LineTypes),
+            new JsonEnumConverter<FileTypes>(BitbucketEnumMaps.FileTypes),
+            new JsonEnumConverter<HookTypes>(BitbucketEnumMaps.HookTypes),
+            new JsonEnumConverter<ScopeTypes>(BitbucketEnumMaps.ScopeTypes),
+            new JsonEnumConverter<WebHookOutcomes>(BitbucketEnumMaps.WebHookOutcomes),
+            new JsonEnumConverter<BlockerCommentState>(BitbucketEnumMaps.BlockerCommentState),
+            new JsonEnumConverter<CommentSeverity>(BitbucketEnumMaps.CommentSeverity)
         }
     };
 

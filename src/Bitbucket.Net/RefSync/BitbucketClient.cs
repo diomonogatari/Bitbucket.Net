@@ -34,6 +34,9 @@ public partial class BitbucketClient
     public async Task<RepositorySynchronizationStatus> GetRepositorySynchronizationStatusAsync(string projectKey, string repositorySlug,
         string? at = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
             .SetQueryParam("at", at)
             .GetAsync(cancellationToken: cancellationToken)
@@ -52,6 +55,9 @@ public partial class BitbucketClient
     /// <returns>The updated repository synchronization status.</returns>
     public async Task<RepositorySynchronizationStatus> EnableRepositorySynchronizationAsync(string projectKey, string repositorySlug, bool enabled, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var data = new
         {
             enabled = BitbucketHelpers.BoolToString(enabled),
@@ -74,6 +80,9 @@ public partial class BitbucketClient
     /// <returns>The result of the synchronization.</returns>
     public async Task<FullRef> SynchronizeRepositoryAsync(string projectKey, string repositorySlug, Synchronize synchronize, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefSyncUrl($"/projects/{projectKey}/repos/{repositorySlug}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(synchronize), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

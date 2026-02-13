@@ -1,4 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
 /// Represents a reference (branch/tag) in a pull request's source or target.
@@ -8,26 +8,26 @@ public class FromToRef
     /// <summary>
     /// The full ref ID (e.g., "refs/heads/feature-branch").
     /// </summary>
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 
     /// <summary>
     /// The display-friendly ref ID (e.g., "feature-branch").
     /// </summary>
-    public string? DisplayId { get; set; }
+    public string? DisplayId { get; init; }
 
     /// <summary>
     /// The SHA of the latest commit on this ref.
     /// This is useful for creating line-specific comments on pull requests.
     /// </summary>
-    public string? LatestCommit { get; set; }
+    public string? LatestCommit { get; init; }
 
     /// <summary>
     /// The type of ref (e.g., "BRANCH", "TAG").
     /// </summary>
-    public string? Type { get; set; }
+    public string? Type { get; init; }
 
     /// <summary>
     /// The repository containing this ref.
     /// </summary>
-    public RepositoryRef? Repository { get; set; }
+    public RepositoryRef? Repository { get; init; }
 }

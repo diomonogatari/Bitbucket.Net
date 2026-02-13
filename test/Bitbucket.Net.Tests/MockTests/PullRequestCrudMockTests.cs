@@ -1,4 +1,5 @@
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -15,7 +16,7 @@ public class PullRequestCrudMockTests(BitbucketMockFixture fixture) : IClassFixt
         _fixture.Server.SetupCreatePullRequest(TestConstants.TestProjectKey, TestConstants.TestRepositorySlug);
         var client = _fixture.CreateClient();
 
-        var prInfo = new PullRequestInfo
+        var request = new CreatePullRequestRequest
         {
             Title = "Test PR",
             Description = "Test description",
@@ -42,7 +43,7 @@ public class PullRequestCrudMockTests(BitbucketMockFixture fixture) : IClassFixt
         var pullRequest = await client.CreatePullRequestAsync(
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
-            prInfo);
+            request);
 
         Assert.NotNull(pullRequest);
         Assert.Equal(TestConstants.TestPullRequestId, pullRequest.Id);
@@ -58,7 +59,7 @@ public class PullRequestCrudMockTests(BitbucketMockFixture fixture) : IClassFixt
             TestConstants.TestPullRequestId);
         var client = _fixture.CreateClient();
 
-        var prUpdate = new PullRequestUpdate
+        var request = new UpdatePullRequestRequest
         {
             Title = "Updated Title",
             Version = 0
@@ -68,7 +69,7 @@ public class PullRequestCrudMockTests(BitbucketMockFixture fixture) : IClassFixt
             TestConstants.TestProjectKey,
             TestConstants.TestRepositorySlug,
             TestConstants.TestPullRequestId,
-            prUpdate);
+            request);
 
         Assert.NotNull(pullRequest);
         Assert.Equal(TestConstants.TestPullRequestId, pullRequest.Id);

@@ -1,3 +1,4 @@
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Models.Core.Tasks;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
@@ -15,13 +16,13 @@ public class TasksMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         _fixture.Server.SetupCreateTask();
         var client = _fixture.CreateClient();
 
-        var taskInfo = new TaskInfo
+        var request = new CreateTaskRequest
         {
             Anchor = new TaskBasicAnchor { Id = 101, Type = "COMMENT" },
             Text = "Fix the null pointer exception"
         };
 
-        var task = await client.CreateTaskAsync(taskInfo);
+        var task = await client.CreateTaskAsync(request);
 
         Assert.NotNull(task);
         Assert.Equal(1, task.Id);
@@ -54,7 +55,7 @@ public class TasksMockTests(BitbucketMockFixture fixture) : IClassFixture<Bitbuc
         _fixture.Server.SetupUpdateTask(1);
         var client = _fixture.CreateClient();
 
-        var task = await client.UpdateTaskAsync(1, "Updated task text");
+        var task = await client.UpdateTaskAsync(1, new UpdateTaskRequest { Text = "Updated task text" });
 
         Assert.NotNull(task);
         Assert.Equal(1, task.Id);

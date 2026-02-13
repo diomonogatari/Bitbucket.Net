@@ -1,4 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
 /// A file-level diff. Extends <see cref="DiffInfo"/> with source/destination paths and hunks.
@@ -8,15 +8,15 @@ public class Diff : DiffInfo
     /// <summary>
     /// Gets or sets the source (before) file path.
     /// </summary>
-    public Path? Source { get; set; }
+    public Path? Source { get; init; }
 
     /// <summary>
     /// Gets or sets the destination (after) file path.
     /// </summary>
-    public Path? Destination { get; set; }
+    public Path? Destination { get; init; }
 
     /// <summary>
     /// Gets or sets the list of diff hunks containing the actual line changes.
     /// </summary>
-    public List<DiffHunk>? Hunks { get; set; }
+    public List<DiffHunk>? Hunks { get; init; }
 }

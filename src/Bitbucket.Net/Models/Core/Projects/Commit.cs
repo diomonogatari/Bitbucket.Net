@@ -11,42 +11,42 @@ public class Commit : CommitParent
     /// <summary>
     /// Gets or sets the commit author.
     /// </summary>
-    public Author? Author { get; set; }
+    public Author? Author { get; init; }
 
     /// <summary>
     /// Gets or sets the author timestamp (Unix epoch milliseconds from the Bitbucket API).
     /// </summary>
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset AuthorTimestamp { get; set; }
+    public DateTimeOffset AuthorTimestamp { get; init; }
 
     /// <summary>
     /// Gets or sets the committer (may differ from author in cherry-picks or patches).
     /// </summary>
-    public Author? Committer { get; set; }
+    public Author? Committer { get; init; }
 
     /// <summary>
     /// Gets or sets the committer timestamp (Unix epoch milliseconds from the Bitbucket API).
     /// </summary>
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset CommitterTimestamp { get; set; }
+    public DateTimeOffset CommitterTimestamp { get; init; }
 
     /// <summary>
     /// Gets or sets the commit message.
     /// </summary>
-    public string? Message { get; set; }
+    public string? Message { get; init; }
 
     /// <summary>
     /// Gets or sets the parent commits.
     /// </summary>
-    public List<CommitParent>? Parents { get; set; }
+    public List<CommitParent>? Parents { get; init; }
 
     /// <summary>
     /// Gets or sets the number of unique authors in the commit range.
     /// </summary>
-    public int AuthorCount { get; set; }
+    public int AuthorCount { get; init; }
 
     /// <summary>
     /// Gets or sets the total number of commits in the range.
     /// </summary>
-    public int TotalCount { get; set; }
+    public int TotalCount { get; init; }
 }

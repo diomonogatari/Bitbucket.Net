@@ -1,7 +1,7 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 
@@ -18,28 +18,22 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repositories.</returns>
-    public async Task<IEnumerable<Repository>> GetProjectRepositoriesAsync(string projectKey,
+    public Task<IReadOnlyList<Repository>> GetProjectRepositoriesAsync(string projectKey,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/repos")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Repository>(
+            GetProjectsUrl($"/{projectKey}/repos"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -51,41 +45,32 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsUrl($"/{projectKey}/repos")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Repository>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Repository>(
+            GetProjectsUrl($"/{projectKey}/repos"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
     /// Creates a repository within a project.
     /// </summary>
     /// <param name="projectKey">The project key.</param>
-    /// <param name="repositoryName">The repository name.</param>
-    /// <param name="scmId">Optional SCM identifier (default is git).</param>
+    /// <param name="request">The create repository request.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created repository.</returns>
-    public async Task<Repository> CreateProjectRepositoryAsync(string projectKey, string repositoryName, string scmId = "git", CancellationToken cancellationToken = default)
+    public async Task<Repository> CreateProjectRepositoryAsync(string projectKey, CreateRepositoryRequest request, CancellationToken cancellationToken = default)
     {
-        var data = new
-        {
-            name = repositoryName,
-            scmId,
-        };
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentNullException.ThrowIfNull(request);
 
         var response = await GetProjectsUrl($"/{projectKey}/repos")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<Repository>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -112,22 +97,13 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The source project key.</param>
     /// <param name="repositorySlug">The source repository slug.</param>
-    /// <param name="targetProjectKey">Optional target project key for the fork.</param>
-    /// <param name="targetSlug">Optional target repository slug.</param>
-    /// <param name="targetName">Optional display name for the fork.</param>
+    /// <param name="request">Optional fork repository request. When <c>null</c>, a default request is used.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The created repository fork.</returns>
-    public async Task<RepositoryFork> CreateProjectRepositoryForkAsync(string projectKey, string repositorySlug, string? targetProjectKey = null, string? targetSlug = null, string? targetName = null, CancellationToken cancellationToken = default)
+    public async Task<RepositoryFork> CreateProjectRepositoryForkAsync(string projectKey, string repositorySlug, ForkRepositoryRequest? request = null, CancellationToken cancellationToken = default)
     {
-        var data = new
-        {
-            slug = targetSlug ?? repositorySlug,
-            name = targetName,
-            project = targetProjectKey == null ? null : new ProjectRef { Key = targetProjectKey },
-        };
-
         var response = await GetProjectsReposUrl(projectKey, repositorySlug)
-            .SendAsync(HttpMethod.Post, CreateJsonContent(data), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request ?? new ForkRepositoryRequest()), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<RepositoryFork>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -192,7 +168,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository forks.</returns>
-    public async Task<IEnumerable<RepositoryFork>> GetProjectRepositoryForksAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<RepositoryFork>> GetProjectRepositoryForksAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -204,16 +180,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/forks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RepositoryFork>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RepositoryFork>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/forks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -242,7 +210,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of related repository forks.</returns>
-    public async Task<IEnumerable<RepositoryFork>> GetRelatedProjectRepositoriesAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<RepositoryFork>> GetRelatedProjectRepositoriesAsync(string projectKey, string repositorySlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -254,16 +222,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/related")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RepositoryFork>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RepositoryFork>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/related"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -315,7 +275,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of group permissions.</returns>
-    public async Task<IEnumerable<GroupPermission>> GetProjectRepositoryGroupPermissionsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<GroupPermission>> GetProjectRepositoryGroupPermissionsAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -329,16 +289,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<GroupPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<GroupPermission>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -395,7 +347,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of removable group or user entries.</returns>
-    public async Task<IEnumerable<DeletableGroupOrUser>> GetProjectRepositoryGroupPermissionsNoneAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<DeletableGroupOrUser>> GetProjectRepositoryGroupPermissionsNoneAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -409,16 +361,8 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<DeletableGroupOrUser>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<DeletableGroupOrUser>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/groups/none"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -433,7 +377,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of user permissions.</returns>
-    public async Task<IEnumerable<UserPermission>> GetProjectRepositoryUserPermissionsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<UserPermission>> GetProjectRepositoryUserPermissionsAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -449,16 +393,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<UserPermission>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<UserPermission>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -519,7 +455,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of users without repository permissions.</returns>
-    public async Task<IEnumerable<User>> GetProjectRepositoryUserPermissionsNoneAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<User>> GetProjectRepositoryUserPermissionsNoneAsync(string projectKey, string repositorySlug,
         string? filter = null,
         int? maxPages = null,
         int? limit = null,
@@ -533,15 +469,7 @@ public partial class BitbucketClient
             ["filter"] = filter,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users/none")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<User>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/permissions/users/none"), queryParamValues, maxPages, cancellationToken);
     }
 }

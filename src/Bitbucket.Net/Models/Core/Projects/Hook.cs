@@ -1,9 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class Hook
 {
-    public HookDetails? Details { get; set; }
-    public bool Enabled { get; set; }
-    public bool Configured { get; set; }
-    public HookScope? Scope { get; set; }
+    public HookDetails? Details { get; init; }
+    public bool Enabled { get; init; }
+    public bool Configured { get; init; }
+    public HookScope? Scope { get; init; }
 }

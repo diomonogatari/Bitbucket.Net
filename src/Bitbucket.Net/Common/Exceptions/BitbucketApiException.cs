@@ -72,6 +72,24 @@ public class BitbucketApiException : Exception
     /// <returns>A typed exception matching the HTTP status code.</returns>
     public static BitbucketApiException Create(int statusCode, IReadOnlyList<Error> errors, string? requestUrl = null)
     {
+        return Create(statusCode, errors, responseHeaders: null, requestUrl);
+    }
+
+    /// <summary>
+    /// Creates the appropriate exception type based on the HTTP status code,
+    /// optionally extracting rate-limit metadata from response headers.
+    /// </summary>
+    /// <param name="statusCode">The HTTP status code.</param>
+    /// <param name="errors">The collection of errors from the Bitbucket response.</param>
+    /// <param name="responseHeaders">The HTTP response headers (used for rate-limit metadata on 429).</param>
+    /// <param name="requestUrl">The request URL that caused the error.</param>
+    /// <returns>A typed exception matching the HTTP status code.</returns>
+    public static BitbucketApiException Create(
+        int statusCode,
+        IReadOnlyList<Error> errors,
+        System.Net.Http.Headers.HttpResponseHeaders? responseHeaders,
+        string? requestUrl = null)
+    {
         var httpStatusCode = (HttpStatusCode)statusCode;
         string message = BuildErrorMessage(httpStatusCode, errors);
 
@@ -83,10 +101,54 @@ public class BitbucketApiException : Exception
             404 => new BitbucketNotFoundException(message, errors, requestUrl),
             409 => new BitbucketConflictException(message, errors, requestUrl),
             422 => new BitbucketValidationException(message, errors, requestUrl),
-            429 => new BitbucketRateLimitException(message, errors, requestUrl),
+            429 => CreateRateLimitException(message, errors, responseHeaders, requestUrl),
             >= 500 and < 600 => new BitbucketServerException(message, httpStatusCode, errors, requestUrl),
             _ => new BitbucketApiException(message, httpStatusCode, errors, requestUrl),
         };
+    }
+
+    private static BitbucketRateLimitException CreateRateLimitException(
+        string message,
+        IReadOnlyList<Error> errors,
+        System.Net.Http.Headers.HttpResponseHeaders? responseHeaders,
+        string? requestUrl)
+    {
+        if (responseHeaders is null)
+        {
+            return new BitbucketRateLimitException(message, errors, requestUrl);
+        }
+
+        var retryAfter = TryParseHeaderInt(responseHeaders, "Retry-After") is int retrySeconds
+            ? TimeSpan.FromSeconds(retrySeconds)
+            : (TimeSpan?)null;
+
+        var rateLimit = TryParseHeaderInt(responseHeaders, "X-RateLimit-Limit");
+        var rateLimitRemaining = TryParseHeaderInt(responseHeaders, "X-RateLimit-Remaining");
+
+        var rateLimitReset = TryParseHeaderLong(responseHeaders, "X-RateLimit-Reset") is long resetUnix
+            ? DateTimeOffset.FromUnixTimeSeconds(resetUnix)
+            : (DateTimeOffset?)null;
+
+        return new BitbucketRateLimitException(
+            message, errors, retryAfter, rateLimit, rateLimitRemaining, rateLimitReset, requestUrl);
+    }
+
+    private static int? TryParseHeaderInt(
+        System.Net.Http.Headers.HttpResponseHeaders headers, string name)
+    {
+        return headers.TryGetValues(name, out var values)
+            && int.TryParse(values.FirstOrDefault(), out int result)
+            ? result
+            : null;
+    }
+
+    private static long? TryParseHeaderLong(
+        System.Net.Http.Headers.HttpResponseHeaders headers, string name)
+    {
+        return headers.TryGetValues(name, out var values)
+            && long.TryParse(values.FirstOrDefault(), out long result)
+            ? result
+            : null;
     }
 
     private static string BuildErrorMessage(HttpStatusCode statusCode, IReadOnlyList<Error> errors)

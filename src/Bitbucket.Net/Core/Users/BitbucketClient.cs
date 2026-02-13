@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Users;
 using Flurl.Http;
 
@@ -38,7 +37,7 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="permissionN">Additional permission filters.</param>
     /// <returns>A collection of users.</returns>
-    public async Task<IEnumerable<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
+    public Task<IReadOnlyList<User>> GetUsersAsync(string? filter = null, string? group = null, string? permission = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -63,16 +62,8 @@ public partial class BitbucketClient
             queryParamValues.Add($"permission.{permissionNCounter}", perm);
         }
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetUsersUrl()
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<User>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<User>(
+            GetUsersUrl(), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -121,6 +112,8 @@ public partial class BitbucketClient
     /// <returns>The requested user.</returns>
     public async Task<User> GetUserAsync(string userSlug, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -137,6 +130,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the avatar was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteUserAvatarAsync(string userSlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/avatar.png")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -152,6 +147,8 @@ public partial class BitbucketClient
     /// <returns>A dictionary of user settings.</returns>
     public async Task<IDictionary<string, object?>> GetUserSettingsAsync(string userSlug, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/settings")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -168,6 +165,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the settings were updated; otherwise, <c>false</c>.</returns>
     public async Task<bool> UpdateUserSettingsAsync(string userSlug, IDictionary<string, object?> userSettings, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetUsersUrl($"/{userSlug}/settings")
             .SendAsync(HttpMethod.Post, CreateJsonContent(userSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

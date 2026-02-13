@@ -33,6 +33,8 @@ public partial class BitbucketClient
     /// <returns>The configured log level.</returns>
     public async Task<LogLevels> GetLogLevelAsync(string loggerName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(loggerName);
+
         var response = await GetLogsUrl($"/logger/{loggerName}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -54,6 +56,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the update succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> SetLogLevelAsync(string loggerName, LogLevels logLevel, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(loggerName);
+
         var response = await GetLogsUrl($"/logger/{loggerName}/{BitbucketHelpers.LogLevelToString(logLevel)}")
             .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
             .ConfigureAwait(false);

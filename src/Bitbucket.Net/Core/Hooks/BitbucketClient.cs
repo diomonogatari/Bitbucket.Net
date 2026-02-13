@@ -24,6 +24,8 @@ public partial class BitbucketClient
     /// <returns>The avatar image bytes.</returns>
     public async Task<byte[]> GetProjectHooksAvatarAsync(string hookKey, string? version = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetHooksUrl()
             .AppendPathSegment($"/{hookKey}/avatar")
             .SetQueryParam("version", version)

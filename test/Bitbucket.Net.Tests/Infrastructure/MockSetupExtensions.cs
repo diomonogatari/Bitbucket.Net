@@ -246,6 +246,51 @@ public static class MockSetupExtensions
             new Error { Message = "Rate limit exceeded" });
     }
 
+    public static WireMockServer SetupRateLimitedWithHeaders(
+        this WireMockServer server,
+        string path,
+        string? retryAfter = null,
+        string? rateLimitLimit = null,
+        string? rateLimitRemaining = null,
+        string? rateLimitReset = null)
+    {
+        var json = JsonSerializer.Serialize(
+            new { errors = new[] { new Error { Message = "Rate limit exceeded" } } },
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
+        var responseBuilder = Response.Create()
+            .WithStatusCode(HttpStatusCode.TooManyRequests)
+            .WithHeader("Content-Type", "application/json")
+            .WithBody(json);
+
+        if (retryAfter is not null)
+        {
+            responseBuilder = responseBuilder.WithHeader("Retry-After", retryAfter);
+        }
+
+        if (rateLimitLimit is not null)
+        {
+            responseBuilder = responseBuilder.WithHeader("X-RateLimit-Limit", rateLimitLimit);
+        }
+
+        if (rateLimitRemaining is not null)
+        {
+            responseBuilder = responseBuilder.WithHeader("X-RateLimit-Remaining", rateLimitRemaining);
+        }
+
+        if (rateLimitReset is not null)
+        {
+            responseBuilder = responseBuilder.WithHeader("X-RateLimit-Reset", rateLimitReset);
+        }
+
+        server.Given(Request.Create()
+                .WithPath(path)
+                .UsingGet())
+            .RespondWith(responseBuilder);
+
+        return server;
+    }
+
     public static WireMockServer SetupErrorWithJsonBody(this WireMockServer server, string path, HttpStatusCode statusCode, params Error[] errors)
     {
         var json = JsonSerializer.Serialize(new { errors }, new JsonSerializerOptions

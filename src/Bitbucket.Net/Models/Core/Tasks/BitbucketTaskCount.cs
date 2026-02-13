@@ -1,7 +1,7 @@
-﻿namespace Bitbucket.Net.Models.Core.Tasks;
+namespace Bitbucket.Net.Models.Core.Tasks;
 
 public class BitbucketTaskCount
 {
-    public int Open { get; set; }
-    public int Resolved { get; set; }
+    public int Open { get; init; }
+    public int Resolved { get; init; }
 }

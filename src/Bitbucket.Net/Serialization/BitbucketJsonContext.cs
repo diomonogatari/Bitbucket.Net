@@ -1,3 +1,4 @@
+using Bitbucket.Net.Common.Converters;
 using Bitbucket.Net.Common.Models;
 // Search
 using Bitbucket.Net.Common.Models.Search;
@@ -7,11 +8,13 @@ using Bitbucket.Net.Models.Audit;
 using Bitbucket.Net.Models.Branches;
 // Builds
 using Bitbucket.Net.Models.Builds;
+using Bitbucket.Net.Models.Builds.Requests;
 // Core - Admin
 using Bitbucket.Net.Models.Core.Admin;
 // Core - Logs
 // Core - Projects
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 // Core - Tasks
 using Bitbucket.Net.Models.Core.Tasks;
 // Core - Users
@@ -40,8 +43,9 @@ namespace Bitbucket.Net.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This context is combined with <see cref="System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver"/>
-/// to provide a fallback for any types not explicitly registered (edge cases, future additions).
+/// This context is the sole type-info resolver — there is no reflection fallback.
+/// Any type not registered here will throw <see cref="System.NotSupportedException"/>
+/// at the call site, ensuring missing registrations are caught immediately.
 /// </para>
 /// <para>
 /// Custom converters (UnixDateTimeOffsetConverter, etc.) continue to work with source generation.
@@ -50,7 +54,8 @@ namespace Bitbucket.Net.Serialization;
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    GenerationMode = JsonSourceGenerationMode.Metadata | JsonSourceGenerationMode.Serialization)]
+    GenerationMode = JsonSourceGenerationMode.Metadata | JsonSourceGenerationMode.Serialization,
+    Converters = [typeof(UnixDateTimeOffsetConverter), typeof(NullableUnixDateTimeOffsetConverter), typeof(BitbucketEnumConverterFactory)])]
 
 // ============================================================================
 // Common Models
@@ -314,7 +319,12 @@ namespace Bitbucket.Net.Serialization;
 // ============================================================================
 // Collection Types (for various API responses)
 // ============================================================================
+[JsonSerializable(typeof(Dictionary<string, BuildStats>))]
+[JsonSerializable(typeof(IEnumerable<DefaultReviewerPullRequestCondition>))]
 [JsonSerializable(typeof(IEnumerable<Error>))]
+[JsonSerializable(typeof(IEnumerable<KeyedUrl>))]
+[JsonSerializable(typeof(IEnumerable<RefRestriction>))]
+[JsonSerializable(typeof(IEnumerable<User>))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(List<CloneLink>))]
 [JsonSerializable(typeof(List<Link>))]
@@ -331,6 +341,23 @@ namespace Bitbucket.Net.Serialization;
 [JsonSerializable(typeof(List<Diff>))]
 [JsonSerializable(typeof(List<ContentItem>))]
 [JsonSerializable(typeof(Dictionary<string, object>))]
+
+// ============================================================================
+// Request DTOs
+// ============================================================================
+[JsonSerializable(typeof(AssociateBuildStatusRequest))]
+[JsonSerializable(typeof(CreateBranchRequest))]
+[JsonSerializable(typeof(CreateProjectRequest))]
+[JsonSerializable(typeof(CreatePullRequestRequest))]
+[JsonSerializable(typeof(CreateRepositoryRequest))]
+[JsonSerializable(typeof(CreateTaskRequest))]
+[JsonSerializable(typeof(CreateWebHookRequest))]
+[JsonSerializable(typeof(ForkRepositoryRequest))]
+[JsonSerializable(typeof(MergePullRequestRequest))]
+[JsonSerializable(typeof(UpdateProjectRequest))]
+[JsonSerializable(typeof(UpdatePullRequestRequest))]
+[JsonSerializable(typeof(UpdateTaskRequest))]
+[JsonSerializable(typeof(UpdateWebHookRequest))]
 
 public partial class BitbucketJsonContext : JsonSerializerContext
 {

@@ -25,76 +25,74 @@ public class BlockerComment
     /// <summary>
     /// The unique identifier of the blocker comment.
     /// </summary>
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     /// <summary>
     /// The version of the blocker comment, used for optimistic locking.
     /// </summary>
-    public int Version { get; set; }
+    public int Version { get; init; }
 
     /// <summary>
     /// The text content of the blocker comment.
     /// </summary>
-    public string Text { get; set; } = string.Empty;
+    public string Text { get; init; } = string.Empty;
 
     /// <summary>
     /// The user who created the blocker comment.
     /// </summary>
-    public User? Author { get; set; }
+    public User? Author { get; init; }
 
     /// <summary>
     /// When the blocker comment was created.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? CreatedDate { get; set; }
+    public DateTimeOffset? CreatedDate { get; init; }
 
     /// <summary>
     /// When the blocker comment was last updated.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? UpdatedDate { get; set; }
+    public DateTimeOffset? UpdatedDate { get; init; }
 
     /// <summary>
     /// The severity level of the comment. For blocker comments, this is always <see cref="CommentSeverity.Blocker"/>.
     /// </summary>
-    [JsonConverter(typeof(CommentSeverityConverter))]
-    public CommentSeverity Severity { get; set; } = CommentSeverity.Blocker;
+    public CommentSeverity Severity { get; init; } = CommentSeverity.Blocker;
 
     /// <summary>
     /// The state of the blocker comment.
     /// </summary>
-    [JsonConverter(typeof(BlockerCommentStateConverter))]
-    public BlockerCommentState State { get; set; } = BlockerCommentState.Open;
+    public BlockerCommentState State { get; init; } = BlockerCommentState.Open;
 
     /// <summary>
     /// The user who resolved the blocker comment, if resolved.
     /// </summary>
-    public User? Resolver { get; set; }
+    public User? Resolver { get; init; }
 
     /// <summary>
     /// When the blocker comment was resolved.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? ResolvedDate { get; set; }
+    public DateTimeOffset? ResolvedDate { get; init; }
 
     /// <summary>
     /// The anchor point for the comment (file, line number, etc.).
     /// Null for general pull request-level blocker comments.
     /// </summary>
-    public CommentAnchor? Anchor { get; set; }
+    public CommentAnchor? Anchor { get; init; }
 
     /// <summary>
     /// The parent comment this blocker is attached to, if any.
     /// </summary>
-    public CommentRef? Parent { get; set; }
+    public CommentRef? Parent { get; init; }
 
     /// <summary>
     /// The permitted operations the current user can perform on this blocker comment.
     /// </summary>
-    public Permittedoperations? PermittedOperations { get; set; }
+    public Permittedoperations? PermittedOperations { get; init; }
 
     /// <summary>
     /// Additional properties associated with the blocker comment.
     /// </summary>
-    public Properties? Properties { get; set; }
+    public Properties? Properties { get; init; }
 }

@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.PersonalAccessTokens;
 using Flurl.Http;
 
@@ -34,13 +33,15 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of access tokens.</returns>
-    public async Task<IEnumerable<AccessToken>> GetUserAccessTokensAsync(string userSlug,
+    public Task<IReadOnlyList<AccessToken>> GetUserAccessTokensAsync(string userSlug,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -48,16 +49,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetPatUrl($"/users/{userSlug}")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<AccessToken>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<AccessToken>(
+            GetPatUrl($"/users/{userSlug}"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -69,6 +62,8 @@ public partial class BitbucketClient
     /// <returns>The created access token including secret.</returns>
     public async Task<FullAccessToken> CreateAccessTokenAsync(string userSlug, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+
         var response = await GetPatUrl($"/users/{userSlug}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -86,6 +81,9 @@ public partial class BitbucketClient
     /// <returns>The access token details.</returns>
     public async Task<AccessToken> GetUserAccessTokenAsync(string userSlug, string tokenId, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -104,6 +102,9 @@ public partial class BitbucketClient
     /// <returns>The updated access token details.</returns>
     public async Task<AccessToken> ChangeUserAccessTokenAsync(string userSlug, string tokenId, AccessTokenCreate accessToken, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(accessToken), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -120,6 +121,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the token was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteUserAccessTokenAsync(string userSlug, string tokenId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userSlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenId);
+
         var response = await GetPatUrl($"/users/{userSlug}/{tokenId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);

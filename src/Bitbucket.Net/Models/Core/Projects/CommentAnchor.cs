@@ -1,6 +1,3 @@
-using Bitbucket.Net.Common.Converters;
-using System.Text.Json.Serialization;
-
 namespace Bitbucket.Net.Models.Core.Projects;
 
 /// <summary>
@@ -16,13 +13,11 @@ public class CommentAnchor
     /// <summary>
     /// Gets or sets the line type (e.g. ADDED, REMOVED, CONTEXT).
     /// </summary>
-    [JsonConverter(typeof(LineTypesConverter))]
     public LineTypes LineType { get; set; }
 
     /// <summary>
     /// Gets or sets the file type (e.g. FROM for source, TO for destination).
     /// </summary>
-    [JsonConverter(typeof(FileTypesConverter))]
     public FileTypes FileType { get; set; }
 
     /// <summary>

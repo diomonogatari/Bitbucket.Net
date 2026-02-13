@@ -1,4 +1,4 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public abstract class DiffInfo
 {
@@ -6,10 +6,10 @@ public abstract class DiffInfo
     /// Indicates whether the diff was truncated by the server.
     /// Note: Bitbucket Server 9.0+ returns boolean; older versions may return string.
     /// </summary>
-    public bool Truncated { get; set; }
+    public bool Truncated { get; init; }
 
-    public string? ContextLines { get; set; }
-    public string? FromHash { get; set; }
-    public string? ToHash { get; set; }
-    public string? WhiteSpace { get; set; }
+    public string? ContextLines { get; init; }
+    public string? FromHash { get; init; }
+    public string? ToHash { get; init; }
+    public string? WhiteSpace { get; init; }
 }

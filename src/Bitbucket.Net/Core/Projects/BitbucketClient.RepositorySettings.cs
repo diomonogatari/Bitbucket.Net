@@ -1,7 +1,7 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Flurl.Http;
 
 namespace Bitbucket.Net;
@@ -27,6 +27,8 @@ public partial class BitbucketClient
         bool htmlEscape = true,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["at"] = at,
@@ -90,7 +92,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of hooks.</returns>
-    public async Task<IEnumerable<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Hook>> GetProjectRepositoryHooksSettingsAsync(string projectKey, string repositorySlug,
         HookTypes? hookType = null,
         int? maxPages = null,
         int? limit = null,
@@ -104,16 +106,8 @@ public partial class BitbucketClient
             ["type"] = hookType,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Hook>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Hook>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/settings/hooks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -126,6 +120,8 @@ public partial class BitbucketClient
     /// <returns>The hook configuration.</returns>
     public async Task<Hook> GetProjectRepositoryHookSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -143,6 +139,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectRepositoryHookSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -161,6 +159,8 @@ public partial class BitbucketClient
     /// <returns>The enabled hook.</returns>
     public async Task<Hook> EnableProjectRepositoryHookAsync(string projectKey, string repositorySlug, string hookKey, object? hookSettings = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/enabled")
             .SendAsync(HttpMethod.Put, CreateJsonContent(hookSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -178,6 +178,8 @@ public partial class BitbucketClient
     /// <returns>The disabled hook.</returns>
     public async Task<Hook> DisableProjectRepositoryHookAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/enabled")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -195,6 +197,8 @@ public partial class BitbucketClient
     /// <returns>A dictionary of hook settings.</returns>
     public async Task<Dictionary<string, object?>> GetProjectRepositoryHookAllSettingsAsync(string projectKey, string repositorySlug, string hookKey, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -214,6 +218,8 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, object?>> UpdateProjectRepositoryHookAllSettingsAsync(string projectKey, string repositorySlug, string hookKey,
         Dictionary<string, object?> allSettings, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(hookKey);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/settings/hooks/{hookKey}/settings")
             .SendAsync(HttpMethod.Put, CreateJsonContent(allSettings), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -230,6 +236,8 @@ public partial class BitbucketClient
     /// <returns>The pull request settings.</returns>
     public async Task<PullRequestSettings> GetProjectPullRequestsMergeStrategiesAsync(string projectKey, string scmId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
             .GetAsync(cancellationToken)
@@ -248,6 +256,8 @@ public partial class BitbucketClient
     /// <returns>The updated merge strategies.</returns>
     public async Task<MergeStrategies> UpdateProjectPullRequestsMergeStrategiesAsync(string projectKey, string scmId, MergeStrategies mergeStrategies, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(scmId);
+
         var response = await GetProjectUrl(projectKey)
             .AppendPathSegment($"/settings/pull-requests/{scmId}")
             .SendAsync(HttpMethod.Post, CreateJsonContent(mergeStrategies), cancellationToken: cancellationToken)
@@ -268,7 +278,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of tags.</returns>
-    public async Task<IEnumerable<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<Tag>> GetProjectRepositoryTagsAsync(string projectKey, string repositorySlug,
         string filterText,
         BranchOrderBy orderBy,
         int? maxPages = null,
@@ -284,16 +294,8 @@ public partial class BitbucketClient
             ["orderBy"] = BitbucketHelpers.BranchOrderByToString(orderBy),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Tag>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/tags"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -324,15 +326,8 @@ public partial class BitbucketClient
             ["orderBy"] = BitbucketHelpers.BranchOrderByToString(orderBy),
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/tags")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Tag>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<Tag>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/tags"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -375,6 +370,8 @@ public partial class BitbucketClient
     /// <returns>The requested tag.</returns>
     public async Task<Tag> GetProjectRepositoryTagAsync(string projectKey, string repositorySlug, string tagName, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagName);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/tags/{tagName}")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -394,7 +391,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A collection of webhooks.</returns>
-    public async Task<IEnumerable<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<WebHook>> GetProjectRepositoryWebHooksAsync(string projectKey, string repositorySlug,
         string? @event = null,
         bool statistics = false,
         int? maxPages = null,
@@ -410,16 +407,8 @@ public partial class BitbucketClient
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<WebHook>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<WebHook>(
+            GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -427,13 +416,15 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
-    /// <param name="webHook">The webhook payload.</param>
+    /// <param name="request">The create webhook request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created webhook.</returns>
-    public async Task<WebHook> CreateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug, WebHook webHook, CancellationToken cancellationToken = default)
+    public async Task<WebHook> CreateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug, CreateWebHookRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, "/webhooks")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(webHook), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -471,6 +462,8 @@ public partial class BitbucketClient
         bool statistics = false,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["statistics"] = BitbucketHelpers.BoolToString(statistics),
@@ -490,14 +483,17 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="webHookId">The webhook ID.</param>
-    /// <param name="webHook">The webhook payload.</param>
+    /// <param name="request">The update webhook request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The updated webhook.</returns>
     public async Task<WebHook> UpdateProjectRepositoryWebHookAsync(string projectKey, string repositorySlug,
-        string webHookId, WebHook webHook, CancellationToken cancellationToken = default)
+        string webHookId, UpdateWebHookRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
-            .SendAsync(HttpMethod.Put, CreateJsonContent(webHook), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Put, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync<WebHook>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -514,6 +510,8 @@ public partial class BitbucketClient
     public async Task<bool> DeleteProjectRepositoryWebHookAsync(string projectKey, string repositorySlug,
         string webHookId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -538,6 +536,8 @@ public partial class BitbucketClient
         WebHookOutcomes? outcome = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["event"] = @event,
@@ -567,6 +567,8 @@ public partial class BitbucketClient
         string? @event = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics")
             .SetQueryParam("event", @event)
             .GetAsync(cancellationToken)
@@ -586,6 +588,8 @@ public partial class BitbucketClient
     public async Task<Dictionary<string, WebHookStatisticsCounts>> GetProjectRepositoryWebHookStatisticsSummaryAsync(string projectKey, string repositorySlug,
         string webHookId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(webHookId);
+
         var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/webhooks/{webHookId}/statistics/summary")
             .GetAsync(cancellationToken)
             .ConfigureAwait(false);

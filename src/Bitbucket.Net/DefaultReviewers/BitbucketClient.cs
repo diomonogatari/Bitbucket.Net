@@ -30,15 +30,18 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of default reviewer conditions.</returns>
-    public async Task<IEnumerable<DefaultReviewerPullRequestCondition>> GetDefaultReviewerConditionsAsync(string projectKey,
+    public async Task<IReadOnlyList<DefaultReviewerPullRequestCondition>> GetDefaultReviewerConditionsAsync(string projectKey,
         int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<DefaultReviewerPullRequestCondition>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<DefaultReviewerPullRequestCondition>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -50,6 +53,8 @@ public partial class BitbucketClient
     /// <returns>The created default reviewer condition.</returns>
     public async Task<DefaultReviewerPullRequestCondition> CreateDefaultReviewerConditionAsync(string projectKey, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions")
             .SendAsync(HttpMethod.Post, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -67,6 +72,9 @@ public partial class BitbucketClient
     /// <returns>The updated default reviewer condition.</returns>
     public async Task<DefaultReviewerPullRequestCondition> UpdateDefaultReviewerConditionAsync(string projectKey, string defaultReviewerPullRequestConditionId, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(defaultReviewerPullRequestConditionId);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions/{defaultReviewerPullRequestConditionId}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -83,6 +91,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the condition was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteDefaultReviewerConditionAsync(string projectKey, string defaultReviewerPullRequestConditionId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(defaultReviewerPullRequestConditionId);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/conditions/{defaultReviewerPullRequestConditionId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -98,15 +109,19 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of default reviewer conditions.</returns>
-    public async Task<IEnumerable<DefaultReviewerPullRequestCondition>> GetDefaultReviewerConditionsAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<DefaultReviewerPullRequestCondition>> GetDefaultReviewerConditionsAsync(string projectKey, string repositorySlug,
         int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<DefaultReviewerPullRequestCondition>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<DefaultReviewerPullRequestCondition>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -119,6 +134,9 @@ public partial class BitbucketClient
     /// <returns>The created default reviewer condition.</returns>
     public async Task<DefaultReviewerPullRequestCondition> CreateDefaultReviewerConditionAsync(string projectKey, string repositorySlug, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions")
             .SendAsync(HttpMethod.Post, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -137,6 +155,10 @@ public partial class BitbucketClient
     /// <returns>The updated default reviewer condition.</returns>
     public async Task<DefaultReviewerPullRequestCondition> UpdateDefaultReviewerConditionAsync(string projectKey, string repositorySlug, string defaultReviewerPullRequestConditionId, DefaultReviewerPullRequestCondition condition, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(defaultReviewerPullRequestConditionId);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions/{defaultReviewerPullRequestConditionId}")
             .SendAsync(HttpMethod.Put, CreateJsonContent(condition), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -154,6 +176,10 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the condition was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteDefaultReviewerConditionAsync(string projectKey, string repositorySlug, string defaultReviewerPullRequestConditionId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(defaultReviewerPullRequestConditionId);
+
         var response = await GetDefaultReviewersUrl($"/projects/{projectKey}/repos/{repositorySlug}/conditions/{defaultReviewerPullRequestConditionId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -173,7 +199,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of default reviewers.</returns>
-    public async Task<IEnumerable<User>> GetDefaultReviewersAsync(string projectKey, string repositorySlug,
+    public async Task<IReadOnlyList<User>> GetDefaultReviewersAsync(string projectKey, string repositorySlug,
         int? sourceRepoId = null,
         int? targetRepoId = null,
         string? sourceRefId = null,
@@ -181,6 +207,9 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["sourceRepoId"] = sourceRepoId,
@@ -195,6 +224,7 @@ public partial class BitbucketClient
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<User>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<User>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 }

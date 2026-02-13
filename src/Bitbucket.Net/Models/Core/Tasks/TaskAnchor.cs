@@ -12,21 +12,21 @@ public class TaskAnchor : TaskRef
     /// <summary>
     /// Gets or sets the version number for optimistic locking on updates.
     /// </summary>
-    public int Version { get; set; }
+    public int Version { get; init; }
 
     /// <summary>
     /// Gets or sets the date and time when the anchor was last updated.
     /// </summary>
     [JsonConverter(typeof(NullableUnixDateTimeOffsetConverter))]
-    public DateTimeOffset? UpdatedDate { get; set; }
+    public DateTimeOffset? UpdatedDate { get; init; }
 
     /// <summary>
     /// Gets or sets the nested comment references on this anchor.
     /// </summary>
-    public List<CommentRef>? Comments { get; set; }
+    public List<CommentRef>? Comments { get; init; }
 
     /// <summary>
     /// Gets or sets the tasks associated with this anchor.
     /// </summary>
-    public List<BitbucketTask>? Tasks { get; set; }
+    public List<BitbucketTask>? Tasks { get; init; }
 }

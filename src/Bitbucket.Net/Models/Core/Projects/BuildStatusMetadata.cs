@@ -1,8 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class BuildStatusMetadata
 {
-    public int Successful { get; set; }
-    public int InProgress { get; set; }
-    public int Failed { get; set; }
+    public int Successful { get; init; }
+    public int InProgress { get; init; }
+    public int Failed { get; init; }
 }

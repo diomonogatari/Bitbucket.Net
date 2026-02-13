@@ -2,6 +2,7 @@
 
 public enum ScopeTypes
 {
+    Global,
     Project,
     Repository,
 }

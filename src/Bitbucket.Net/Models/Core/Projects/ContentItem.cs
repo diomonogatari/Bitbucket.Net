@@ -1,9 +1,9 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class ContentItem
 {
-    public Path? Path { get; set; }
-    public string? ContentId { get; set; }
-    public string? Type { get; set; }
-    public int Size { get; set; }
+    public Path? Path { get; init; }
+    public string? ContentId { get; init; }
+    public string? Type { get; init; }
+    public int Size { get; init; }
 }

@@ -6,12 +6,12 @@ namespace Bitbucket.Net.Models.PersonalAccessTokens;
 
 public class AccessToken : AccessTokenCreate
 {
-    public string? Id { get; set; }
+    public string? Id { get; init; }
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset CreatedDate { get; set; }
+    public DateTimeOffset CreatedDate { get; init; }
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset LastAuthenticated { get; set; }
-    public User? User { get; set; }
+    public DateTimeOffset LastAuthenticated { get; init; }
+    public User? User { get; init; }
     [JsonConverter(typeof(UnixDateTimeOffsetConverter))]
-    public DateTimeOffset ExpiryDate { get; set; }
+    public DateTimeOffset ExpiryDate { get; init; }
 }

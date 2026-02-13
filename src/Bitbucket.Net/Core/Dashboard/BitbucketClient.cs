@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Projects;
 using Flurl.Http;
 
@@ -38,7 +37,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull requests.</returns>
-    public async Task<IEnumerable<PullRequest>> GetDashboardPullRequestsAsync(PullRequestStates? state = null,
+    public Task<IReadOnlyList<PullRequest>> GetDashboardPullRequestsAsync(PullRequestStates? state = null,
         Roles? role = null,
         List<ParticipantStatus>? status = null,
         PullRequestOrders? order = PullRequestOrders.Newest,
@@ -59,16 +58,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetDashboardUrl("/pull-requests")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<PullRequest>(
+            GetDashboardUrl("/pull-requests"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -105,15 +96,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return GetPagedResultsStreamAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetDashboardUrl("/pull-requests")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<PullRequest>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken);
+        return GetPagedStreamAsync<PullRequest>(
+            GetDashboardUrl("/pull-requests"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -125,7 +109,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of pull request suggestions.</returns>
-    public async Task<IEnumerable<PullRequestSuggestion>> GetDashboardPullRequestSuggestionsAsync(int changesSinceSeconds = 172800,
+    public Task<IReadOnlyList<PullRequestSuggestion>> GetDashboardPullRequestSuggestionsAsync(int changesSinceSeconds = 172800,
         int? maxPages = null,
         int? limit = 3,
         int? start = null,
@@ -138,15 +122,7 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetDashboardUrl("/pull-request-suggestions")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<PullRequestSuggestion>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<PullRequestSuggestion>(
+            GetDashboardUrl("/pull-request-suggestions"), queryParamValues, maxPages, cancellationToken);
     }
 }

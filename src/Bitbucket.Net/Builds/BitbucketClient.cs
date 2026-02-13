@@ -1,6 +1,6 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Builds;
+using Bitbucket.Net.Models.Builds.Requests;
 using Flurl.Http;
 
 namespace Bitbucket.Net;
@@ -33,6 +33,8 @@ public partial class BitbucketClient
     /// <returns>Build statistics for the commit.</returns>
     public async Task<BuildStats> GetBuildStatsForCommitAsync(string commitId, bool includeUnique = false, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var response = await GetBuildsUrl($"/commits/stats/{commitId}")
             .SetQueryParam("includeUnique", BitbucketHelpers.BoolToString(includeUnique))
             .GetAsync(cancellationToken)
@@ -75,40 +77,38 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of build status entries.</returns>
-    public async Task<IEnumerable<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
+    public Task<IReadOnlyList<BuildStatus>> GetBuildStatusForCommitAsync(string commitId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetBuildsUrl($"/commits/{commitId}")
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<BuildStatus>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<BuildStatus>(
+            GetBuildsUrl($"/commits/{commitId}"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
     /// Associates a build status with a commit.
     /// </summary>
     /// <param name="commitId">The commit identifier.</param>
-    /// <param name="buildStatus">The build status to associate.</param>
+    /// <param name="request">The build status request to associate.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns><c>true</c> if the association was successful; otherwise, <c>false</c>.</returns>
-    public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, BuildStatus buildStatus, CancellationToken cancellationToken = default)
+    public async Task<bool> AssociateBuildStatusWithCommitAsync(string commitId, AssociateBuildStatusRequest request, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(commitId);
+        ArgumentNullException.ThrowIfNull(request);
+
         var response = await GetBuildsUrl($"/commits/{commitId}")
-            .SendAsync(HttpMethod.Post, CreateJsonContent(buildStatus), cancellationToken: cancellationToken)
+            .SendAsync(HttpMethod.Post, CreateJsonContent(request), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await HandleResponseAsync(response, cancellationToken).ConfigureAwait(false);

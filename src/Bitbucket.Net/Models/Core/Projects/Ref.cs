@@ -1,8 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class Ref
 {
-    public string? Id { get; set; }
-    public string? DisplayId { get; set; }
-    public string? Type { get; set; }
+    public string? Id { get; init; }
+    public string? DisplayId { get; init; }
+    public string? Type { get; init; }
 }

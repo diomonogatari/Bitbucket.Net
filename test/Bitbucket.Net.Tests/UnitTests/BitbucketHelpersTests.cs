@@ -5,7 +5,6 @@ using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.Core.Projects;
 using Bitbucket.Net.Models.Git;
 using Bitbucket.Net.Models.RefRestrictions;
-using Bitbucket.Net.Models.RefSync;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.UnitTests;
@@ -30,19 +29,6 @@ public class BitbucketHelpersTests
     public void BoolToString_Nullable_ReturnsCorrectValue(bool? input, string? expected)
     {
         var result = BitbucketHelpers.BoolToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("true", true)]
-    [InlineData("TRUE", true)]
-    [InlineData("True", true)]
-    [InlineData("false", false)]
-    [InlineData("FALSE", false)]
-    [InlineData("anything", false)]
-    public void StringToBool_ReturnsCorrectValue(string input, bool expected)
-    {
-        var result = BitbucketHelpers.StringToBool(input);
         Assert.Equal(expected, result);
     }
 
@@ -98,18 +84,6 @@ public class BitbucketHelpersTests
     public void PullRequestStateToString_ReturnsCorrectValue(PullRequestStates input, string expected)
     {
         var result = BitbucketHelpers.PullRequestStateToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("OPEN", PullRequestStates.Open)]
-    [InlineData("open", PullRequestStates.Open)]
-    [InlineData("DECLINED", PullRequestStates.Declined)]
-    [InlineData("MERGED", PullRequestStates.Merged)]
-    [InlineData("ALL", PullRequestStates.All)]
-    public void StringToPullRequestState_ReturnsCorrectValue(string input, PullRequestStates expected)
-    {
-        var result = BitbucketHelpers.StringToPullRequestState(input);
         Assert.Equal(expected, result);
     }
 
@@ -188,19 +162,6 @@ public class BitbucketHelpersTests
     }
 
     [Theory]
-    [InlineData("ADMIN", Permissions.Admin)]
-    [InlineData("admin", Permissions.Admin)]
-    [InlineData("LICENSED_USER", Permissions.LicensedUser)]
-    [InlineData("PROJECT_ADMIN", Permissions.ProjectAdmin)]
-    [InlineData("PROJECT_CREATE", Permissions.ProjectCreate)]
-    [InlineData("REPO_READ", Permissions.RepoRead)]
-    public void StringToPermission_ReturnsCorrectValue(string input, Permissions expected)
-    {
-        var result = BitbucketHelpers.StringToPermission(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData(Permissions.Admin, "ADMIN")]
     [InlineData(null, null)]
     public void PermissionToString_Nullable_ReturnsCorrectValue(Permissions? input, string? expected)
@@ -245,17 +206,6 @@ public class BitbucketHelpersTests
     }
 
     [Theory]
-    [InlineData("AUTHOR", Roles.Author)]
-    [InlineData("author", Roles.Author)]
-    [InlineData("REVIEWER", Roles.Reviewer)]
-    [InlineData("PARTICIPANT", Roles.Participant)]
-    public void StringToRole_ReturnsCorrectValue(string input, Roles expected)
-    {
-        var result = BitbucketHelpers.StringToRole(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData(Roles.Author, "AUTHOR")]
     [InlineData(null, null)]
     public void RoleToString_Nullable_ReturnsCorrectValue(Roles? input, string? expected)
@@ -279,17 +229,6 @@ public class BitbucketHelpersTests
     }
 
     [Theory]
-    [InlineData("ADDED", LineTypes.Added)]
-    [InlineData("added", LineTypes.Added)]
-    [InlineData("REMOVED", LineTypes.Removed)]
-    [InlineData("CONTEXT", LineTypes.Context)]
-    public void StringToLineType_ReturnsCorrectValue(string input, LineTypes expected)
-    {
-        var result = BitbucketHelpers.StringToLineType(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData(LineTypes.Added, "ADDED")]
     [InlineData(null, null)]
     public void LineTypeToString_Nullable_ReturnsCorrectValue(LineTypes? input, string? expected)
@@ -308,16 +247,6 @@ public class BitbucketHelpersTests
     public void FileTypeToString_ReturnsCorrectValue(FileTypes input, string expected)
     {
         var result = BitbucketHelpers.FileTypeToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("FROM", FileTypes.From)]
-    [InlineData("from", FileTypes.From)]
-    [InlineData("TO", FileTypes.To)]
-    public void StringToFileType_ReturnsCorrectValue(string input, FileTypes expected)
-    {
-        var result = BitbucketHelpers.StringToFileType(input);
         Assert.Equal(expected, result);
     }
 
@@ -365,65 +294,6 @@ public class BitbucketHelpersTests
         Assert.Equal(expected, result);
     }
 
-    [Theory]
-    [InlineData("APPROVED", ParticipantStatus.Approved)]
-    [InlineData("approved", ParticipantStatus.Approved)]
-    [InlineData("NEEDS_WORK", ParticipantStatus.NeedsWork)]
-    [InlineData("UNAPPROVED", ParticipantStatus.Unapproved)]
-    public void StringToParticipantStatus_ReturnsCorrectValue(string input, ParticipantStatus expected)
-    {
-        var result = BitbucketHelpers.StringToParticipantStatus(input);
-        Assert.Equal(expected, result);
-    }
-
-    #endregion
-
-    #region HookTypes Tests
-
-    [Theory]
-    [InlineData(HookTypes.PreReceive, "PRE_RECEIVE")]
-    [InlineData(HookTypes.PostReceive, "POST_RECEIVE")]
-    [InlineData(HookTypes.PrePullRequestMerge, "PRE_PULL_REQUEST_MERGE")]
-    public void HookTypeToString_ReturnsCorrectValue(HookTypes input, string expected)
-    {
-        var result = BitbucketHelpers.HookTypeToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("PRE_RECEIVE", HookTypes.PreReceive)]
-    [InlineData("pre_receive", HookTypes.PreReceive)]
-    [InlineData("POST_RECEIVE", HookTypes.PostReceive)]
-    [InlineData("PRE_PULL_REQUEST_MERGE", HookTypes.PrePullRequestMerge)]
-    public void StringToHookType_ReturnsCorrectValue(string input, HookTypes expected)
-    {
-        var result = BitbucketHelpers.StringToHookType(input);
-        Assert.Equal(expected, result);
-    }
-
-    #endregion
-
-    #region ScopeTypes Tests
-
-    [Theory]
-    [InlineData(ScopeTypes.Project, "PROJECT")]
-    [InlineData(ScopeTypes.Repository, "REPOSITORY")]
-    public void ScopeTypeToString_ReturnsCorrectValue(ScopeTypes input, string expected)
-    {
-        var result = BitbucketHelpers.ScopeTypeToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("PROJECT", ScopeTypes.Project)]
-    [InlineData("project", ScopeTypes.Project)]
-    [InlineData("REPOSITORY", ScopeTypes.Repository)]
-    public void StringToScopeType_ReturnsCorrectValue(string input, ScopeTypes expected)
-    {
-        var result = BitbucketHelpers.StringToScopeType(input);
-        Assert.Equal(expected, result);
-    }
-
     #endregion
 
     #region ArchiveFormats Tests
@@ -457,17 +327,6 @@ public class BitbucketHelpersTests
     public void WebHookOutcomeToString_ReturnsCorrectValue(WebHookOutcomes input, string expected)
     {
         var result = BitbucketHelpers.WebHookOutcomeToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("SUCCESS", WebHookOutcomes.Success)]
-    [InlineData("success", WebHookOutcomes.Success)]
-    [InlineData("FAILURE", WebHookOutcomes.Failure)]
-    [InlineData("ERROR", WebHookOutcomes.Error)]
-    public void StringToWebHookOutcome_ReturnsCorrectValue(string input, WebHookOutcomes expected)
-    {
-        var result = BitbucketHelpers.StringToWebHookOutcome(input);
         Assert.Equal(expected, result);
     }
 
@@ -567,46 +426,11 @@ public class BitbucketHelpersTests
     }
 
     [Theory]
-    [InlineData("read-only", RefRestrictionTypes.AllChanges)]
-    [InlineData("READ-ONLY", RefRestrictionTypes.AllChanges)]
-    [InlineData("fast-forward-only", RefRestrictionTypes.RewritingHistory)]
-    [InlineData("no-deletes", RefRestrictionTypes.Deletion)]
-    [InlineData("pull-request-only", RefRestrictionTypes.ChangesWithoutPullRequest)]
-    public void StringToRefRestrictionType_ReturnsCorrectValue(string input, RefRestrictionTypes expected)
-    {
-        var result = BitbucketHelpers.StringToRefRestrictionType(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData(RefRestrictionTypes.AllChanges, "read-only")]
     [InlineData(null, null)]
     public void RefRestrictionTypeToString_Nullable_ReturnsCorrectValue(RefRestrictionTypes? input, string? expected)
     {
         var result = BitbucketHelpers.RefRestrictionTypeToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    #endregion
-
-    #region SynchronizeActions Tests
-
-    [Theory]
-    [InlineData(SynchronizeActions.Merge, "MERGE")]
-    [InlineData(SynchronizeActions.Discard, "DISCARD")]
-    public void SynchronizeActionToString_ReturnsCorrectValue(SynchronizeActions input, string expected)
-    {
-        var result = BitbucketHelpers.SynchronizeActionToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("MERGE", SynchronizeActions.Merge)]
-    [InlineData("merge", SynchronizeActions.Merge)]
-    [InlineData("DISCARD", SynchronizeActions.Discard)]
-    public void StringToSynchronizeAction_ReturnsCorrectValue(string input, SynchronizeActions expected)
-    {
-        var result = BitbucketHelpers.StringToSynchronizeAction(input);
         Assert.Equal(expected, result);
     }
 
@@ -624,53 +448,11 @@ public class BitbucketHelpersTests
     }
 
     [Theory]
-    [InlineData("OPEN", BlockerCommentState.Open)]
-    [InlineData("open", BlockerCommentState.Open)]
-    [InlineData("RESOLVED", BlockerCommentState.Resolved)]
-    public void StringToBlockerCommentState_ReturnsCorrectValue(string input, BlockerCommentState expected)
-    {
-        var result = BitbucketHelpers.StringToBlockerCommentState(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
     [InlineData(BlockerCommentState.Open, "OPEN")]
     [InlineData(null, null)]
     public void BlockerCommentStateToString_Nullable_ReturnsCorrectValue(BlockerCommentState? input, string? expected)
     {
         var result = BitbucketHelpers.BlockerCommentStateToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    #endregion
-
-    #region CommentSeverity Tests
-
-    [Theory]
-    [InlineData(CommentSeverity.Normal, "NORMAL")]
-    [InlineData(CommentSeverity.Blocker, "BLOCKER")]
-    public void CommentSeverityToString_ReturnsCorrectValue(CommentSeverity input, string expected)
-    {
-        var result = BitbucketHelpers.CommentSeverityToString(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("NORMAL", CommentSeverity.Normal)]
-    [InlineData("normal", CommentSeverity.Normal)]
-    [InlineData("BLOCKER", CommentSeverity.Blocker)]
-    public void StringToCommentSeverity_ReturnsCorrectValue(string input, CommentSeverity expected)
-    {
-        var result = BitbucketHelpers.StringToCommentSeverity(input);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData(CommentSeverity.Normal, "NORMAL")]
-    [InlineData(null, null)]
-    public void CommentSeverityToString_Nullable_ReturnsCorrectValue(CommentSeverity? input, string? expected)
-    {
-        var result = BitbucketHelpers.CommentSeverityToString(input);
         Assert.Equal(expected, result);
     }
 

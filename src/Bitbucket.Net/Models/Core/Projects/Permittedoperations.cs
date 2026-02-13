@@ -1,8 +1,8 @@
-﻿namespace Bitbucket.Net.Models.Core.Projects;
+namespace Bitbucket.Net.Models.Core.Projects;
 
 public class Permittedoperations
 {
-    public bool Editable { get; set; }
-    public bool Deletable { get; set; }
-    public bool Transitionable { get; set; }
+    public bool Editable { get; init; }
+    public bool Deletable { get; init; }
+    public bool Transitionable { get; init; }
 }

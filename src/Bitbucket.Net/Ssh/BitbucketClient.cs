@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.Core.Admin;
 using Bitbucket.Net.Models.RefRestrictions;
 using Bitbucket.Net.Models.Ssh;
@@ -51,7 +50,7 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if deletion succeeded; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectsReposKeysAsync(int keyId, CancellationToken cancellationToken, params string[] projectsOrRepos)
     {
-        var json = JsonSerializer.Serialize(projectsOrRepos);
+        var json = JsonSerializer.Serialize(projectsOrRepos, s_writeJsonOptions);
         var response = await GetKeysUrl($"/ssh/{keyId}")
             .WithHeader("Content-Type", "application/json")
             .SendAsync(HttpMethod.Delete, new StringContent(json, Encoding.UTF8, "application/json"), cancellationToken: cancellationToken)
@@ -80,7 +79,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of project keys.</returns>
-    public async Task<IEnumerable<ProjectKey>> GetProjectKeysAsync(int keyId,
+    public Task<IReadOnlyList<ProjectKey>> GetProjectKeysAsync(int keyId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -92,16 +91,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetKeysUrl($"/ssh/{keyId}/projects")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<ProjectKey>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<ProjectKey>(
+            GetKeysUrl($"/ssh/{keyId}/projects"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -115,7 +106,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of project keys.</returns>
-    public async Task<IEnumerable<ProjectKey>> GetProjectKeysAsync(string projectKey,
+    public Task<IReadOnlyList<ProjectKey>> GetProjectKeysAsync(string projectKey,
         string? filter = null,
         Permissions? permission = null,
         int? maxPages = null,
@@ -123,6 +114,8 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -131,16 +124,8 @@ public partial class BitbucketClient
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetKeysUrl($"/projects/{projectKey}/ssh")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<ProjectKey>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<ProjectKey>(
+            GetKeysUrl($"/projects/{projectKey}/ssh"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -153,6 +138,9 @@ public partial class BitbucketClient
     /// <returns>The created project key.</returns>
     public async Task<ProjectKey> CreateProjectKeyAsync(string projectKey, string keyText, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var data = new
         {
             key = new { text = keyText },
@@ -175,6 +163,8 @@ public partial class BitbucketClient
     /// <returns>The requested project key.</returns>
     public async Task<ProjectKey> GetProjectKeyAsync(string projectKey, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -191,6 +181,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the key was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectKeyAsync(string projectKey, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -208,6 +200,8 @@ public partial class BitbucketClient
     /// <returns>The updated project key.</returns>
     public async Task<ProjectKey> UpdateProjectKeyPermissionAsync(string projectKey, int keyId, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/ssh/{keyId}/permissions/{BitbucketHelpers.PermissionToString(permission)}")
             .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -224,7 +218,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository keys.</returns>
-    public async Task<IEnumerable<RepositoryKey>> GetRepoKeysAsync(int keyId,
+    public Task<IReadOnlyList<RepositoryKey>> GetRepoKeysAsync(int keyId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -236,16 +230,8 @@ public partial class BitbucketClient
             ["start"] = start,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetKeysUrl($"/ssh/{keyId}/repos")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RepositoryKey>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RepositoryKey>(
+            GetKeysUrl($"/ssh/{keyId}/repos"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -261,7 +247,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of repository keys.</returns>
-    public async Task<IEnumerable<RepositoryKey>> GetRepoKeysAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<RepositoryKey>> GetRepoKeysAsync(string projectKey, string repositorySlug,
         string? filter = null,
         bool? effective = null,
         Permissions? permission = null,
@@ -270,6 +256,9 @@ public partial class BitbucketClient
         int? start = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["limit"] = limit,
@@ -279,16 +268,8 @@ public partial class BitbucketClient
             ["permission"] = BitbucketHelpers.PermissionToString(permission),
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RepositoryKey>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RepositoryKey>(
+            GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -302,6 +283,10 @@ public partial class BitbucketClient
     /// <returns>The created repository key.</returns>
     public async Task<RepositoryKey> CreateRepoKeyAsync(string projectKey, string repositorySlug, string keyText, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var data = new
         {
             key = new { text = keyText },
@@ -325,6 +310,9 @@ public partial class BitbucketClient
     /// <returns>The requested repository key.</returns>
     public async Task<RepositoryKey> GetRepoKeyAsync(string projectKey, string repositorySlug, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}")
             .GetAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -342,6 +330,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the key was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteRepoKeyAsync(string projectKey, string repositorySlug, int keyId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -360,6 +351,9 @@ public partial class BitbucketClient
     /// <returns>The updated repository key.</returns>
     public async Task<RepositoryKey> UpdateRepoKeyPermissionAsync(string projectKey, string repositorySlug, int keyId, Permissions permission, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetKeysUrl($"/projects/{projectKey}/repos/{repositorySlug}/ssh/{keyId}/permissions/{BitbucketHelpers.PermissionToString(permission)}")
             .PutAsync(new StringContent(""), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -376,7 +370,7 @@ public partial class BitbucketClient
     /// <param name="start">Optional starting index for pagination.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of SSH keys.</returns>
-    public async Task<IEnumerable<Key>> GetUserKeysAsync(string? userSlug = null,
+    public Task<IReadOnlyList<Key>> GetUserKeysAsync(string? userSlug = null,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
@@ -389,16 +383,8 @@ public partial class BitbucketClient
             ["user"] = userSlug,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetSshUrl("/keys")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<Key>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<Key>(
+            GetSshUrl("/keys"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -410,6 +396,8 @@ public partial class BitbucketClient
     /// <returns>The created SSH key.</returns>
     public async Task<Key> CreateUserKeyAsync(string keyText, string? userSlug = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(keyText);
+
         var response = await GetSshUrl("/keys")
             .SetQueryParam("user", userSlug)
             .SendAsync(HttpMethod.Post, CreateJsonContent(new { text = keyText }), cancellationToken: cancellationToken)

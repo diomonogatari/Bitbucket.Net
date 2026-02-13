@@ -1,4 +1,4 @@
-using Bitbucket.Net.Models.Core.Projects;
+using Bitbucket.Net.Models.Core.Projects.Requests;
 using Bitbucket.Net.Tests.Infrastructure;
 using Xunit;
 
@@ -15,14 +15,14 @@ public class ProjectCrudMockTests(BitbucketMockFixture fixture) : IClassFixture<
         _fixture.Server.SetupCreateProject();
         var client = _fixture.CreateClient();
 
-        var projectDef = new ProjectDefinition
+        var request = new CreateProjectRequest
         {
             Key = TestConstants.TestProjectKey,
             Name = TestConstants.TestProjectName,
             Description = "Created by unit test"
         };
 
-        var project = await client.CreateProjectAsync(projectDef);
+        var project = await client.CreateProjectAsync(request);
 
         Assert.NotNull(project);
         Assert.Equal(TestConstants.TestProjectKey, project.Key);
@@ -36,13 +36,13 @@ public class ProjectCrudMockTests(BitbucketMockFixture fixture) : IClassFixture<
         _fixture.Server.SetupUpdateProject(TestConstants.TestProjectKey);
         var client = _fixture.CreateClient();
 
-        var projectDef = new ProjectDefinition
+        var request = new UpdateProjectRequest
         {
             Name = "Updated Name",
             Description = "Updated by unit test"
         };
 
-        var project = await client.UpdateProjectAsync(TestConstants.TestProjectKey, projectDef);
+        var project = await client.UpdateProjectAsync(TestConstants.TestProjectKey, request);
 
         Assert.NotNull(project);
         Assert.Equal(TestConstants.TestProjectKey, project.Key);

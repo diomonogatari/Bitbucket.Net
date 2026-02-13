@@ -1,5 +1,4 @@
 using Bitbucket.Net.Common;
-using Bitbucket.Net.Common.Models;
 using Bitbucket.Net.Models.RefRestrictions;
 using Flurl.Http;
 
@@ -37,7 +36,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
+    public Task<IReadOnlyList<RefRestriction>> GetProjectRefRestrictionsAsync(string projectKey,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -47,6 +46,8 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["type"] = BitbucketHelpers.RefRestrictionTypeToString(type),
@@ -57,16 +58,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RefRestriction>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RefRestriction>(
+            GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -76,14 +69,17 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions")
             .WithHeader("Accept", "application/vnd.atl.bitbucket.bulk+json")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestrictions), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -92,8 +88,10 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateProjectRefRestrictionsAsync(string projectKey, params RefRestrictionCreate[] refRestrictions)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         return await CreateProjectRefRestrictionsAsync(projectKey, default, refRestrictions).ConfigureAwait(false);
     }
 
@@ -106,6 +104,8 @@ public partial class BitbucketClient
     /// <returns>The created reference restriction.</returns>
     public async Task<RefRestriction> CreateProjectRefRestrictionAsync(string projectKey, RefRestrictionCreate refRestriction, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestriction), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -123,6 +123,8 @@ public partial class BitbucketClient
     /// <returns>The requested reference restriction.</returns>
     public async Task<RefRestriction> GetProjectRefRestrictionAsync(string projectKey, int refRestrictionId, int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions/{refRestrictionId}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -140,6 +142,8 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the restriction was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteProjectRefRestrictionAsync(string projectKey, int refRestrictionId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/restrictions/{refRestrictionId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -161,7 +165,7 @@ public partial class BitbucketClient
     /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
+    public Task<IReadOnlyList<RefRestriction>> GetRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug,
         RefRestrictionTypes? type = null,
         RefMatcherTypes? matcherType = null,
         string? matcherId = null,
@@ -171,6 +175,9 @@ public partial class BitbucketClient
         int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             ["type"] = BitbucketHelpers.RefRestrictionTypeToString(type),
@@ -181,16 +188,8 @@ public partial class BitbucketClient
             ["avatarSize"] = avatarSize,
         };
 
-        return await GetPagedResultsAsync(maxPages, queryParamValues, async (qpv, ct) =>
-            {
-                var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions")
-                    .SetQueryParams(qpv)
-                    .GetAsync(ct)
-                    .ConfigureAwait(false);
-
-                return await HandleResponseAsync<PagedResults<RefRestriction>>(response, cancellationToken: ct).ConfigureAwait(false);
-            }, cancellationToken)
-            .ConfigureAwait(false);
+        return GetPagedAsync<RefRestriction>(
+            GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions"), queryParamValues, maxPages, cancellationToken);
     }
 
     /// <summary>
@@ -201,14 +200,18 @@ public partial class BitbucketClient
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, CancellationToken cancellationToken, params RefRestrictionCreate[] refRestrictions)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions")
             .WithHeader("Accept", "application/vnd.atl.bitbucket.bulk+json")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestrictions), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var items = await HandleResponseAsync<IEnumerable<RefRestriction>>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return items.ToList();
     }
 
     /// <summary>
@@ -218,8 +221,11 @@ public partial class BitbucketClient
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="refRestrictions">The reference restrictions to create.</param>
     /// <returns>The created reference restrictions.</returns>
-    public async Task<IEnumerable<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, params RefRestrictionCreate[] refRestrictions)
+    public async Task<IReadOnlyList<RefRestriction>> CreateRepositoryRefRestrictionsAsync(string projectKey, string repositorySlug, params RefRestrictionCreate[] refRestrictions)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         return await CreateRepositoryRefRestrictionsAsync(projectKey, repositorySlug, default, refRestrictions).ConfigureAwait(false);
     }
 
@@ -233,6 +239,9 @@ public partial class BitbucketClient
     /// <returns>The created reference restriction.</returns>
     public async Task<RefRestriction> CreateRepositoryRefRestrictionAsync(string projectKey, string repositorySlug, RefRestrictionCreate refRestriction, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions")
             .SendAsync(HttpMethod.Post, CreateJsonContent(refRestriction), cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -252,6 +261,9 @@ public partial class BitbucketClient
     public async Task<RefRestriction> GetRepositoryRefRestrictionAsync(string projectKey, string repositorySlug, int refRestrictionId,
         int? avatarSize = null, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions/{refRestrictionId}")
             .SetQueryParam("avatarSize", avatarSize)
             .GetAsync(cancellationToken)
@@ -270,6 +282,9 @@ public partial class BitbucketClient
     /// <returns><c>true</c> if the restriction was deleted; otherwise, <c>false</c>.</returns>
     public async Task<bool> DeleteRepositoryRefRestrictionAsync(string projectKey, string repositorySlug, int refRestrictionId, CancellationToken cancellationToken = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
+
         var response = await GetRefRestrictionsUrl($"/projects/{projectKey}/repos/{repositorySlug}/restrictions/{refRestrictionId}")
             .DeleteAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
