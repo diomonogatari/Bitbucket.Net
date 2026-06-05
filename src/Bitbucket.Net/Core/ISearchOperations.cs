@@ -10,7 +10,9 @@ namespace Bitbucket.Net;
 public interface ISearchOperations
 {
     Task<IReadOnlyList<Repository>> GetRepositoriesAsync(int? maxPages = null, int? limit = null, int? start = null, string? name = null, string? projectName = null, Permissions? permission = null, bool isPublic = false, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Repository>> GetRepositoriesAsync(RepositoryArchivedState archived, int? maxPages = null, int? limit = null, int? start = null, string? name = null, string? projectName = null, Permissions? permission = null, bool isPublic = false, CancellationToken cancellationToken = default);
     IAsyncEnumerable<Repository> GetRepositoriesStreamAsync(int? maxPages = null, int? limit = null, int? start = null, string? name = null, string? projectName = null, Permissions? permission = null, bool isPublic = false, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<Repository> GetRepositoriesStreamAsync(RepositoryArchivedState archived, int? maxPages = null, int? limit = null, int? start = null, string? name = null, string? projectName = null, Permissions? permission = null, bool isPublic = false, CancellationToken cancellationToken = default);
     Task<CodeSearchResponse> SearchCodeAsync(string query, int primaryLimit = 25, int secondaryLimit = 10, CancellationToken cancellationToken = default);
     Task<bool> IsSearchAvailableAsync(CancellationToken cancellationToken = default);
 }

@@ -144,6 +144,20 @@ public static class BitbucketHelpers
 
     #endregion
 
+    #region RepositoryArchivedState
+
+    /// <summary>
+    /// Converts a <see cref="RepositoryArchivedState"/> value to the Bitbucket API string
+    /// (<c>ACTIVE</c>, <c>ARCHIVED</c>, or <c>ALL</c>).
+    /// </summary>
+    /// <param name="archived">The archived-state filter to convert.</param>
+    /// <returns>The API string representation.</returns>
+    /// <exception cref="ArgumentException">Thrown when the value is not recognized.</exception>
+    public static string RepositoryArchivedStateToString(RepositoryArchivedState archived)
+        => BitbucketEnumMaps.RepositoryArchivedState.ToApiString(archived);
+
+    #endregion
+
     #region MergeCommits
 
     /// <summary>
