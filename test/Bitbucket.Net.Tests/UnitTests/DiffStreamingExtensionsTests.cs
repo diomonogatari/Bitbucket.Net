@@ -120,7 +120,7 @@ public class DiffStreamingExtensionsTests
     [Fact]
     public async Task StreamDiffsWithLimitsAsync_Empty_YieldsNothing()
     {
-        var diffs = AsyncEnumerable.Empty<Diff>();
+        var diffs = CreateDiffsAsync(0, 0);
 
         var results = await ToListAsync(diffs.StreamDiffsWithLimitsAsync());
 
@@ -191,7 +191,7 @@ public class DiffStreamingExtensionsTests
     [Fact]
     public async Task TakeDiffsWithLimitsAsync_Empty_ReturnsEmpty()
     {
-        var diffs = AsyncEnumerable.Empty<Diff>();
+        var diffs = CreateDiffsAsync(0, 0);
 
         var result = await diffs.TakeDiffsWithLimitsAsync();
 
