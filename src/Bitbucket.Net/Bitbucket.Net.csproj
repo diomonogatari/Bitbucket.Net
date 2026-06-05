@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>BitbucketServer.Net</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Diogo Carvalho</Authors>
     <Description>Modernized fork of Bitbucket.Net — C# client for Bitbucket Server (Stash) REST API. Adds streaming, CancellationToken support, System.Text.Json, typed exceptions, and Bitbucket Server 9.0+ compatibility.</Description>
     <PackageTags>bitbucket;bitbucket-server;stash;rest-api;api-client;atlassian;sdk;dotnet</PackageTags>
@@ -22,8 +22,10 @@
          targets expose a compatible surface, and (once the baseline below is set after 1.0.0 ships)
          flags accidental breaking changes against the previous release. -->
     <EnablePackageValidation>true</EnablePackageValidation>
-    <!-- After 1.0.0 is published to NuGet, uncomment so 1.0.x / 1.x are checked against it:
-    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
+    <!-- 1.0.0 is the published API baseline: every build is diffed against it, so an accidental
+         breaking change (a removed/changed member, or a dropped target framework) fails the pack.
+         Bump this to the latest released version when intentionally shipping a new baseline. -->
+    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>
