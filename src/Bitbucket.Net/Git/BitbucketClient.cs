@@ -14,14 +14,14 @@ public partial class BitbucketClient
     /// Gets the base Git URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the Git root.</returns>
-    private IFlurlRequest GetGitUrl() => GetBaseUrl("/git");
+    protected IFlurlRequest GetGitUrl() => GetBaseUrl("/git");
 
     /// <summary>
     /// Gets the Git URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the Git root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the Git path.</returns>
-    private IFlurlRequest GetGitUrl(string path) => GetGitUrl()
+    protected IFlurlRequest GetGitUrl(string path) => GetGitUrl()
         .AppendPathSegment(path);
 
     /// <summary>

@@ -14,7 +14,7 @@ public partial class BitbucketClient
     /// Gets the base logs URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the logs endpoint.</returns>
-    private IFlurlRequest GetLogsUrl() => GetBaseUrl()
+    protected IFlurlRequest GetLogsUrl() => GetBaseUrl()
         .AppendPathSegment("/logs");
 
     /// <summary>
@@ -22,7 +22,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the logs endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the logs path.</returns>
-    private IFlurlRequest GetLogsUrl(string path) => GetLogsUrl()
+    protected IFlurlRequest GetLogsUrl(string path) => GetLogsUrl()
         .AppendPathSegment(path);
 
     /// <summary>

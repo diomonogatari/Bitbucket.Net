@@ -11,7 +11,7 @@ public partial class BitbucketClient
     /// Gets the base groups URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the groups endpoint.</returns>
-    private IFlurlRequest GetGroupsUrl() => GetBaseUrl()
+    protected IFlurlRequest GetGroupsUrl() => GetBaseUrl()
         .AppendPathSegment("/groups");
 
     /// <summary>

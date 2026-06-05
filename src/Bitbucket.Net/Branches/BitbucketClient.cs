@@ -16,14 +16,14 @@ public partial class BitbucketClient
     /// Gets the base URL for branch utilities.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> configured for branch utilities.</returns>
-    private IFlurlRequest GetBranchUrl() => GetBaseUrl("/branch-utils");
+    protected IFlurlRequest GetBranchUrl() => GetBaseUrl("/branch-utils");
 
     /// <summary>
     /// Gets the branch utilities URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the branch utilities root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the requested branch utilities path.</returns>
-    private IFlurlRequest GetBranchUrl(string path) => GetBranchUrl()
+    protected IFlurlRequest GetBranchUrl(string path) => GetBranchUrl()
         .AppendPathSegment(path);
 
     /// <summary>

@@ -13,14 +13,14 @@ public partial class BitbucketClient
     /// Gets the base personal access token URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the PAT root.</returns>
-    private IFlurlRequest GetPatUrl() => GetBaseUrl("/access-tokens");
+    protected IFlurlRequest GetPatUrl() => GetBaseUrl("/access-tokens");
 
     /// <summary>
     /// Gets the personal access token URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the PAT root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the PAT path.</returns>
-    private IFlurlRequest GetPatUrl(string path) => GetPatUrl()
+    protected IFlurlRequest GetPatUrl(string path) => GetPatUrl()
         .AppendPathSegment(path);
 
     /// <summary>

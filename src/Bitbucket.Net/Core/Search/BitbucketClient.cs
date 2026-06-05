@@ -10,7 +10,7 @@ namespace Bitbucket.Net;
 /// </summary>
 public partial class BitbucketClient
 {
-    private IFlurlRequest GetSearchUrl() => GetBaseUrl("/search", "latest");
+    protected IFlurlRequest GetSearchUrl() => GetBaseUrl("/search", "latest");
 
     /// <summary>
     /// Performs a server-side code search using the Bitbucket Code Search API.

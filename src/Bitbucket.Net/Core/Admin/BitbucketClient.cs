@@ -15,7 +15,7 @@ public partial class BitbucketClient
     /// Gets the base admin URL for Bitbucket Server operations.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the admin endpoint.</returns>
-    private IFlurlRequest GetAdminUrl() => GetBaseUrl()
+    protected IFlurlRequest GetAdminUrl() => GetBaseUrl()
         .AppendPathSegment("/admin");
 
     /// <summary>
@@ -23,7 +23,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append.</param>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the admin path.</returns>
-    private IFlurlRequest GetAdminUrl(string path) => GetAdminUrl()
+    protected IFlurlRequest GetAdminUrl(string path) => GetAdminUrl()
         .AppendPathSegment(path);
 
     /// <summary>

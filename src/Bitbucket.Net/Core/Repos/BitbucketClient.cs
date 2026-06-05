@@ -14,7 +14,7 @@ public partial class BitbucketClient
     /// Gets the base repositories URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the repos endpoint.</returns>
-    private IFlurlRequest GetReposUrl() => GetBaseUrl()
+    protected IFlurlRequest GetReposUrl() => GetBaseUrl()
         .AppendPathSegment("/repos");
 
     /// <summary>

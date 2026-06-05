@@ -12,7 +12,7 @@ public partial class BitbucketClient
     /// Gets the base hooks URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the hooks endpoint.</returns>
-    private IFlurlRequest GetHooksUrl() => GetBaseUrl()
+    protected IFlurlRequest GetHooksUrl() => GetBaseUrl()
         .AppendPathSegment("/hooks");
 
     /// <summary>

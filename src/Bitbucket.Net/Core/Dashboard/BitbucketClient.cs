@@ -13,7 +13,7 @@ public partial class BitbucketClient
     /// Gets the base dashboard URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the dashboard root.</returns>
-    private IFlurlRequest GetDashboardUrl() => GetBaseUrl()
+    protected IFlurlRequest GetDashboardUrl() => GetBaseUrl()
         .AppendPathSegment("/dashboard");
 
     /// <summary>
@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the dashboard root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the dashboard path.</returns>
-    private IFlurlRequest GetDashboardUrl(string path) => GetDashboardUrl()
+    protected IFlurlRequest GetDashboardUrl(string path) => GetDashboardUrl()
         .AppendPathSegment(path);
 
     /// <summary>

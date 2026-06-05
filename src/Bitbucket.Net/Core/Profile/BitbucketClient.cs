@@ -14,7 +14,7 @@ public partial class BitbucketClient
     /// Gets the base profile URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the profile endpoint.</returns>
-    private IFlurlRequest GetProfileUrl() => GetBaseUrl()
+    protected IFlurlRequest GetProfileUrl() => GetBaseUrl()
         .AppendPathSegment("/profile");
 
     /// <summary>
@@ -22,7 +22,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the profile endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the profile path.</returns>
-    private IFlurlRequest GetProfileUrl(string path) => GetProfileUrl()
+    protected IFlurlRequest GetProfileUrl(string path) => GetProfileUrl()
         .AppendPathSegment(path);
 
     /// <summary>
