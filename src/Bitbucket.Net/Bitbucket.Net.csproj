@@ -18,6 +18,12 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <!-- Enforce ConfigureAwait(false) as this is a library -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Lock the public/protected API surface at pack time: validates that the net8.0 and net10.0
+         targets expose a compatible surface, and (once the baseline below is set after 1.0.0 ships)
+         flags accidental breaking changes against the previous release. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!-- After 1.0.0 is published to NuGet, uncomment so 1.0.x / 1.x are checked against it:
+    <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
   </PropertyGroup>
 
   <ItemGroup>
