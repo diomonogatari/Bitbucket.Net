@@ -268,8 +268,9 @@ public partial class BitbucketClient
     }
 
     /// <summary>
-    /// Updates a file at the specified path in the repository.
-    /// Uses ArrayPool&lt;byte&gt; for zero-copy buffer management to minimize heap allocations.
+    /// Updates a file at the specified path in the repository from a file on disk.
+    /// Uses ArrayPool&lt;byte&gt; for zero-copy buffer management to minimize heap allocations,
+    /// then delegates to the stream overload to perform the upload.
     /// </summary>
     public async Task<Commit> UpdateProjectRepositoryPathAsync(string projectKey, string repositorySlug, string path,
         string fileName,
@@ -303,25 +304,54 @@ public partial class BitbucketClient
             // Create MemoryStream over the exact bytes read (not the rented buffer size)
             using var memoryStream = new MemoryStream(buffer, 0, bytesRead, writable: false);
 
-            var data = new DynamicMultipartFormDataContent
-            {
-                { new StreamContent(memoryStream), "content" },
-                { new StringContent(branch), "branch" },
-                { message, message == null ? null : new StringContent(message), "message" },
-                { sourceCommitId, sourceCommitId == null ? null : new StringContent(sourceCommitId), "sourceCommitId" },
-                { sourceBranch, sourceBranch == null ? null : new StringContent(sourceBranch), "sourceBranch" },
-            };
-
-            var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/browse/{path}")
-                .PutAsync(data.ToMultipartFormDataContent(), cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            return await HandleResponseAsync<Commit>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await UpdateProjectRepositoryPathAsync(projectKey, repositorySlug, path, memoryStream, branch, message, sourceCommitId, sourceBranch, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
             // Always return the buffer to the pool
             ArrayPool<byte>.Shared.Return(buffer);
         }
+    }
+
+    /// <summary>
+    /// Updates a file at the specified path in the repository from an in-memory content stream,
+    /// without requiring a file on disk. For string content, wrap it in a stream
+    /// (for example <c>new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content))</c>).
+    /// </summary>
+    /// <param name="projectKey">The project key.</param>
+    /// <param name="repositorySlug">The repository slug.</param>
+    /// <param name="path">The file path within the repository.</param>
+    /// <param name="content">The new file content. The stream is read from its current position.</param>
+    /// <param name="branch">The branch to commit to.</param>
+    /// <param name="message">Optional commit message.</param>
+    /// <param name="sourceCommitId">Optional expected source commit id for optimistic locking.</param>
+    /// <param name="sourceBranch">Optional source branch to create the target branch from.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The commit produced by the update.</returns>
+    public async Task<Commit> UpdateProjectRepositoryPathAsync(string projectKey, string repositorySlug, string path,
+        Stream content,
+        string branch,
+        string? message = null,
+        string? sourceCommitId = null,
+        string? sourceBranch = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(content);
+
+        var data = new DynamicMultipartFormDataContent
+        {
+            { new StreamContent(content), "content" },
+            { new StringContent(branch), "branch" },
+            { message, message == null ? null : new StringContent(message), "message" },
+            { sourceCommitId, sourceCommitId == null ? null : new StringContent(sourceCommitId), "sourceCommitId" },
+            { sourceBranch, sourceBranch == null ? null : new StringContent(sourceBranch), "sourceBranch" },
+        };
+
+        var response = await GetProjectsReposUrl(projectKey, repositorySlug, $"/browse/{path}")
+            .PutAsync(data.ToMultipartFormDataContent(), cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return await HandleResponseAsync<Commit>(response, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }
