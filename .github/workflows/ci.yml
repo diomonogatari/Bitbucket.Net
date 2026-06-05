@@ -46,6 +46,11 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./coverage
 
+      # Runs Package Validation (EnablePackageValidation) so an accidental API break vs the
+      # published baseline fails the PR here, not only at release time.
+      - name: Pack (API baseline validation)
+        run: dotnet pack src/Bitbucket.Net/Bitbucket.Net.csproj --no-build -c Release -o ./artifacts
+
       - name: Upload coverage
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: codecov/codecov-action@v4
