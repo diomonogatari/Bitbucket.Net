@@ -9,14 +9,14 @@ public partial class BitbucketClient
     /// Gets the base audit URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> representing the audit endpoint.</returns>
-    private IFlurlRequest GetAuditUrl() => GetBaseUrl("/audit");
+    protected IFlurlRequest GetAuditUrl() => GetBaseUrl("/audit");
 
     /// <summary>
     /// Gets the audit URL with the specified path appended.
     /// </summary>
     /// <param name="path">The path to append to the audit URL.</param>
     /// <returns>An <see cref="IFlurlRequest"/> representing the audit endpoint with the specified path.</returns>
-    private IFlurlRequest GetAuditUrl(string path) => GetAuditUrl()
+    protected IFlurlRequest GetAuditUrl(string path) => GetAuditUrl()
         .AppendPathSegment(path);
 
     /// <summary>

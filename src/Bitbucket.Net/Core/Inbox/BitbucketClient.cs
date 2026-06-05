@@ -14,7 +14,7 @@ public partial class BitbucketClient
     /// Gets the base inbox URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the inbox endpoint.</returns>
-    private IFlurlRequest GetInboxUrl() => GetBaseUrl()
+    protected IFlurlRequest GetInboxUrl() => GetBaseUrl()
         .AppendPathSegment("/inbox");
 
     /// <summary>
@@ -22,7 +22,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the inbox endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the inbox path.</returns>
-    private IFlurlRequest GetInboxUrl(string path) => GetInboxUrl()
+    protected IFlurlRequest GetInboxUrl(string path) => GetInboxUrl()
         .AppendPathSegment(path);
 
     /// <summary>

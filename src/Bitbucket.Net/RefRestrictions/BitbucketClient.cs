@@ -13,14 +13,14 @@ public partial class BitbucketClient
     /// Gets the base ref restrictions URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the branch permissions root.</returns>
-    private IFlurlRequest GetRefRestrictionsUrl() => GetBaseUrl("/branch-permissions", "2.0");
+    protected IFlurlRequest GetRefRestrictionsUrl() => GetBaseUrl("/branch-permissions", "2.0");
 
     /// <summary>
     /// Gets the ref restrictions URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the branch permissions root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the requested branch permissions path.</returns>
-    private IFlurlRequest GetRefRestrictionsUrl(string path) => GetRefRestrictionsUrl()
+    protected IFlurlRequest GetRefRestrictionsUrl(string path) => GetRefRestrictionsUrl()
         .AppendPathSegment(path);
 
     /// <summary>

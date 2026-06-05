@@ -17,28 +17,28 @@ public partial class BitbucketClient
     /// Gets the base SSH keys URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the keys root.</returns>
-    private IFlurlRequest GetKeysUrl() => GetBaseUrl("/keys");
+    protected IFlurlRequest GetKeysUrl() => GetBaseUrl("/keys");
 
     /// <summary>
     /// Gets the SSH keys URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the keys root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the keys path.</returns>
-    private IFlurlRequest GetKeysUrl(string path) => GetKeysUrl()
+    protected IFlurlRequest GetKeysUrl(string path) => GetKeysUrl()
         .AppendPathSegment(path);
 
     /// <summary>
     /// Gets the base SSH URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the SSH root.</returns>
-    private IFlurlRequest GetSshUrl() => GetBaseUrl("/ssh");
+    protected IFlurlRequest GetSshUrl() => GetBaseUrl("/ssh");
 
     /// <summary>
     /// Gets the SSH URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the SSH root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the SSH path.</returns>
-    private IFlurlRequest GetSshUrl(string path) => GetSshUrl()
+    protected IFlurlRequest GetSshUrl(string path) => GetSshUrl()
         .AppendPathSegment(path);
 
     /// <summary>

@@ -14,14 +14,14 @@ public partial class BitbucketClient
     /// Gets the base Jira URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the Jira root.</returns>
-    private IFlurlRequest GetJiraUrl() => GetBaseUrl("/jira");
+    protected IFlurlRequest GetJiraUrl() => GetBaseUrl("/jira");
 
     /// <summary>
     /// Gets the Jira URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the Jira root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the Jira path.</returns>
-    private IFlurlRequest GetJiraUrl(string path) => GetJiraUrl()
+    protected IFlurlRequest GetJiraUrl(string path) => GetJiraUrl()
         .AppendPathSegment(path);
 
     /// <summary>

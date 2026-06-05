@@ -14,7 +14,7 @@ public partial class BitbucketClient
     /// Gets the base tasks URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the tasks endpoint.</returns>
-    private IFlurlRequest GetTasksUrl() => GetBaseUrl()
+    protected IFlurlRequest GetTasksUrl() => GetBaseUrl()
         .AppendPathSegment("/tasks");
 
     /// <summary>
@@ -22,7 +22,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the tasks endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the tasks path.</returns>
-    private IFlurlRequest GetTasksUrl(string path) => GetTasksUrl()
+    protected IFlurlRequest GetTasksUrl(string path) => GetTasksUrl()
         .AppendPathSegment(path);
 
     /// <summary>

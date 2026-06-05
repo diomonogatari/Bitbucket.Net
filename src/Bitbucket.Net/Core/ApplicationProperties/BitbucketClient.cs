@@ -12,7 +12,7 @@ public partial class BitbucketClient
     /// Gets the base application properties URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the application-properties endpoint.</returns>
-    private IFlurlRequest GetApplicationPropertiesUrl() => GetBaseUrl()
+    protected IFlurlRequest GetApplicationPropertiesUrl() => GetBaseUrl()
         .AppendPathSegment("/application-properties");
 
     /// <summary>

@@ -12,14 +12,14 @@ public partial class BitbucketClient
     /// Gets the base URL for comment likes.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the comment likes root.</returns>
-    private IFlurlRequest GetCommentLikesUrl() => GetBaseUrl("/comment-likes");
+    protected IFlurlRequest GetCommentLikesUrl() => GetBaseUrl("/comment-likes");
 
     /// <summary>
     /// Gets the comment likes URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the comment likes root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the comment likes path.</returns>
-    private IFlurlRequest GetCommentLikesUrl(string path) => GetCommentLikesUrl()
+    protected IFlurlRequest GetCommentLikesUrl(string path) => GetCommentLikesUrl()
         .AppendPathSegment(path);
 
     /// <summary>

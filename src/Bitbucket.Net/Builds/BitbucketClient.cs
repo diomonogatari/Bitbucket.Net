@@ -14,14 +14,14 @@ public partial class BitbucketClient
     /// Gets the base build status URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the build-status root.</returns>
-    private IFlurlRequest GetBuildsUrl() => GetBaseUrl("/build-status");
+    protected IFlurlRequest GetBuildsUrl() => GetBaseUrl("/build-status");
 
     /// <summary>
     /// Gets the build status URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the build-status root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the build-status path.</returns>
-    private IFlurlRequest GetBuildsUrl(string path) => GetBuildsUrl()
+    protected IFlurlRequest GetBuildsUrl(string path) => GetBuildsUrl()
         .AppendPathSegment(path);
 
     /// <summary>

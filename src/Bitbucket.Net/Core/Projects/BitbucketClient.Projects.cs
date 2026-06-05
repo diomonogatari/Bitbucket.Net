@@ -13,7 +13,7 @@ public partial class BitbucketClient
     /// Gets the base projects URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the projects endpoint.</returns>
-    private IFlurlRequest GetProjectsUrl() => GetBaseUrl()
+    protected IFlurlRequest GetProjectsUrl() => GetBaseUrl()
         .AppendPathSegment("/projects");
 
     /// <summary>
@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the projects path.</returns>
-    private IFlurlRequest GetProjectsUrl(string path) => GetProjectsUrl()
+    protected IFlurlRequest GetProjectsUrl(string path) => GetProjectsUrl()
         .AppendPathSegment(path);
 
     /// <summary>
@@ -29,7 +29,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="projectKey">The project key.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the project.</returns>
-    private IFlurlRequest GetProjectUrl(string projectKey)
+    protected IFlurlRequest GetProjectUrl(string projectKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
         return GetProjectsUrl().AppendPathSegment($"/{projectKey}");
@@ -41,7 +41,7 @@ public partial class BitbucketClient
     /// <param name="projectKey">The project key.</param>
     /// <param name="repositorySlug">The repository slug.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the repository.</returns>
-    private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug)
+    protected IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
         ArgumentException.ThrowIfNullOrWhiteSpace(repositorySlug);
@@ -55,7 +55,7 @@ public partial class BitbucketClient
     /// <param name="repositorySlug">The repository slug.</param>
     /// <param name="path">The additional path to append.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the repository path.</returns>
-    private IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug, string path) => GetProjectsReposUrl(projectKey, repositorySlug)
+    protected IFlurlRequest GetProjectsReposUrl(string projectKey, string repositorySlug, string path) => GetProjectsReposUrl(projectKey, repositorySlug)
         .AppendPathSegment(path);
 
     /// <summary>

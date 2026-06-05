@@ -13,7 +13,7 @@ public partial class BitbucketClient
     /// Gets the base markup URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the markup endpoint.</returns>
-    private IFlurlRequest GetMarkupUrl() => GetBaseUrl()
+    protected IFlurlRequest GetMarkupUrl() => GetBaseUrl()
         .AppendPathSegment("/markup");
 
     /// <summary>
@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the markup endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the markup path.</returns>
-    private IFlurlRequest GetMarkupUrl(string path) => GetMarkupUrl()
+    protected IFlurlRequest GetMarkupUrl(string path) => GetMarkupUrl()
         .AppendPathSegment(path);
 
     /// <summary>

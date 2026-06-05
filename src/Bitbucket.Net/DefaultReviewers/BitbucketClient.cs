@@ -13,14 +13,14 @@ public partial class BitbucketClient
     /// Gets the base default reviewers URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the default reviewers root.</returns>
-    private IFlurlRequest GetDefaultReviewersUrl() => GetBaseUrl("/default-reviewers");
+    protected IFlurlRequest GetDefaultReviewersUrl() => GetBaseUrl("/default-reviewers");
 
     /// <summary>
     /// Gets the default reviewers URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the default reviewers root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the requested default reviewers path.</returns>
-    private IFlurlRequest GetDefaultReviewersUrl(string path) => GetDefaultReviewersUrl()
+    protected IFlurlRequest GetDefaultReviewersUrl(string path) => GetDefaultReviewersUrl()
         .AppendPathSegment(path);
 
     /// <summary>

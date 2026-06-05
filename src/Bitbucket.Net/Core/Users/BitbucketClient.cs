@@ -13,7 +13,7 @@ public partial class BitbucketClient
     /// Gets the base users URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the users endpoint.</returns>
-    private IFlurlRequest GetUsersUrl() => GetBaseUrl()
+    protected IFlurlRequest GetUsersUrl() => GetBaseUrl()
         .AppendPathSegment("/users");
 
     /// <summary>
@@ -21,7 +21,7 @@ public partial class BitbucketClient
     /// </summary>
     /// <param name="path">The path to append to the users endpoint.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the users path.</returns>
-    private IFlurlRequest GetUsersUrl(string path) => GetUsersUrl()
+    protected IFlurlRequest GetUsersUrl(string path) => GetUsersUrl()
         .AppendPathSegment(path);
 
     /// <summary>

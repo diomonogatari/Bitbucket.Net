@@ -13,14 +13,14 @@ public partial class BitbucketClient
     /// Gets the base reference synchronization URL.
     /// </summary>
     /// <returns>An <see cref="IFlurlRequest"/> targeting the sync root.</returns>
-    private IFlurlRequest GetRefSyncUrl() => GetBaseUrl("/sync");
+    protected IFlurlRequest GetRefSyncUrl() => GetBaseUrl("/sync");
 
     /// <summary>
     /// Gets the reference synchronization URL for the specified path.
     /// </summary>
     /// <param name="path">The path to append to the sync root.</param>
     /// <returns>An <see cref="IFlurlRequest"/> pointing to the sync path.</returns>
-    private IFlurlRequest GetRefSyncUrl(string path) => GetRefSyncUrl()
+    protected IFlurlRequest GetRefSyncUrl(string path) => GetRefSyncUrl()
         .AppendPathSegment(path);
 
     /// <summary>
