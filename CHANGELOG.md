@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Protected extensibility surface** ([#4](https://github.com/diomonogatari/Bitbucket.Net/issues/4)):
+  the low-level building blocks of `BitbucketClient` are now `protected`
+  instead of `private`, so consumers can subclass the client and add custom
+  endpoints without forking. This covers the paging helpers
+  (`GetPagedAsync<T>`, `GetPagedStreamAsync<T>`, `GetPagedResultsAsync<T>`,
+  `GetPagedResultsStreamAsync<T>`), the response handlers
+  (`HandleResponseAsync`, `HandleErrorsAsync`, `ReadResponseContentAsync`,
+  and the string/bytes/stream readers), the JSON content builders
+  (`CreateJsonContent`, `CreateEmptyJsonContent`), and the request builders
+  (`GetBaseUrl` plus all 45 per-feature `Get*Url()` helpers). No public
+  signatures changed and protected members are not exposed on interfaces.
+- **Repository archived filter** ([#4](https://github.com/diomonogatari/Bitbucket.Net/issues/4)):
+  new `RepositoryArchivedState` enum (`Active`/`Archived`/`All`, mapped to the
+  documented `ACTIVE`/`ARCHIVED`/`ALL` values) and additive overloads of
+  `GetRepositoriesAsync` / `GetRepositoriesStreamAsync` (`ISearchOperations`)
+  that filter the `/repos` search endpoint by archived state. The `archived`
+  argument is a required lead parameter, so the existing all-optional
+  signatures are untouched and call resolution is unambiguous.
+- **`avatarSize` on `GetPullRequestCommentLikesAsync`**: added the
+  `avatarSize` query parameter so the method matches its sibling
+  `GetCommitCommentLikesAsync` (both return users). ([#4](https://github.com/diomonogatari/Bitbucket.Net/issues/4))
+
+### Testing
+
+- Added `ExtensibilityMockTests` proving a subclass can implement a custom
+  paged endpoint from the protected helpers (single- and multi-page).
+- Added `RepositorySearchMockTests` covering the `archived` filter
+  (`ACTIVE`/`ARCHIVED`/`ALL` transmitted; omitted on the base overload) and an
+  `avatarSize` transmission test on `GetPullRequestCommentLikesAsync`.
+
 ## [1.0.0] - 2026-02-12
 
 ### Breaking Changes
