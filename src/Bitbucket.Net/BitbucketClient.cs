@@ -196,7 +196,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="version">The API version segment (default is <c>1.0</c>).</param>
     /// <returns>An <see cref="IFlurlRequest"/> configured with authentication and serialization.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the client has been disposed.</exception>
-    private IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
+    protected IFlurlRequest GetBaseUrl(string root = "/api", string version = "1.0")
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -232,7 +232,7 @@ public partial class BitbucketClient : IBitbucketClient
             .OnError(OnErrorCall);
     }
 
-    private static async Task<string> ReadResponseStringAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    protected static async Task<string> ReadResponseStringAsync(IFlurlResponse response, CancellationToken cancellationToken)
     {
         if (response.ResponseMessage?.Content is null)
         {
@@ -242,18 +242,18 @@ public partial class BitbucketClient : IBitbucketClient
         return await response.ResponseMessage.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    private static StringContent CreateJsonContent<TValue>(TValue value)
+    protected static StringContent CreateJsonContent<TValue>(TValue value)
     {
         var json = JsonSerializer.Serialize(value, s_writeJsonOptions);
         return new StringContent(json, Encoding.UTF8, "application/json");
     }
 
-    private static StringContent CreateEmptyJsonContent()
+    protected static StringContent CreateEmptyJsonContent()
     {
         return new StringContent(string.Empty, Encoding.UTF8, "application/json");
     }
 
-    private static async Task<byte[]> ReadResponseBytesAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    protected static async Task<byte[]> ReadResponseBytesAsync(IFlurlResponse response, CancellationToken cancellationToken)
     {
         if (response.ResponseMessage?.Content is null)
         {
@@ -263,7 +263,7 @@ public partial class BitbucketClient : IBitbucketClient
         return await response.ResponseMessage.Content.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    private static async Task<Stream> ReadResponseStreamAsync(IFlurlResponse response, CancellationToken cancellationToken)
+    protected static async Task<Stream> ReadResponseStreamAsync(IFlurlResponse response, CancellationToken cancellationToken)
     {
         if (response.ResponseMessage?.Content is null)
         {
@@ -283,7 +283,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="contentHandler">Optional custom handler to parse the response content as a string.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The deserialized response content.</returns>
-    private static async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
+    protected static async Task<TResult> ReadResponseContentAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
         // Custom handler needs the raw string (used for non-JSON responses)
         if (contentHandler is not null)
@@ -311,7 +311,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="response">The HTTP response.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns><c>true</c> if the response body is empty; otherwise, <c>false</c>.</returns>
-    private static async Task<bool> ReadResponseContentAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
+    protected static async Task<bool> ReadResponseContentAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         string content = await ReadResponseStringAsync(response, cancellationToken).ConfigureAwait(false);
         return string.IsNullOrWhiteSpace(content);
@@ -323,7 +323,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="response">The HTTP response.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A task that completes when error handling is finished.</returns>
-    private static async Task HandleErrorsAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
+    protected static async Task HandleErrorsAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         if (response.StatusCode >= 400)
         {
@@ -371,7 +371,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="contentHandler">Optional custom content handler.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The deserialized response content.</returns>
-    private static async Task<TResult> HandleResponseAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
+    protected static async Task<TResult> HandleResponseAsync<TResult>(IFlurlResponse response, Func<string, TResult>? contentHandler = null, CancellationToken cancellationToken = default)
     {
         await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
         return await ReadResponseContentAsync(response, contentHandler, cancellationToken).ConfigureAwait(false);
@@ -383,7 +383,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="response">The HTTP response.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns><c>true</c> if the response body is empty; otherwise, <c>false</c>.</returns>
-    private static async Task<bool> HandleResponseAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
+    protected static async Task<bool> HandleResponseAsync(IFlurlResponse response, CancellationToken cancellationToken = default)
     {
         await HandleErrorsAsync(response, cancellationToken).ConfigureAwait(false);
         return await ReadResponseContentAsync(response, cancellationToken).ConfigureAwait(false);
@@ -393,7 +393,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// Convenience wrapper that builds the standard GET + deserialize lambda
     /// and delegates to <see cref="GetPagedResultsAsync{T}"/>.
     /// </summary>
-    private Task<IReadOnlyList<T>> GetPagedAsync<T>(
+    protected Task<IReadOnlyList<T>> GetPagedAsync<T>(
         IFlurlRequest request,
         IDictionary<string, object?> queryParams,
         int? maxPages = null,
@@ -415,7 +415,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// Convenience wrapper that builds the standard GET + deserialize lambda
     /// and delegates to <see cref="GetPagedResultsStreamAsync{T}"/>.
     /// </summary>
-    private IAsyncEnumerable<T> GetPagedStreamAsync<T>(
+    protected IAsyncEnumerable<T> GetPagedStreamAsync<T>(
         IFlurlRequest request,
         IDictionary<string, object?> queryParams,
         int? maxPages = null,
@@ -442,7 +442,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="selector">A delegate that retrieves a page of results.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>All retrieved items.</returns>
-    private static async Task<IReadOnlyList<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
+    protected static async Task<IReadOnlyList<T>> GetPagedResultsAsync<T>(int? maxPages, IDictionary<string, object?> queryParamValues, Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector, CancellationToken cancellationToken = default)
     {
         var results = new List<T>();
         bool isLastPage = false;
@@ -476,7 +476,7 @@ public partial class BitbucketClient : IBitbucketClient
     /// <param name="selector">Function to retrieve a page of results.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>An async enumerable that yields items as they are retrieved.</returns>
-    private static async IAsyncEnumerable<T> GetPagedResultsStreamAsync<T>(
+    protected static async IAsyncEnumerable<T> GetPagedResultsStreamAsync<T>(
         int? maxPages,
         IDictionary<string, object?> queryParamValues,
         Func<IDictionary<string, object?>, CancellationToken, Task<PagedResults<T>>> selector,
