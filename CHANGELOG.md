@@ -5,9 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-06-05
 
-### Added
+First stable, publicly supported release. **Targets `net8.0` (LTS) and
+`net10.0`** and consolidates everything accumulated since 0.3.0 (the prior
+unreleased "1.0.0" modernization plus this release cycle).
+
+### Target frameworks & packaging
+
+- **Multi-targets `net8.0` (LTS) and `net10.0`** — previously net10.0-only,
+  which excluded the large base of consumers on .NET 8 LTS. (.NET 9 apps resolve
+  the `net8.0` assembly automatically via NuGet's nearest-compatible framework.)
+- **`EnablePackageValidation`** keeps the `net8.0` and `net10.0` API surfaces
+  compatible and, from the next release on, guards against accidental breaking
+  changes against the 1.0.0 baseline.
+- Moved the test toolchain from `WireMock.Net` to `WireMock.Net.Minimal`,
+  dropping a vulnerable transitive `OpenTelemetry 1.14.0` dependency and
+  restoring a clean `dotnet restore` / CI under the NuGet vulnerability audit.
+
+### Added — extensibility, filters & DX (this cycle)
 
 - **Protected extensibility surface** ([#4](https://github.com/diomonogatari/Bitbucket.Net/issues/4)):
   the low-level building blocks of `BitbucketClient` are now `protected`
@@ -30,16 +46,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`avatarSize` on `GetPullRequestCommentLikesAsync`**: added the
   `avatarSize` query parameter so the method matches its sibling
   `GetCommitCommentLikesAsync` (both return users). ([#4](https://github.com/diomonogatari/Bitbucket.Net/issues/4))
+- **`Line.Truncated`** — the file-browse `Line` model now surfaces the API's
+  `truncated` flag, which was previously dropped (implements
+  `lvermeulen/Bitbucket.Net#30`).
+- **Update a file from a `Stream`** — new `UpdateProjectRepositoryPathAsync`
+  overload to push in-memory content without writing a physical file first; for
+  string content, wrap it in a `MemoryStream` (implements
+  `lvermeulen/Bitbucket.Net#29`).
 
-### Testing
+### Tests (this cycle)
 
-- Added `ExtensibilityMockTests` proving a subclass can implement a custom
-  paged endpoint from the protected helpers (single- and multi-page).
-- Added `RepositorySearchMockTests` covering the `archived` filter
-  (`ACTIVE`/`ARCHIVED`/`ALL` transmitted; omitted on the base overload) and an
-  `avatarSize` transmission test on `GetPullRequestCommentLikesAsync`.
+- `ExtensibilityMockTests` — a subclass implements a custom paged endpoint from
+  the protected helpers (single- and multi-page).
+- `RepositorySearchMockTests` — the `archived` filter (`ACTIVE`/`ARCHIVED`/`ALL`
+  transmitted; omitted on the base overload).
+- `RepositoryFileUpdateMockTests` — the stream and file overloads of
+  `UpdateProjectRepositoryPathAsync`, plus null/blank/missing-file guards.
+- `Line` truncated-flag (true / false / absent / round-trip) and the
+  `avatarSize` transmission test.
 
-## [1.0.0] - 2026-02-12
+### Modernization (the 0.x → 1.0 overhaul)
+
+The breaking changes, additions, and internals below were drafted for the
+never-released February 2026 "1.0.0" and ship as part of this release.
 
 ### Breaking Changes
 
@@ -179,7 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `await` uses `ConfigureAwait(false)`.
 - Added `InputValidationTests` (17 parameterized theories) covering
   null/empty/whitespace rejection for key path-segment parameters.
-- Total test count: 749.
+- Total test count at 1.0.0: 767 (across `net8.0` and `net10.0`).
 
 ## [0.3.0] - 2026-02-010
 
