@@ -2,7 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    
+
+    <!-- Benchmarks are a dev tool; build/run only on the latest runtime (overrides the
+         repo-wide multi-targeting in Directory.Build.props). -->
+    <TargetFrameworks>net10.0</TargetFrameworks>
+
     <!-- Benchmarks should always run in Release mode -->
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     
