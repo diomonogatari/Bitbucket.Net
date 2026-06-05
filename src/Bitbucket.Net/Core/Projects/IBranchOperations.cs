@@ -23,4 +23,5 @@ public interface IBranchOperations
     Task<Stream> GetRawFileContentStreamAsync(string projectKey, string repositorySlug, string path, string? at = null, CancellationToken cancellationToken = default);
     IAsyncEnumerable<string> GetRawFileContentLinesStreamAsync(string projectKey, string repositorySlug, string path, string? at = null, CancellationToken cancellationToken = default);
     Task<Commit> UpdateProjectRepositoryPathAsync(string projectKey, string repositorySlug, string path, string fileName, string branch, string? message = null, string? sourceCommitId = null, string? sourceBranch = null, CancellationToken cancellationToken = default);
+    Task<Commit> UpdateProjectRepositoryPathAsync(string projectKey, string repositorySlug, string path, Stream content, string branch, string? message = null, string? sourceCommitId = null, string? sourceBranch = null, CancellationToken cancellationToken = default);
 }
