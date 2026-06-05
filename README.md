@@ -220,6 +220,52 @@ await foreach (var pr in client.PullRequests("PROJ", "repo")
 Builders are available for pull requests, commits, branches, and projects.
 The original flat methods still work and are not deprecated.
 
+### Extending the client
+
+The low-level building blocks are `protected`, so you can subclass
+`BitbucketClient` to add endpoints the library doesn't ship — or customize an
+existing call — without forking. Subclasses get the request builders
+(`GetBaseUrl`, the per-feature `Get*Url()` helpers), the paging helpers
+(`GetPagedAsync<T>` / `GetPagedStreamAsync<T>`), and the response handlers.
+
+```csharp
+public sealed class ExtendedBitbucketClient(string url, string user, string pass)
+    : BitbucketClient(url, user, pass)
+{
+    // A custom paged endpoint, built entirely from the protected primitives.
+    public Task<IReadOnlyList<Repository>> GetCustomReposAsync(
+        string projectKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
+
+        var query = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["limit"] = null,
+            ["start"] = null,
+        };
+
+        return GetPagedAsync<Repository>(
+            GetBaseUrl().AppendPathSegment($"/projects/{projectKey}/custom-repos"),
+            query,
+            maxPages: null,
+            cancellationToken);
+    }
+}
+```
+
+Only access modifiers were widened to `protected`; no public method signatures
+changed.
+
+### Filtering archived repositories
+
+The `/repos` search supports a typed archived-state filter
+(`ACTIVE` / `ARCHIVED` / `ALL`):
+
+```csharp
+var archived = await client.GetRepositoriesAsync(
+    RepositoryArchivedState.Archived, projectName: "PROJ");
+```
+
 ### Exception handling
 
 Typed exceptions give you precise control over error handling:
