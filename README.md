@@ -50,6 +50,9 @@ If you're looking for Bitbucket Cloud API, try [this repository](https://github.
 dotnet add package BitbucketServer.Net
 ```
 
+Targets **.NET 8.0 (LTS)** and **.NET 10.0**. .NET 9 projects consume the
+`net8.0` assembly automatically.
+
 ## Usage
 
 ### Basic Authentication
