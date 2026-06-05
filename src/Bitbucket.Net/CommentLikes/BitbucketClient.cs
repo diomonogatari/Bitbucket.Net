@@ -114,12 +114,14 @@ public partial class BitbucketClient
     /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
     /// <param name="limit">Optional page size.</param>
     /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="avatarSize">Optional avatar size for returned users.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>A collection of users who liked the pull request comment.</returns>
     public Task<IReadOnlyList<User>> GetPullRequestCommentLikesAsync(string projectKey, string repositorySlug, string pullRequestId, string commentId,
         int? maxPages = null,
         int? limit = null,
         int? start = null,
+        int? avatarSize = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectKey);
@@ -131,6 +133,7 @@ public partial class BitbucketClient
         {
             ["limit"] = limit,
             ["start"] = start,
+            ["avatarSize"] = avatarSize,
         };
 
         return GetPagedAsync<User>(

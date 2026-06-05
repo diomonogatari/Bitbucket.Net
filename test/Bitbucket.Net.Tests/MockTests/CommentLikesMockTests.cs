@@ -1,4 +1,7 @@
 using Bitbucket.Net.Tests.Infrastructure;
+using System.Net;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 using Xunit;
 
 namespace Bitbucket.Net.Tests.MockTests;
@@ -64,6 +67,29 @@ public class CommentLikesMockTests(BitbucketMockFixture fixture) : IClassFixture
         Assert.NotNull(result);
         var users = result.ToList();
         Assert.Equal(2, users.Count);
+    }
+
+    [Fact]
+    public async Task GetPullRequestCommentLikesAsync_WithAvatarSize_SendsAvatarSizeParam()
+    {
+        _fixture.Reset();
+        // Stub matches only when the request carries avatarSize=48, proving the new param is sent
+        // (parity with GetCommitCommentLikesAsync).
+        _fixture.Server
+            .Given(Request.Create()
+                .WithPath($"/rest/comment-likes/1.0/projects/{ProjectKey}/repos/{RepoSlug}/pull-requests/{PullRequestId}/comments/{CommentId}/likes")
+                .WithParam("avatarSize", "48")
+                .UsingGet())
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody("{\"size\":1,\"limit\":25,\"isLastPage\":true,\"start\":0,\"values\":[{\"name\":\"jsmith\"}]}"));
+        var client = _fixture.CreateClient();
+
+        var result = await client.GetPullRequestCommentLikesAsync(ProjectKey, RepoSlug, PullRequestId, CommentId, avatarSize: 48);
+
+        Assert.Single(result);
+        Assert.Equal("jsmith", result[0].Name);
     }
 
     [Fact]
