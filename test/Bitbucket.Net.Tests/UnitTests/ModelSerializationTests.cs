@@ -12,6 +12,72 @@ namespace Bitbucket.Net.Tests.UnitTests;
 
 public class ModelSerializationTests
 {
+    #region Line Serialization Tests
+
+    [Fact]
+    public void Line_Deserialization_ReadsTruncatedFlag()
+    {
+        var json = """
+        {
+            "text": "a very long line that the server truncated",
+            "truncated": true
+        }
+        """;
+
+        var line = JsonSerializer.Deserialize(json, BitbucketJsonContext.Default.Line);
+
+        Assert.NotNull(line);
+        Assert.Equal("a very long line that the server truncated", line.Text);
+        Assert.True(line.Truncated);
+    }
+
+    [Fact]
+    public void Line_Deserialization_TruncatedNullWhenAbsent()
+    {
+        var json = """
+        {
+            "text": "short line"
+        }
+        """;
+
+        var line = JsonSerializer.Deserialize(json, BitbucketJsonContext.Default.Line);
+
+        Assert.NotNull(line);
+        Assert.Equal("short line", line.Text);
+        Assert.Null(line.Truncated);
+    }
+
+    [Fact]
+    public void Line_Deserialization_ReadsExplicitFalse()
+    {
+        var json = """
+        {
+            "text": "untruncated line",
+            "truncated": false
+        }
+        """;
+
+        var line = JsonSerializer.Deserialize(json, BitbucketJsonContext.Default.Line);
+
+        Assert.NotNull(line);
+        Assert.False(line.Truncated);
+    }
+
+    [Fact]
+    public void Line_Serialization_RoundTrips()
+    {
+        var line = new Line { Text = "round trip", Truncated = true };
+
+        var json = JsonSerializer.Serialize(line, BitbucketJsonContext.Default.Line);
+        var deserialized = JsonSerializer.Deserialize(json, BitbucketJsonContext.Default.Line);
+
+        Assert.NotNull(deserialized);
+        Assert.Equal(line.Text, deserialized.Text);
+        Assert.Equal(line.Truncated, deserialized.Truncated);
+    }
+
+    #endregion
+
     #region Project Serialization Tests
 
     [Fact]
