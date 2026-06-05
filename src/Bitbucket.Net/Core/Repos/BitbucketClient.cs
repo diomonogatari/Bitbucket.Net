@@ -18,6 +18,26 @@ public partial class BitbucketClient
         .AppendPathSegment("/repos");
 
     /// <summary>
+    /// Builds the shared query parameters for the repository search endpoint.
+    /// </summary>
+    private static Dictionary<string, object?> BuildRepositoriesQuery(
+        int? limit,
+        int? start,
+        string? name,
+        string? projectName,
+        Permissions? permission,
+        bool isPublic)
+        => new(StringComparer.Ordinal)
+        {
+            ["limit"] = limit,
+            ["start"] = start,
+            ["name"] = name,
+            ["projectname"] = projectName,
+            ["permission"] = BitbucketHelpers.PermissionToString(permission),
+            ["visibility"] = isPublic ? "public" : "private",
+        };
+
+    /// <summary>
     /// Retrieves repositories accessible to the current user.
     /// </summary>
     /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
@@ -39,15 +59,38 @@ public partial class BitbucketClient
         bool isPublic = false,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
-        {
-            ["limit"] = limit,
-            ["start"] = start,
-            ["name"] = name,
-            ["projectname"] = projectName,
-            ["permission"] = BitbucketHelpers.PermissionToString(permission),
-            ["visibility"] = isPublic ? "public" : "private",
-        };
+        var queryParamValues = BuildRepositoriesQuery(limit, start, name, projectName, permission, isPublic);
+
+        return GetPagedAsync<Repository>(
+            GetReposUrl(), queryParamValues, maxPages, cancellationToken);
+    }
+
+    /// <summary>
+    /// Retrieves repositories accessible to the current user, filtered by archived state.
+    /// </summary>
+    /// <param name="archived">Whether to return active, archived, or all repositories.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="name">Optional repository name filter.</param>
+    /// <param name="projectName">Optional project name filter.</param>
+    /// <param name="permission">Optional permission filter.</param>
+    /// <param name="isPublic">Whether to include only public repositories.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A collection of repositories.</returns>
+    public Task<IReadOnlyList<Repository>> GetRepositoriesAsync(
+        RepositoryArchivedState archived,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        string? name = null,
+        string? projectName = null,
+        Permissions? permission = null,
+        bool isPublic = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = BuildRepositoriesQuery(limit, start, name, projectName, permission, isPublic);
+        queryParamValues["archived"] = BitbucketHelpers.RepositoryArchivedStateToString(archived);
 
         return GetPagedAsync<Repository>(
             GetReposUrl(), queryParamValues, maxPages, cancellationToken);
@@ -75,15 +118,38 @@ public partial class BitbucketClient
         bool isPublic = false,
         CancellationToken cancellationToken = default)
     {
-        var queryParamValues = new Dictionary<string, object?>(StringComparer.Ordinal)
-        {
-            ["limit"] = limit,
-            ["start"] = start,
-            ["name"] = name,
-            ["projectname"] = projectName,
-            ["permission"] = BitbucketHelpers.PermissionToString(permission),
-            ["visibility"] = isPublic ? "public" : "private",
-        };
+        var queryParamValues = BuildRepositoriesQuery(limit, start, name, projectName, permission, isPublic);
+
+        return GetPagedStreamAsync<Repository>(
+            GetReposUrl(), queryParamValues, maxPages, cancellationToken);
+    }
+
+    /// <summary>
+    /// Streams repositories accessible to the current user, filtered by archived state.
+    /// </summary>
+    /// <param name="archived">Whether to return active, archived, or all repositories.</param>
+    /// <param name="maxPages">Optional maximum number of pages to retrieve.</param>
+    /// <param name="limit">Optional page size.</param>
+    /// <param name="start">Optional starting index for pagination.</param>
+    /// <param name="name">Optional repository name filter.</param>
+    /// <param name="projectName">Optional project name filter.</param>
+    /// <param name="permission">Optional permission filter.</param>
+    /// <param name="isPublic">Whether to include only public repositories.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>An async enumerable of repositories.</returns>
+    public IAsyncEnumerable<Repository> GetRepositoriesStreamAsync(
+        RepositoryArchivedState archived,
+        int? maxPages = null,
+        int? limit = null,
+        int? start = null,
+        string? name = null,
+        string? projectName = null,
+        Permissions? permission = null,
+        bool isPublic = false,
+        CancellationToken cancellationToken = default)
+    {
+        var queryParamValues = BuildRepositoriesQuery(limit, start, name, projectName, permission, isPublic);
+        queryParamValues["archived"] = BitbucketHelpers.RepositoryArchivedStateToString(archived);
 
         return GetPagedStreamAsync<Repository>(
             GetReposUrl(), queryParamValues, maxPages, cancellationToken);

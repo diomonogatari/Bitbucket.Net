@@ -165,6 +165,14 @@ public static class BitbucketEnumMaps
         [Bitbucket.Net.Models.Core.Projects.AnchorStates.All] = "ALL",
     }, createReverse: false);
 
+    /// <summary>Mapping for <see cref="RepositoryArchivedState"/>.</summary>
+    public static EnumMap<RepositoryArchivedState> RepositoryArchivedState { get; } = new(new Dictionary<RepositoryArchivedState, string>
+    {
+        [Bitbucket.Net.Models.Core.Projects.RepositoryArchivedState.Active] = "ACTIVE",
+        [Bitbucket.Net.Models.Core.Projects.RepositoryArchivedState.Archived] = "ARCHIVED",
+        [Bitbucket.Net.Models.Core.Projects.RepositoryArchivedState.All] = "ALL",
+    }, createReverse: false);
+
     /// <summary>Mapping for <see cref="DiffTypes"/>.</summary>
     public static EnumMap<DiffTypes> DiffTypes { get; } = new(new Dictionary<DiffTypes, string>
     {
